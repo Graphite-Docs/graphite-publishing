@@ -1,0 +1,211 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css?family=Alfa+Slab+One|Raleway|Roboto|Ubuntu|Lato|Open+Sans|Montserrat|Muli:200|Muli');
+@import url('https://fonts.googleapis.com/css?family=Slabo+27px');
+
+/* Apply Everywhere */
+body {
+  font-family: "Muli";
+  color: #282828;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 200;
+}
+
+.btn, .btn-large, .btn-small {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.edit-icon {
+  margin-left: 10px;
+}
+
+.smaller-button-text {
+  font-size: 10px;
+}
+
+.bordered thead {
+  font-size: 14px;
+}
+
+.code {
+  background: #282828;
+  color: #fff;
+  padding: 5px;
+}
+
+input:not([type]):focus:not([readonly]), input[type=text]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=url]:not(.browser-default):focus:not([readonly]), input[type=time]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=datetime]:not(.browser-default):focus:not([readonly]), input[type=datetime-local]:not(.browser-default):focus:not([readonly]), input[type=tel]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=search]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
+  border-bottom: 1px solid #282828;
+  -webkit-box-shadow: 0 1px 0 0 #282828;
+  box-shadow: 0 1px 0 0 #282828;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+/* Sign-In Page */
+
+.sign-in-page {
+  margin: 40px;
+  margin-top: 250px;
+}
+
+.sign-in {
+  margin-top: 30px;
+}
+
+/* Header */
+nav {
+  background-color: #fff;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  color: #282828;
+}
+
+nav .nav-wrapper a {
+  color: #282828;
+}
+
+.brand-logo, .sign-out {
+  padding-left: 25px!important;
+  padding-right: 25px!important;
+}
+
+.brand-logo img {
+  max-height: 55px;
+}
+
+/* Onboarding */
+
+.onboarding-set-up {
+  margin-top: 70px;
+}
+
+.small-logo {
+  max-width: 85px;
+  margin-bottom: -20px;
+  margin-right: 15px;
+}
+.sign-up-h5 {
+  margin-top: 35px;
+  margin-bottom: 35px;
+}
+
+.info {
+  position: relative;
+  margin-left: 10px;
+  bottom: -5px;
+}
+
+.sign-up-button {
+  margin-top: 20px;
+}
+
+/* Posts Collection */
+
+.searchform {
+  padding: 10px;
+  height: 70px;
+}
+
+.searchfield {
+  border: none!important;
+  padding: none!important;
+}
+
+
+.searchinput {
+  border: none!important;
+  margin-bottom: 0!important;
+}
+
+.searchinput::-webkit-input-placeholder {
+  font-size: 26px;
+  font-weight: 200;
+}
+
+.searchinput:active, .searchinput:focus {
+  border: none!important;
+  box-shadow: none!important;
+}
+
+/* Account Settings */
+
+.account-settings {
+  margin-top: 45px;
+}
+
+.add-logo-btn {
+  margin-top: 20px;
+}
+
+.account-settings-section {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.domain {
+  margin-bottom: 30px;
+}
+
+.requestDomain {
+  max-width: 85%;
+  margin: auto;
+}
+
+.settings-logo {
+  max-height: 75px;
+}
+
+/* Payment */
+
+.stripe-button-el {
+  overflow: hidden;
+  display: inline-block;
+  background: black !important;
+  border: 0px;
+  padding: 1px;
+  text-decoration: none;
+  border-radius: 0px!important;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 0px;
+  cursor: pointer;
+  visibility: visible;
+  user-select: none;
+  margin-bottom: 25px;
+}
+
+.stripe-button-el span {
+  background-image: none!important;
+  background: #000!important;
+  font-family: "Muli", Helvetica, Arial, sans-serif!important;
+  text-transform: uppercase!important;
+  font-size: 14px;
+  padding: 0px 12px;
+  display: block;
+  height: 30px; line-height: 30px;
+  color: rgb(255, 255, 255);
+  box-shadow: none!important;
+  text-shadow: none!important;
+  content: "Pay"!important;
+}
+
+.payment-button {
+  margin-bottom: 25px;
+}
+
+.payment-wrapper {
+  margin-top: 100px;
+}
+
+.features-table {
+  margin-bottom: 60px;
+  margin-top: 45px;
+}
+
+/* Posts */
+
+.posts {
+  margin-top: 75px;
+}
