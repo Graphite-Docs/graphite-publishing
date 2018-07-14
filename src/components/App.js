@@ -24,12 +24,31 @@ import {
   clearAccountData
 } from './helpers/helpers';
 import {
+  loadInvite,
+} from './helpers/invite';
+import {
   handleAccountName,
   handleEmail,
   signUp,
   postMain,
   saveAccountSignUp,
 } from './helpers/signUpForm';
+import {
+  handleTeammateId,
+  handleTeammateName,
+  handleTeammateRole,
+  handleTeammateEmail,
+  addTeammate,
+  teammateToDelete,
+  updateTeammate,
+  updateRole,
+  saveInvite,
+  sendInvite
+} from './helpers/team';
+import {
+  saveToTeam,
+  checkForLatest
+} from './helpers/teamsync'
 import AppPage from './AppPage';
 import Main from './documents/Main';
 import Posts from './documents/Posts';
@@ -38,6 +57,7 @@ import PaymentSuccess from './documents/PaymentSuccess';
 import Header from './Header';
 import Onboarding from './documents/Onboarding';
 import Payment from './documents/Payment';
+import Invites from './documents/Invites';
 const Config = require('Config');
 
 export default class App extends Component {
@@ -61,6 +81,19 @@ export default class App extends Component {
       alt: "",
       singleFile: {},
       onboardingComplete: false,
+      editing: false,
+      pubKey: "",
+      teammateIndex: "",
+      newTeammateId: "",
+      newTeammateName: "",
+      newTeammateRole: "",
+      newTeammateEmail: "",
+      newTeammateKey: "",
+      newTeammateBlockstackId: "",
+      id: "",
+      teamMateMostRecent: "",
+      count: 0,
+      inviteDetails: {}
     }
   }
 
@@ -86,6 +119,19 @@ export default class App extends Component {
     this.clearAccountName = clearAccountName.bind(this);
     this.handleNewDomain = handleNewDomain.bind(this);
     this.removeDomain = removeDomain.bind(this);
+    this.handleTeammateId = handleTeammateId.bind(this);
+    this.handleTeammateName = handleTeammateName.bind(this);
+    this.handleTeammateRole = handleTeammateRole.bind(this);
+    this.handleTeammateEmail = handleTeammateEmail.bind(this);
+    this.addTeammate = addTeammate.bind(this);
+    this.teammateToDelete = teammateToDelete.bind(this);
+    this.updateTeammate = updateTeammate.bind(this);
+    this.updateRole = updateRole.bind(this);
+    this.saveToTeam = saveToTeam.bind(this);
+    this.checkForLatest = checkForLatest.bind(this);
+    this.saveInvite = saveInvite.bind(this);
+    this.sendInvite = sendInvite.bind(this);
+    this.loadInvite = loadInvite.bind(this);
     isUserSignedIn() ?  this.loadAccount() : loadUserData();
   }
 
@@ -105,7 +151,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId } = this.state;
+    const { newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId } = this.state;
     if(onboardingComplete && !paymentDue) {
       return (
         <div>
@@ -131,14 +177,28 @@ export default class App extends Component {
                   accountDetails={this.accountDetails}
                   handleNewDomain={this.handleNewDomain}
                   removeDomain={this.removeDomain}
+                  addTeammate={this.addTeammate}
+                  handleTeammateId={this.handleTeammateId}
+                  handleTeammateName={this.handleTeammateName}
+                  handleTeammateRole={this.handleTeammateRole}
+                  handleTeammateEmail={this.handleTeammateEmail}
+                  teammateToDelete={this.teammateToDelete}
+                  updateTeammate={this.updateTeammate}
+                  newTeammateId={newTeammateId}
+                  newTeammateName={newTeammateName}
+                  newTeammateRole={newTeammateRole}
+                  newTeammateEmail={newTeammateEmail}
+                  newTeammateBlockstackId={newTeammateBlockstackId}
                   integrations={integrations}
                   team={team}
                   accountName={accountName}
                   logo={logo}
                   newDomain={newDomain}
                   ownerBlockstackId={ownerBlockstackId}
+                  accountId={accountId}
                   />}
               />
+              <Route exact path="/invites" component={Invites} />
               <Route exact path="/success" component={PaymentSuccess} />
             </div>
           </BrowserRouter>

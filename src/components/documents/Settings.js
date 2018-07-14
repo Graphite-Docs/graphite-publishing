@@ -6,13 +6,14 @@ export default class Settings extends Component {
   componentDidMount() {
     window.$('.modal').modal();
     window.$('.tooltipped').tooltip();
+    window.$('select').formSelect();
   }
 
   render() {
-    const { logo, accountName, team, integrations, newDomain, ownerBlockstackId } = this.props;
+    const { logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, accountId } = this.props;
     let originalDomain;
     if(accountName !== undefined && accountName !== "") {
-      originalDomain = "https://publishing.graphitedocs.com/sites/" + ownerBlockstackId;
+      originalDomain = "https://publishing.graphitedocs.com/sites/" + accountId;
     } else {
       originalDomain = "https://publishing.graphitedocs.com/sites/";
     }
@@ -64,14 +65,14 @@ export default class Settings extends Component {
             </div>
             <div className="col s12">
             <div className="col s12 account-settings-section">
-              <h5 className="left">Your Team {(1+1 === 2) ? <button className="btn-floating btn-small black" onClick={() => this.setState({ editing: true, hideMain: "hide", teammateModal: "" })}><i className="material-icons white-text">add</i></button> : <span className="note"><a className="note-link" onClick={() => window.Materialize.toast('Your main account admin can add teammates.', 4000)}>?</a></span>}</h5>
+              <h5 className="left">Your Team {(1+1 === 2) ? <button className="btn-floating btn-small black modal-trigger" data-target="modal3"><i className="material-icons white-text">add</i></button> : <span className="note"><a className="note-link" onClick={() => window.Materialize.toast('Your main account admin can add teammates.', 4000)}>?</a></span>}</h5>
 
               <table className="bordered">
                 <thead>
                   <tr>
                     <th>Name</th>
                     <th>Date Added</th>
-                    <th>Role <span><a data-position="top" data-tooltip="Learn more about roles <a href='https://graphitedocs.com'>here</a>." className="tooltipped info"><i className="material-icons">info_outline</i></a></span></th>
+                    <th>Role <span><a className="info modal-trigger" href="#roleInfoModal"><i className="material-icons">info_outline</i></a></span></th>
                     {(1+1 === 2) ? <th></th> : <div />}
                   </tr>
                 </thead>
@@ -79,10 +80,28 @@ export default class Settings extends Component {
                     {teamList.slice(0).reverse().map(mate => {
                         return (
                           <tr key={mate.name}>
-                            <td><a onClick={() => this.setState({ selectedTeammate: mate.name, updateTeammateModal: "", hideMain: "hide", editing: true})}>{mate.name}</a></td>
+                            <td><a data-target="modal4" className="modal-trigger">{mate.name}</a><span><i className="material-icons tiny link">link</i></span></td>
                             <td>{mate.added}</td>
-                            <td>{mate.role}</td>
-                            {(1+1 === 2) ? <td><a onClick={() => this.setState({ deleteContact: mate.name, deleteTeammateModal: "" })} ><i className="material-icons red-text">delete</i></a></td> : <div />}
+                            <td>{mate.role.charAt(0).toUpperCase() + mate.role.slice(1)}</td>
+                            {(1+1 === 2) ? <td><a onClick={() => this.props.teammateToDelete(mate.id)} ><i className="material-icons red-text">delete</i></a></td> : <div />}
+                            <td id="modal4" className="modal center-align modal-fixed-footer">
+                              <div className="modal-content">
+                                <h4>Update Role for {mate.name}</h4>
+                                <div className="input-field col s12">
+                                  <select defaultValue="select" onChange={this.props.handleTeammateRole}>
+                                    <option value="select" disabled>Select Role</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="editor">Editor</option>
+                                    <option value="author">Author</option>
+                                  </select>
+                                  <label>Role</label>
+                                </div>
+                              </div>
+                              <div className="modal-footer">
+                                <a className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                                <a onClick={() => this.props.updateTeammate(mate.id)} className="modal-close waves-effect waves-green btn black">Update</a>
+                              </div>
+                            </td>
                           </tr>
                         )
                       })
@@ -151,6 +170,50 @@ export default class Settings extends Component {
                   </div>
                 </div>
                 {/*Edit Account Name*/}
+
+                {/*Add Teammate*/}
+                <div id="modal3" className="modal modal-fixed-footer">
+                  <div className="modal-content addteammate">
+                    <h4>Add Teammate</h4>
+                    <div className="input-field col s12 m6">
+                      <input value={newTeammateName} onChange={this.props.handleTeammateName} type="text" placeholder="Johnny Cash" />
+                      <label className="active">Teammate Name<span className="red-text">*</span></label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input value={newTeammateBlockstackId} onChange={this.props.handleTeammateId} type="text" placeholder="johnnycash.id" />
+                      <label className="active">Blockstack ID<span><a data-position="top" data-tooltip="Blockstack ID is not required." className="tooltipped info"><i className="material-icons">info_outline</i></a></span></label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input value={newTeammateEmail} onChange={this.props.handleTeammateEmail} type="text" placeholder="johnny@cash.com" />
+                      <label className="active">Teammate Email<span><a data-position="top" data-tooltip="Email is not required, but you will have to share the invite link some other way." className="tooltipped info"><i className="material-icons">info_outline</i></a></span></label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <select value={newTeammateRole} onChange={this.props.handleTeammateRole}>
+                        <option value="" disabled>Select Role</option>
+                        <option value="admin">Administrator</option>
+                        <option value="editor">Editor</option>
+                        <option value="author">Author</option>
+                      </select>
+                      <label>Role<span className="red-text">*</span></label>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <a className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                    <a onClick={this.props.addTeammate} className="modal-close waves-effect waves-green btn black">Add Teammate</a>
+                  </div>
+                </div>
+                {/*End Add Teammate*/}
+                {/*Role Info Modal */}
+                <div id="roleInfoModal" className="modal">
+                  <div className="modal-content">
+                    <h4>Modal Header</h4>
+                    <p>A bunch of text</p>
+                  </div>
+                  <div className="modal-footer">
+                    <a href="#!" className="modal-close waves-effect waves-green btn-flat">Agree</a>
+                  </div>
+                </div>
+                {/*End Role Info Modal */}
             </div>
           </div>
         </div>

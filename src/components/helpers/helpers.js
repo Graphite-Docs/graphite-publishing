@@ -1,6 +1,7 @@
 import {
   getFile,
   putFile,
+  loadUserData
 } from "blockstack";
 
 export function loadLogo() {
@@ -32,10 +33,10 @@ export function loadAccount() {
           accountType: JSON.parse(fileContents || '{}').accountType,
           paymentDue: JSON.parse(fileContents || '{}').paymentDue,
           onboardingComplete: JSON.parse(fileContents || '{}').onboardingComplete,
-          logo: JSON.parse(fileContents || '{}').logo.link,
+          logo: JSON.parse(fileContents || '{}').logo,
           newDomain: JSON.parse(fileContents || '{}').newDomain,
-          team: JSON.parse(fileContents || '{}').team,
-          integrations: JSON.parse(fileContents || '{}').integrations,
+          team: JSON.parse(fileContents || '{}').team || [],
+          integrations: JSON.parse(fileContents || '{}').integrations || [],
           lastUpdated: JSON.parse(fileContents || '{}').lastUpdated
         })
       } else {
@@ -56,6 +57,9 @@ export function loadAccount() {
           lastUpdated: ""
         });
       }
+    })
+    .then(() => {
+      this.state.team.length > 0 ? this.checkForLatest() : loadUserData();
     })
     .catch(error => {
       console.log(error);

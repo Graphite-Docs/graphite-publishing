@@ -18,16 +18,6 @@ export function loadDomain() {
     })
 }
 
-// export function newDomainRequest() {
-//   console.log(this.state.newDomain)
-//   putFile("newDomain.json", JSON.stringify(this.state.newDomain), {encrypt: true})
-//     .then(() => {
-//       this.loadDomain();
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     })
-// }
 export function handleNewDomain(e) {
   this.setState({ newDomain: e.target.value });
 }
@@ -81,16 +71,16 @@ export function accountDetails() {
       this.setState({accountDetails: object});
       setTimeout(this.saveAccount, 300)
     })
-
 }
 
 export function saveAccount() {
+  this.setState({ newTeammateId: "", newTeammateName: "", newTeammateEmail: "", newTeammateRole: "" })
   let fileName = 'account.json';
   let saveObject = JSON.stringify(this.state.accountDetails);
   let encryptionObject = {encrypt: true};
   putFile(fileName, saveObject, encryptionObject)
     .then(() => {
-      this.loadAccount();
+      this.saveToTeam();
     })
     .catch(error => {
       console.log(error)
@@ -111,7 +101,7 @@ export function handleDrop(files) {
        this.handleDropRejected();
        console.log("file too large")
      }else {
-       this.setState({logo: object});
+       this.setState({logo: object.link});
        this.setState({ loading: "", show: "hide"})
        setTimeout(this.accountDetails, 300)
      }

@@ -45,6 +45,14 @@ a:hover {
   cursor: pointer;
 }
 
+.dropdown-content li>a, .dropdown-content li>span {
+  color: #282828!important;
+}
+
+.select-wrapper input.select-dropdown:focus {
+  border-bottom: 1px solid #282828!important;
+}
+
 /* Sign-In Page */
 
 .sign-in-page {
@@ -159,6 +167,10 @@ nav .nav-wrapper a {
   max-height: 75px;
 }
 
+.addteammate h4 {
+  margin-bottom: 55px;
+}
+
 /* Payment */
 
 .stripe-button-el {
@@ -202,6 +214,11 @@ nav .nav-wrapper a {
 .features-table {
   margin-bottom: 60px;
   margin-top: 45px;
+}
+
+.link {
+  margin-left: 15px;
+  margin-bottom: -10px;
 }
 
 /* Posts */
