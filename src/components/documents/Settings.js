@@ -10,7 +10,7 @@ export default class Settings extends Component {
   }
 
   render() {
-    const { logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, accountId } = this.props;
+    const { logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, accountId } = this.props;
     let originalDomain;
     if(accountName !== undefined && accountName !== "") {
       originalDomain = "https://publishing.graphitedocs.com/sites/" + accountId;
@@ -71,19 +71,32 @@ export default class Settings extends Component {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Date Added</th>
+                    <th>ID</th>
                     <th>Role <span><a className="info modal-trigger" href="#roleInfoModal"><i className="material-icons">info_outline</i></a></span></th>
                     {(1+1 === 2) ? <th></th> : <div />}
                   </tr>
                 </thead>
                 <tbody>
-                    {teamList.slice(0).reverse().map(mate => {
+                    {teamList.slice(0).map(mate => {
                         return (
                           <tr key={mate.name}>
-                            <td><a data-target="modal4" className="modal-trigger">{mate.name}</a><span><i className="material-icons tiny link">link</i></span></td>
-                            <td>{mate.added}</td>
+
+                          <td id="shareLinkModal" className="modal">
+                            <div className="modal-content">
+                              <h4>Share Invite Link</h4>
+                              <input type="text" defaultValue={mate.inviteLink} id="copy" /><span><a onClick={this.props.copyLink}><i className="material-icons tiny">content_copy</i></a></span>
+                            </div>
+                          </td>
+
+                            {
+                              mate.invitedAccepted === false ?
+                              <td><a data-target="modal4" className="modal-trigger">{mate.name}</a><span><a data-target="shareLinkModal" className="modal-trigger"><i className="material-icons tiny link">link</i></a></span></td>
+                              :
+                              <td><a data-target="modal4" className="modal-trigger">{mate.name}</a></td>
+                            }
+                            <td>{mate.blockstackId}</td>
                             <td>{mate.role.charAt(0).toUpperCase() + mate.role.slice(1)}</td>
-                            {(1+1 === 2) ? <td><a onClick={() => this.props.teammateToDelete(mate.id)} ><i className="material-icons red-text">delete</i></a></td> : <div />}
+                            {(1+1 === 2 && mate.role !== "Owner") ? <td><a onClick={() => this.props.teammateToDelete(mate.id)} ><i className="material-icons red-text">delete</i></a></td> : <td></td>}
                             <td id="modal4" className="modal center-align modal-fixed-footer">
                               <div className="modal-content">
                                 <h4>Update Role for {mate.name}</h4>
@@ -180,14 +193,10 @@ export default class Settings extends Component {
                       <label className="active">Teammate Name<span className="red-text">*</span></label>
                     </div>
                     <div className="input-field col s12 m6">
-                      <input value={newTeammateBlockstackId} onChange={this.props.handleTeammateId} type="text" placeholder="johnnycash.id" />
-                      <label className="active">Blockstack ID<span><a data-position="top" data-tooltip="Blockstack ID is not required." className="tooltipped info"><i className="material-icons">info_outline</i></a></span></label>
-                    </div>
-                    <div className="input-field col s12 m6">
                       <input value={newTeammateEmail} onChange={this.props.handleTeammateEmail} type="text" placeholder="johnny@cash.com" />
-                      <label className="active">Teammate Email<span><a data-position="top" data-tooltip="Email is not required, but you will have to share the invite link some other way." className="tooltipped info"><i className="material-icons">info_outline</i></a></span></label>
+                      <label className="active">Teammate Email<span className="red-text">*</span></label>
                     </div>
-                    <div className="input-field col s12 m6">
+                    <div className="input-field col s12">
                       <select value={newTeammateRole} onChange={this.props.handleTeammateRole}>
                         <option value="" disabled>Select Role</option>
                         <option value="admin">Administrator</option>
@@ -203,6 +212,7 @@ export default class Settings extends Component {
                   </div>
                 </div>
                 {/*End Add Teammate*/}
+
                 {/*Role Info Modal */}
                 <div id="roleInfoModal" className="modal">
                   <div className="modal-content">

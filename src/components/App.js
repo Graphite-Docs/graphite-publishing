@@ -21,11 +21,22 @@ import {
 } from './helpers/settings';
 import {
   loadAccount,
-  clearAccountData
+  clearAccountData,
+  copyLink
 } from './helpers/helpers';
 import {
   loadInvite,
+  loadInviteStatus,
+  acceptInvite,
+  saveToInviter,
+  sendToInviter,
+  sendAcceptEmail,
+  saveBasicInviteInfo,
+  inviteInfo
 } from './helpers/invite';
+import {
+  confirmAcceptance
+} from './helpers/acceptance';
 import {
   handleAccountName,
   handleEmail,
@@ -47,7 +58,9 @@ import {
 } from './helpers/team';
 import {
   saveToTeam,
-  checkForLatest
+  checkForLatest,
+  loadBasicInviteInfo,
+  setLoadedFile
 } from './helpers/teamsync'
 import AppPage from './AppPage';
 import Main from './documents/Main';
@@ -58,6 +71,7 @@ import Header from './Header';
 import Onboarding from './documents/Onboarding';
 import Payment from './documents/Payment';
 import Invites from './documents/Invites';
+import Acceptances from './documents/Acceptances';
 const Config = require('Config');
 
 export default class App extends Component {
@@ -93,7 +107,19 @@ export default class App extends Component {
       id: "",
       teamMateMostRecent: "",
       count: 0,
-      inviteDetails: {}
+      inviteDetails: {},
+      inviterKey: "",
+      inviteDate: 0,
+      inviter: "" ,
+      inviteAccepted: false,
+      inviteeBlockstackId: "",
+      inviteeEmail: "",
+      inviteeName: "",
+      inviteeKey: "",
+      inviteeRole: "",
+      inviterEmail: "",
+      inviteeId: "",
+      sendToInviter: {}
     }
   }
 
@@ -132,6 +158,17 @@ export default class App extends Component {
     this.saveInvite = saveInvite.bind(this);
     this.sendInvite = sendInvite.bind(this);
     this.loadInvite = loadInvite.bind(this);
+    this.copyLink = copyLink.bind(this);
+    this.loadInviteStatus = loadInviteStatus.bind(this);
+    this.acceptInvite = acceptInvite.bind(this);
+    this.saveToInviter = saveToInviter.bind(this);
+    this.sendToInviter = sendToInviter.bind(this);
+    this.sendAcceptEmail = sendAcceptEmail.bind(this);
+    this.confirmAcceptance = confirmAcceptance.bind(this);
+    this.saveBasicInviteInfo = saveBasicInviteInfo.bind(this);
+    this.loadBasicInviteInfo = loadBasicInviteInfo.bind(this);
+    this.inviteInfo = inviteInfo.bind(this);
+    this.setLoadedFile = setLoadedFile.bind(this);
     isUserSignedIn() ?  this.loadAccount() : loadUserData();
   }
 
@@ -151,7 +188,8 @@ export default class App extends Component {
   }
 
   render() {
-    const { newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId } = this.state;
+    const { inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing } = this.state;
+
     if(onboardingComplete && !paymentDue) {
       return (
         <div>
@@ -184,6 +222,7 @@ export default class App extends Component {
                   handleTeammateEmail={this.handleTeammateEmail}
                   teammateToDelete={this.teammateToDelete}
                   updateTeammate={this.updateTeammate}
+                  copyLink={this.copyLink}
                   newTeammateId={newTeammateId}
                   newTeammateName={newTeammateName}
                   newTeammateRole={newTeammateRole}
@@ -196,9 +235,14 @@ export default class App extends Component {
                   newDomain={newDomain}
                   ownerBlockstackId={ownerBlockstackId}
                   accountId={accountId}
+                  editing={editing}
                   />}
               />
-              <Route exact path="/invites" component={Invites} />
+              <Route exact path="/acceptances" render={(props) =>
+                <Acceptances {...props}
+                  confirmAcceptance={this.confirmAcceptance}
+                />}
+              />
               <Route exact path="/success" component={PaymentSuccess} />
             </div>
           </BrowserRouter>
@@ -216,7 +260,24 @@ export default class App extends Component {
           <Payment />
         </div>
       );
-    } else {
+    } else if(inviterKey && inviteAccepted === false) {
+      return (
+        <div>
+          <Header
+            handleSignOut={this.handleSignOut}
+            onboardingComplete={onboardingComplete}
+            logo={logo}
+            accountName={accountName}
+          />
+          <Invites
+            accountName={accountName}
+            inviter={inviter}
+            inviterKey={inviterKey}
+            acceptInvite={this.acceptInvite}
+          />
+        </div>
+      )
+    }else {
       return (
         <div>
           <Header
@@ -229,6 +290,7 @@ export default class App extends Component {
             signUpAccountName={this.handleAccountName}
             signUpEmail={this.handleEmail}
             signUp={this.signUp}
+            inviteInfo={this.inviteInfo}
             accountName={accountName}
             ownerEmail={ownerEmail}
           />

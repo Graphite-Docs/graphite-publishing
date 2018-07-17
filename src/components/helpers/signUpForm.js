@@ -4,6 +4,7 @@ import {
 } from "blockstack";
 import axios from 'axios';
 const uuidv4 = require('uuid/v4');
+const { getPublicKeyFromPrivate } = require('blockstack');
 let fileName, saveObject, encryptionObject, date;
 
 export function handleAccountName(e) {
@@ -15,29 +16,44 @@ export function handleEmail(e) {
 }
 
 export function signUp() {
-  axios.get('http://worldclockapi.com/api/json/est/now')
-  .then(function (response) {
-    date = new Date(response.data.currentDateTime);
-  })
-  .then(() => {
-    const object = {};
-    object.accountName = this.state.accountName;
-    object.ownerEmail = this.state.ownerEmail;
-    object.ownerBlockstackId = loadUserData().username;
-    object.accountId = uuidv4();
-    object.signUpDate = date.toString();
-    object.onboardingComplete = true;
-    object.trialPeriod = true;
-    object.accountType = ""
-    object.paymentDue = false;
-    this.setState({
-      accountDetails: object
+  let re = /\S+@\S+\.\S+/;
+  if(re.test(this.state.ownerEmail) === true){
+    axios.get('http://worldclockapi.com/api/json/est/now')
+    .then(function (response) {
+      date = new Date(response.data.currentDateTime);
+    })
+    .then(() => {
+      const objectTwo = {};
+      objectTwo.isOwner = true;
+      objectTwo.id = uuidv4();
+      objectTwo.blockstackId = loadUserData().username;
+      objectTwo.key = getPublicKeyFromPrivate(loadUserData().appPrivateKey);
+      objectTwo.role = "Owner";
+      objectTwo.name = loadUserData().username;
+      objectTwo.inviteAccepted = true;
+      const object = {};
+      object.accountName = this.state.accountName;
+      object.ownerEmail = this.state.ownerEmail;
+      object.ownerBlockstackId = loadUserData().username;
+      object.accountId = uuidv4();
+      object.signUpDate = date.toString();
+      object.onboardingComplete = true;
+      object.trialPeriod = true;
+      object.accountType = ""
+      object.paymentDue = false;
+      object.team = [...this.state.team, objectTwo ]
+      this.setState({
+        accountDetails: object
+      });
+      setTimeout(this.saveAccountSignUp, 300)
+    })
+    .catch(function (error) {
+      console.log(error)
     });
-    setTimeout(this.saveAccountSignUp, 300)
-  })
-  .catch(function (error) {
-    console.log(error)
-  });
+  } else {
+    window.M.toast({html: '<span style="color: #e53935;">Please enter a valid email address.</span>'})
+  }
+
 }
 
 export function saveAccountSignUp() {

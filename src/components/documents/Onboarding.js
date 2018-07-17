@@ -22,6 +22,7 @@ export default class Onboarding extends Component {
         <div className="center-align onboarding-set-up">
           <h3><span><img className="small-logo circle" src={smallLogo} alt="Graphite logo" /></span>Start your 14-day free trial</h3>
           <div className="container sign-ip-form">
+          <button onClick={this.props.inviteInfo}>Do it</button>
           <div className="row">
               <form className="col s12">
                 <div className="row">

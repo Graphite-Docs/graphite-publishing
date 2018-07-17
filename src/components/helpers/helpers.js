@@ -1,7 +1,6 @@
 import {
   getFile,
   putFile,
-  loadUserData
 } from "blockstack";
 
 export function loadLogo() {
@@ -19,10 +18,11 @@ export function loadLogo() {
 }
 
 export function loadAccount() {
+  this.setState({ editing: false });
   getFile("account.json", {decrypt: true})
     .then((fileContents) => {
-      console.log(JSON.parse(fileContents || '{}'))
       if(fileContents){
+        console.log(JSON.parse(fileContents || '{}'))
         this.setState({
           accountName: JSON.parse(fileContents || '{}').accountName,
           ownerBlockstackId: JSON.parse(fileContents || '{}').ownerBlockstackId,
@@ -59,7 +59,13 @@ export function loadAccount() {
       }
     })
     .then(() => {
-      this.state.team.length > 0 ? this.checkForLatest() : loadUserData();
+      setTimeout(this.checkForLatest, 20000)
+    })
+    .then(() => {
+      if(this.state.accountName === "" || this.state.accountName === undefined) {
+        console.log("loading invite status");
+        this.loadInviteStatus();
+      }
     })
     .catch(error => {
       console.log(error);
@@ -80,4 +86,11 @@ export function clearAccountData() {
     .catch(error => {
       console.log(error);
     })
+}
+
+export function copyLink() {
+  var copyText = document.getElementById("copy");
+  copyText.select();
+  document.execCommand("Copy");
+  window.M.toast({html: "Link copied to clipboard"});
 }

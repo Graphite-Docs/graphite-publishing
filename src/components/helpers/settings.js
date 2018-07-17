@@ -32,7 +32,7 @@ export function accountDetails() {
         object.accountName = this.state.accountName;
       }
       object.ownerEmail = this.state.ownerEmail;
-      object.onwerBlockstackId = this.state.ownerBlockstackId;
+      object.ownerBlockstackId = this.state.ownerBlockstackId;
       object.accountId = this.state.accountId;
       object.signUpDate = this.state.signUpDate;
       object.paymentDue = this.state.paymentDue;
@@ -88,6 +88,7 @@ export function saveAccount() {
 }
 
 export function handleDrop(files) {
+  this.setState({ editing: true });
   var file = files[0]
   const reader = new FileReader();
   reader.onload = (event) => {

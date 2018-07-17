@@ -221,6 +221,13 @@ nav .nav-wrapper a {
   margin-bottom: -10px;
 }
 
+#copy span {
+  margin-left: 10px;
+}
+#copy span a i {
+  margin-bottom: -10px;
+}
+
 /* Posts */
 
 .posts {

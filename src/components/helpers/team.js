@@ -1,5 +1,4 @@
 import {
-  getFile,
   loadUserData,
   putFile
 } from 'blockstack';
@@ -25,54 +24,9 @@ export function handleTeammateRole(e) {
 }
 
 export function addTeammate() {
-  if(this.state.newTeammateId !== "") {
-    if(this.state.newTeammateName !== "" && this.state.newTeammateRole !== "") {
-      const options = { username: this.state.newTeammateId, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false }
-      getFile('key.json', options)
-        .then((file) => {
-          this.setState({ pubKey: JSON.parse(file)})
-        })
-          .then(() => {
-            const today = new Date();
-            const day = today.getDate();
-            const month = today.getMonth() + 1;
-            const year = today.getFullYear();
-            const object = {};
-            object.name = this.state.newTeammateName;
-            object.email = this.state.newTeammateEmail;
-            object.blockstackId = this.state.newTeammateId;
-            object.role = this.state.newTeammateRole;
-            object.id = uuidv4();
-            object.added = month + "/" + day + "/" + year;
-            object.key = this.state.pubKey;
-            this.setState({ team: [...this.state.team, object] });
-            window.M.toast({html: 'Teammate added'});
-            setTimeout(this.saveInvite, 300);
-          })
-          .catch(error => {
-            console.log(error)
-            const today = new Date();
-            const day = today.getDate();
-            const month = today.getMonth() + 1;
-            const year = today.getFullYear();
-            const object = {};
-            object.name = this.state.newTeammateName;
-            object.email = this.state.newTeammateEmail;
-            object.blockstackId = this.state.newTeammateId;
-            object.role = this.state.newTeammateRole;
-            object.id = uuidv4();
-            object.added = month + "/" + day + "/" + year;
-            object.key = "";
-            this.setState({ team: [...this.state.team, object] });
-            window.M.toast({html: 'Teammate added'});
-            setTimeout(this.saveInvite, 300);
-          });
-    } else {
-      let toastHTML = '<span style="color: #e53935;">Please check the name or role you entered.</span>';
-      window.M.toast({html: toastHTML});
-    }
-  } else {
-    if(this.state.newTeammateName !== "" && this.state.newTeammateRole !== "") {
+  if(this.state.newTeammateName !== "" && this.state.newTeammateRole !== "" && this.state.newTeammateEmail !== "") {
+    let re = /\S+@\S+\.\S+/;
+    if(re.test(this.state.newTeammateEmail) === true) {
       const today = new Date();
       const day = today.getDate();
       const month = today.getMonth() + 1;
@@ -85,14 +39,17 @@ export function addTeammate() {
       object.id = uuidv4();
       object.added = month + "/" + day + "/" + year;
       object.key = "";
+      object.inviteAccepted = false;
       object.inviteLink = 'https://publishing.graphitedocs.com/invites/?' + loadUserData().username + '?' + object.id;
       this.setState({ team: [...this.state.team, object], newTeammateId: object.id });
       window.M.toast({html: 'Teammate added'});
       setTimeout(this.saveInvite, 300);
     } else {
-      let toastHTML = '<span style="color: #e53935;">Please check the name or role you entered.</span>';
-      window.M.toast({html: toastHTML});
+      window.M.toast({html: '<span style="color: #e53935;">Please enter a valid email address.</span>'});
     }
+  } else {
+    let toastHTML = '<span style="color: #e53935;">Please make sure you have entered the required information.</span>';
+    window.M.toast({html: toastHTML});
   }
 }
 
@@ -115,23 +72,32 @@ export function updateTeammate(props) {
     function findObjectIndex(mate) {
         return mate.id === index;
     }
-    this.setState({teammateIndex: team.findIndex(findObjectIndex), newTeammateName: thisMate && thisMate.name, newTeammateId: thisMate && thisMate.blockstackId, newTeammateKey: thisMate && thisMate.key, id: thisMate && thisMate.id });
+    this.setState({
+      teammateIndex: team.findIndex(findObjectIndex),
+      newTeammateName: thisMate && thisMate.name,
+      inviteAccepted: thisMate && thisMate.inviteAccepted,
+      newTeammateEmail: thisMate && thisMate.email,
+      inviteDate: thisMate && thisMate.added,
+      newTeammateBlockstackId: thisMate && thisMate.blockstackId,
+      newTeammateKey: thisMate && thisMate.key,
+      newTeammateId: thisMate && thisMate.id,
+      inviter: thisMate && thisMate.inviter
+    });
     setTimeout(this.updateRole, 300);
 }
 
 export function updateRole() {
     const object = {};
-    const today = new Date();
-    const day = today.getDate();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
     const index = this.state.teammateIndex;
     object.name = this.state.newTeammateName;
     object.role = this.state.newTeammateRole;
-    object.added = month + "/" + day + "/" + year;
+    object.inviteAccepted = this.state.inviteAccepted;
+    object.email = this.state.newTeammateEmail;
+    object.added = this.state.inviteDate;
     object.blockstackId = this.state.newTeammateBlockstackId;
     object.key = this.state.newTeammateKey;
-    object.id = this.state.id;
+    object.id = this.state.newTeammateId;
+    object.inviter = this.state.inviter;
     const updatedTeam = update(this.state.team, {$splice: [[index, 1, object]]});
     this.setState({ team: updatedTeam });
     window.M.toast({html: 'Teammate updated'});
@@ -145,8 +111,8 @@ export function sendInvite() {
   object.from_email = "contact@graphitedocs.com";
   object.to_email = this.state.newTeammateEmail;
   object.subject = 'Join the ' + this.state.accountName + ' team';
-  object.content = "<div style='text-align:center;'><div style='background:#282828;width:100%;height:auto;margin-bottom:40px;'><h3 style='color:#ffffff;'>" + this.state.accountName + "</h3></div><h3>You've been invited to join the " + this.state.accountName + " team!</h3><p>Accept the invite by clicking the below link:</p><p>" + inviteLink + "</p></div>"
-  this.setState({ })
+  object.name = this.state.newTeammateName;
+  object.content = "<div style='text-align:center;'><div style='background:#282828;width:100%;height:auto;margin-bottom:40px;'><h3 style='color:#ffffff;'>" + this.state.accountName + "</h3></div><h3>You've been invited to join the " + this.state.accountName + " team!</h3><p>Accept the invite by clicking the below link:</p><br><a href=" + inviteLink + ">" + inviteLink + "</a></div>"
   if(this.state.newTeammateEmail) {
     axios.post("https://wt-3fc6875d06541ef8d0e9ab2dfcf85d23-0.sandbox.auth0-extend.com/teammate-invite", object)
       .then(function (response) {
@@ -168,6 +134,19 @@ export function saveInvite() {
   inviteFile.inviterKey = getPublicKeyFromPrivate(loadUserData().appPrivateKey);
   inviteFile.inviteDate = Date.now();
   inviteFile.accountName = this.state.accountName;
+  if(loadUserData().username === this.state.ownerBlockstackId) {
+    inviteFile.inviterEmail = this.state.ownerEmail;
+  } else {
+    let index = this.state.team.findIndex(x => x.blockstackId === loadUserData().username);
+    inviteFile.inviterEmail = this.state.team[index].email;
+  }
+  inviteFile.inviteeName = this.state.newTeammateName;
+  inviteFile.inviteeEmail = this.state.newTeammateEmail;
+  inviteFile.inviteeBlockstackId = this.state.newTeammateBlockstackId;
+  inviteFile.inviteeRole = this.state.newTeammateRole;
+  inviteFile.inviteeId = this.state.newTeammateId;
+  inviteFile.inviteeKey = "";
+  inviteFile.inviteAccepted = false;
   putFile(this.state.newTeammateId + '.json', JSON.stringify(inviteFile), {encrypt: false})
     .then(() => {
       this.sendInvite();
