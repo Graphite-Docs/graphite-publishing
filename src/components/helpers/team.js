@@ -8,7 +8,7 @@ const uuidv4 = require('uuid/v4');
 const { getPublicKeyFromPrivate } = require('blockstack');
 
 export function handleTeammateName(e) {
-  this.setState({ newTeammateName: e.target.value });
+  this.setState({ editing: true, newTeammateName: e.target.value });
 }
 
 export function handleTeammateId(e) {
@@ -16,11 +16,15 @@ export function handleTeammateId(e) {
 }
 
 export function handleTeammateEmail(e) {
-  this.setState({ newTeammateEmail: e.target.value });
+  this.setState({ editing: true, newTeammateEmail: e.target.value });
 }
 
 export function handleTeammateRole(e) {
-  this.setState({ newTeammateRole: e.target.value });
+  this.setState({ editing: true, newTeammateRole: e.target.value });
+}
+
+export function clearNewTeammate() {
+  this.setState({ editing: false, newTeammateName: "", newTeammateEmail: ""});
 }
 
 export function addTeammate() {

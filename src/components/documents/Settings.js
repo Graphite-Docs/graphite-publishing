@@ -165,7 +165,7 @@ export default class Settings extends Component {
 
                   </div>
                   <div className="modal-footer">
-                    <a className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                    <a onClick={this.props.clearDomainName} className="modal-close waves-effect waves-green btn-flat">Cancel</a>
                     <a onClick={this.props.accountDetails} className="modal-close waves-effect waves-green btn black">Create Domain</a>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default class Settings extends Component {
                     </div>
                   </div>
                   <div className="modal-footer">
-                    <a className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                    <a onClick={this.props.clearNewTeammate} className="modal-close waves-effect waves-green btn-flat">Cancel</a>
                     <a onClick={this.props.addTeammate} className="modal-close waves-effect waves-green btn black">Add Teammate</a>
                   </div>
                 </div>

@@ -8,9 +8,11 @@ export function loadDomain() {
   getFile("newDomain.json", {decrypt: true})
     .then((fileContents) => {
       if(fileContents) {
-        this.setState({newDomain: JSON.parse(fileContents || '{}')})
+        this.setState({newDomain: JSON.parse(fileContents || '{}')});
+        setTimeout(this.accountDetails, 300)
       } else {
-        this.setState({newDomain: ""})
+        this.setState({newDomain: ""});
+        setTimeout(this.accountDetails, 300)
       }
     })
     .catch(error => {
@@ -19,7 +21,7 @@ export function loadDomain() {
 }
 
 export function handleNewDomain(e) {
-  this.setState({ newDomain: e.target.value });
+  this.setState({ editing: true, newDomain: e.target.value });
 }
 
 export function accountDetails() {
@@ -122,11 +124,16 @@ export function saveLogo() {
 }
 
 export function removeLogo() {
-  this.setState({ logo: "" });
+  this.setState({ editing: true, logo: "" });
   setTimeout(this.saveLogo, 300);
 }
 
+export function clearDomainName() {
+  this.setState({ editing: false, newDomain: "" });
+}
+
 export function removeDomain() {
+  this.setState({ editing: true });
   putFile("newDomain.json", JSON.stringify(""), {encrypt: true})
     .then(() => {
       this.loadDomain();
@@ -137,9 +144,9 @@ export function removeDomain() {
 }
 
 export function newAccountName(e) {
-  this.setState({newAccountName: e.target.value});
+  this.setState({ editing: true, newAccountName: e.target.value});
 }
 
 export function clearAccountName() {
-  this.setState({ newAccountName: "" });
+  this.setState({ editing: false, newAccountName: "" });
 }

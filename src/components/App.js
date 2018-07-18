@@ -17,7 +17,9 @@ import {
   newAccountName,
   clearAccountName,
   handleNewDomain,
-  removeDomain
+  removeDomain,
+  loadDomain,
+  clearDomainName
 } from './helpers/settings';
 import {
   loadAccount,
@@ -54,7 +56,8 @@ import {
   updateTeammate,
   updateRole,
   saveInvite,
-  sendInvite
+  sendInvite,
+  clearNewTeammate
 } from './helpers/team';
 import {
   saveToTeam,
@@ -62,6 +65,9 @@ import {
   loadBasicInviteInfo,
   setLoadedFile
 } from './helpers/teamsync'
+import {
+  handleCodeChanges
+} from './helpers/design';
 import AppPage from './AppPage';
 import Main from './documents/Main';
 import Posts from './documents/Posts';
@@ -72,6 +78,7 @@ import Onboarding from './documents/Onboarding';
 import Payment from './documents/Payment';
 import Invites from './documents/Invites';
 import Acceptances from './documents/Acceptances';
+import Design from './documents/Design';
 const Config = require('Config');
 
 export default class App extends Component {
@@ -119,7 +126,8 @@ export default class App extends Component {
       inviteeRole: "",
       inviterEmail: "",
       inviteeId: "",
-      sendToInviter: {}
+      sendToInviter: {},
+      pageHTML: ""
     }
   }
 
@@ -169,6 +177,10 @@ export default class App extends Component {
     this.loadBasicInviteInfo = loadBasicInviteInfo.bind(this);
     this.inviteInfo = inviteInfo.bind(this);
     this.setLoadedFile = setLoadedFile.bind(this);
+    this.loadDomain = loadDomain.bind(this);
+    this.clearDomainName = clearDomainName.bind(this);
+    this.clearNewTeammate = clearNewTeammate.bind(this);
+    this.handleCodeChanges = handleCodeChanges.bind(this);
     isUserSignedIn() ?  this.loadAccount() : loadUserData();
   }
 
@@ -188,8 +200,8 @@ export default class App extends Component {
   }
 
   render() {
-    const { inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing } = this.state;
-
+    const { pageHTML, inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing } = this.state;
+    console.log(editing);
     if(onboardingComplete && !paymentDue) {
       return (
         <div>
@@ -223,6 +235,8 @@ export default class App extends Component {
                   teammateToDelete={this.teammateToDelete}
                   updateTeammate={this.updateTeammate}
                   copyLink={this.copyLink}
+                  clearDomainName={this.clearDomainName}
+                  clearNewTeammate={this.clearNewTeammate}
                   newTeammateId={newTeammateId}
                   newTeammateName={newTeammateName}
                   newTeammateRole={newTeammateRole}
@@ -237,6 +251,12 @@ export default class App extends Component {
                   accountId={accountId}
                   editing={editing}
                   />}
+              />
+              <Route exact path="/design" render={(props) =>
+                <Design {...props}
+                  handleCodeChanges={this.handleCodeChanges}
+                  pageHTML={pageHTML}
+                />}
               />
               <Route exact path="/acceptances" render={(props) =>
                 <Acceptances {...props}
