@@ -8,40 +8,25 @@ const { encryptECIES } = require('blockstack/lib/encryption');
 const { decryptECIES } = require('blockstack/lib/encryption');
 
 export function checkForLatest() {
-  console.log("Checking...")
+  this.setState({ checking: true });
   console.log("Polling teammates...")
     if(this.state.editing === false) {
       const { team, count } = this.state;
-      console.log("Team length:");
-      console.log(team.length);
-      console.log("Current count:");
-      console.log(count);
       console.log("Team length greater than count?");
       console.log(team.length > count);
       if(team.length > count) {
         let user = team[count].blockstackId;
         const options = { username: user, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false };
         const privateKey = loadUserData().appPrivateKey;
-
         if(loadUserData().username !== user) {
-          console.log("File name to load: ");
-          console.log(getPublicKeyFromPrivate(loadUserData().appPrivateKey) + '.json');
-          console.log("Loading from: ");
-          console.log(team[count].name);
+          console.log('Checking file from: ' + team[count].name);
           const file = getPublicKeyFromPrivate(loadUserData().appPrivateKey) + '.json';
           getFile(file, options)
             .then((fileContents) => {
               if(fileContents){
-                console.log('file loaded number ' + count);
-                console.log("Last Updated: ");
-                console.log(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated);
-                console.log("Compared to my last updated: ");
-                console.log(this.state.lastUpdated);
-                console.log("Teammate's file newer?");
-                console.log(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > this.state.lastUpdated);
+                console.log('Newer file? ' + JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > this.state.lastUpdated);
                 if(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > this.state.lastUpdated) {
-                  console.log("Setting teammate with the most recent file: ");
-                  console.log(user);
+                  console.log('Setting teammate with the most recent file: ' + user);
                   this.setState({
                     teamMateMostRecent: user,
                     count: this.state.count + 1
@@ -69,7 +54,13 @@ export function checkForLatest() {
         }
       } else {
         if(this.state.inviter === "" || this.state.inviter === undefined) {
-          this.inviteInfo();
+          let teamIds = this.state.team.map(a => a.blockstackId);
+          console.log(teamIds)
+          if(teamIds.includes(loadUserData().username)) {
+            this.setLoadedFile();
+          } else {
+            this.loadInviteStatus();
+          }
         } else {
           console.log("All done.")
           this.setLoadedFile();
@@ -77,18 +68,15 @@ export function checkForLatest() {
       }
 
     } else {
-      setTimeout(this.checkForLatest, 10000);
+      setTimeout(this.checkForLatest, 1000);
     }
 }
 
 export function setLoadedFile() {
-  console.log("trying it")
   const { teamMateMostRecent } = this.state;
   this.setState({ count: 0 });
-  console.log(teamMateMostRecent !== "");
   if(teamMateMostRecent !== "") {
-    console.log("There is a more recent file from: ");
-    console.log(teamMateMostRecent);
+    console.log('There is a more recent file from: ' + teamMateMostRecent);
     let user = teamMateMostRecent;
     const options = { username: user, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false };
     const privateKey = loadUserData().appPrivateKey;
@@ -96,8 +84,6 @@ export function setLoadedFile() {
     getFile(file, options)
       .then((fileContents) => {
         if(fileContents){
-          console.log("Loading file from: ");
-          console.log(teamMateMostRecent);
           this.setState({
             accountName: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).accountName,
             ownerBlockstackId: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).ownerBlockstackId,
@@ -112,22 +98,20 @@ export function setLoadedFile() {
             newDomain: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).newDomain,
             team: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).team || [],
             integrations: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).integrations || [],
-            lastUpdated: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated
+            lastUpdated: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated,
+            checking: false,
           })
           setTimeout(this.accountDetails, 300);
         } else {
           console.log('No file found');
         }
       })
-      // .then(() => {
-      //   console.log("All done!")
-      //   setTimeout(this.checkForLatest, 10000);
-      // })
       .catch(error => {
         console.log(error);
       })
   } else {
-    this.accountDetails();
+    this.setState({ checking: false })
+    setTimeout(this.accountDetails, 300)
   }
 }
 

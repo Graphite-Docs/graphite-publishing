@@ -19,7 +19,7 @@ import {
   handleNewDomain,
   removeDomain,
   loadDomain,
-  clearDomainName
+  clearDomainName,
 } from './helpers/settings';
 import {
   loadAccount,
@@ -127,7 +127,8 @@ export default class App extends Component {
       inviterEmail: "",
       inviteeId: "",
       sendToInviter: {},
-      pageHTML: ""
+      pageHTML: "",
+      checking: false
     }
   }
 
@@ -187,11 +188,15 @@ export default class App extends Component {
   componentDidMount() {
     console.log('Build Date: ', Config.BUILD_DATE_STAMP)
     console.log('Build Time: ', Config.BUILD_TIME_STAMP)
+    if(isUserSignedIn()) {
+      setTimeout(this.checkForLatest, 1000);
+    }
   }
 
   handleSignIn(e) {
+    const origin = window.location.origin;
     e.preventDefault();
-    redirectToSignIn();
+    redirectToSignIn(origin, origin + '/manifest.json', ['store_write', 'publish_data'])
   }
 
   handleSignOut(e) {
@@ -201,7 +206,6 @@ export default class App extends Component {
 
   render() {
     const { pageHTML, inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing } = this.state;
-    console.log(editing);
     if(onboardingComplete && !paymentDue) {
       return (
         <div>

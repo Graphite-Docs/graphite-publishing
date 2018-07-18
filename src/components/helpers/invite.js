@@ -8,13 +8,12 @@ const { encryptECIES } = require('blockstack/lib/encryption');
 const { getPublicKeyFromPrivate } = require('blockstack');
 
 export function loadInviteStatus() {
-  if(this.state.accountName === "" || this.state.accountName === undefined) {
+  console.log("Checking invite status");
     getFile('inviteStatus.json', {decrypt: true})
       .then((fileContents) => {
         if(fileContents) {
           this.setState({
-            // inviteAccepted: JSON.parse(fileContents || '{}').inviteAccepted,
-            inviteAccepted: false,
+            inviteAccepted: JSON.parse(fileContents || '{}').inviteAccepted,
             accountName: JSON.parse(fileContents || '{}').accountName,
             inviter: JSON.parse(fileContents || '{}').inviter,
             ownerEmail: JSON.parse(fileContents || '{}').ownerEmail
@@ -30,12 +29,17 @@ export function loadInviteStatus() {
       .then(() => {
         if(this.state.inviteAccepted === false) {
           this.loadInvite();
+        } else {
+          if(this.state.inviter !== "" && this.state.inviter !== undefined){
+            this.loadBasicInviteInfo();
+          } else {
+            this.setLoadedFile();
+          }  
         }
       })
       .catch(error => {
         console.log(error);
       })
-  }
 }
 
 export function loadInvite() {

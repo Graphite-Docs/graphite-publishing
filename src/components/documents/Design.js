@@ -16,8 +16,9 @@ export default class Design extends Component {
         <AceEditor
           mode="html"
           theme="twilight"
-          name="editor"
+          name="html-editor"
           onChange={this.props.handleCodeChanges}
+          value={this.props.pageHTML}
         />
       </div>
     );

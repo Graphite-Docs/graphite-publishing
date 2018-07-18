@@ -233,3 +233,9 @@ nav .nav-wrapper a {
 .posts {
   margin-top: 75px;
 }
+
+/* Design */
+
+#html-editor {
+  width: 100%!important;
+}

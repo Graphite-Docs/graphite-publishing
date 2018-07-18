@@ -18,7 +18,7 @@ export function loadLogo() {
 }
 
 export function loadAccount() {
-  this.setState({ editing: false });
+  this.setState({ editing: false, count: 0 });
   getFile("account.json", {decrypt: true})
     .then((fileContents) => {
       if(fileContents){
@@ -57,9 +57,6 @@ export function loadAccount() {
           lastUpdated: ""
         });
       }
-    })
-    .then(() => {
-      setTimeout(this.checkForLatest, 20000)
     })
     .then(() => {
       if(this.state.accountName === "" || this.state.accountName === undefined) {
