@@ -53,6 +53,15 @@ a:hover {
   border-bottom: 1px solid #282828!important;
 }
 
+.tap-target {
+  color: #fff;
+  background-color: #282828;
+  a {
+    color: #fff;
+    text-decoration:underline;
+  }
+}
+
 /* Sign-In Page */
 
 .sign-in-page {
@@ -137,6 +146,28 @@ nav .nav-wrapper a {
 .searchinput:active, .searchinput:focus {
   border: none!important;
   box-shadow: none!important;
+}
+
+.filter {
+  font-size: 18px!important;
+  margin-left: 10px;
+}
+
+.filter-icon {
+  margin-bottom: -5px;
+}
+
+.searchinput::-webkit-input-placeholder {
+  font-size: 16px;
+}
+.searchinput::-moz-placeholder {
+  font-size: 16px;
+}
+.searchinput:-ms-input-placeholder {
+  font-size: 16px;
+}
+.searchinput::placeholder {
+  font-size: 16px;
 }
 
 /* Account Settings */
@@ -234,8 +265,42 @@ nav .nav-wrapper a {
   margin-top: 75px;
 }
 
+/* Single Post */
+.note-editable {
+  max-width: 85%;
+  height: 100%;
+  margin: auto;
+}
+
+.note-statusbar {
+  display: none;
+}
+
+.nav-wrapper form .input-field {
+  margin-left: 75px;
+}
+
 /* Design */
 
 #html-editor {
   width: 100%!important;
+}
+
+.previewMainParent .modal {
+  max-height: 99vh!important;
+}
+
+#previewMain {
+  height: 99vh!important;
+  width: 100%!important;
+  top: 1%!important;
+}
+
+#previewFooter {
+  position: relative!important;
+  top: 70%!important;
+}
+
+.previewModalClose {
+  margin-bottom: 50px;
 }

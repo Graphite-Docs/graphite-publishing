@@ -3,6 +3,15 @@ import {
   putFile,
 } from "blockstack";
 
+export function getDate() {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const monthDayYear = month + "/" + day + "/" + year;
+  return monthDayYear
+}
+
 export function loadLogo() {
   getFile("logo.json", {decrypt: true})
    .then((fileContents) => {

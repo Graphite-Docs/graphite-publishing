@@ -24,8 +24,23 @@ import {
 import {
   loadAccount,
   clearAccountData,
-  copyLink
+  copyLink,
+  getDate
 } from './helpers/helpers';
+import {
+  newPost,
+  savePostsCollection,
+  saveNewSinglePost,
+  loadMyPublishedPosts,
+  loadPublishedPosts
+} from './helpers/posts';
+import {
+  loadPost,
+  loadSingle,
+  handleTitleChange,
+  handleSavePost,
+  handleContentChange
+} from './helpers/singlepost';
 import {
   loadInvite,
   loadInviteStatus,
@@ -45,6 +60,7 @@ import {
   signUp,
   postMain,
   saveAccountSignUp,
+  loadDb
 } from './helpers/signUpForm';
 import {
   handleTeammateId,
@@ -66,7 +82,9 @@ import {
   setLoadedFile
 } from './helpers/teamsync'
 import {
-  handleCodeChanges
+  handleCodeChanges,
+  saveMainHtml,
+  loadMainHtml
 } from './helpers/design';
 import AppPage from './AppPage';
 import Main from './documents/Main';
@@ -79,6 +97,8 @@ import Payment from './documents/Payment';
 import Invites from './documents/Invites';
 import Acceptances from './documents/Acceptances';
 import Design from './documents/Design';
+import Publication from './Publication';
+import SinglePost from './documents/SinglePost';
 const Config = require('Config');
 
 export default class App extends Component {
@@ -128,7 +148,18 @@ export default class App extends Component {
       inviteeId: "",
       sendToInviter: {},
       pageHTML: "",
-      checking: false
+      checking: false,
+      mainPage: {},
+      posts: [],
+      myPosts: [],
+      singlePost: {},
+      filteredPosts: [],
+      appliedFilter: false,
+      tempDocId: "",
+      content: "",
+      title: "",
+      unsavedChanges: false,
+      createdDate: ""
     }
   }
 
@@ -182,7 +213,22 @@ export default class App extends Component {
     this.clearDomainName = clearDomainName.bind(this);
     this.clearNewTeammate = clearNewTeammate.bind(this);
     this.handleCodeChanges = handleCodeChanges.bind(this);
+    this.saveMainHtml = saveMainHtml.bind(this);
+    this.loadMainHtml = loadMainHtml.bind(this);
+    this.loadDb = loadDb.bind(this);
+    this.getDate = getDate.bind(this);
+    this.newPost = newPost.bind(this);
+    this.savePostsCollection = savePostsCollection.bind(this);
+    this.saveNewSinglePost = saveNewSinglePost.bind(this);
+    this.loadMyPublishedPosts = loadMyPublishedPosts.bind(this);
+    this.loadPublishedPosts = loadPublishedPosts.bind(this);
+    this.loadPost = loadPost.bind(this);
+    this.loadSingle = loadSingle.bind(this);
+    this.handleTitleChange = handleTitleChange.bind(this);
+    this.handleSavePost = handleSavePost.bind(this);
+    this.handleContentChange = handleContentChange.bind(this);
     isUserSignedIn() ?  this.loadAccount() : loadUserData();
+    isUserSignedIn() ? this.loadMyPublishedPosts() : loadUserData();
   }
 
   componentDidMount() {
@@ -205,21 +251,45 @@ export default class App extends Component {
   }
 
   render() {
-    const { pageHTML, inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete, paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing } = this.state;
+    const { pageHTML, inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete,
+            paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing, posts, filteredPosts, appliedFilter, tempDocId,
+            myPosts, title, content, unsavedChanges } = this.state;
     if(onboardingComplete && !paymentDue) {
       return (
         <div>
         <BrowserRouter>
             <div className="main-container">
-              <Header
+              <Route exact path="/" render={(props) =>
+                <AppPage {...props}
+                newPost={this.newPost}
+                loadMyPublishedPosts={this.loadMyPublishedPosts}
                 handleSignOut={this.handleSignOut}
+                posts={posts}
+                filteredPosts={filteredPosts}
+                appliedFilter={appliedFilter}
+                tempDocId={tempDocId}
+                myPosts={myPosts}
                 onboardingComplete={onboardingComplete}
                 logo={logo}
                 accountName={accountName}
-               />
-              <Route exact path="/" component={AppPage} />
+                />}
+              />
               <Route exact path="/documents" component={Main} />
-              <Route exact path="/posts" component={Posts} />
+              <Route exact path="/posts"  render={(props) =>
+                <Posts {...props}
+                  newPost={this.newPost}
+                  loadMyPublishedPosts={this.loadMyPublishedPosts}
+                  handleSignOut={this.handleSignOut}
+                  posts={posts}
+                  filteredPosts={filteredPosts}
+                  appliedFilter={appliedFilter}
+                  tempDocId={tempDocId}
+                  myPosts={myPosts}
+                  onboardingComplete={onboardingComplete}
+                  logo={logo}
+                  accountName={accountName}
+                />}
+              />
               <Route exact path="/settings"
                 render={(props) =>
                   <Settings {...props}
@@ -241,6 +311,7 @@ export default class App extends Component {
                   copyLink={this.copyLink}
                   clearDomainName={this.clearDomainName}
                   clearNewTeammate={this.clearNewTeammate}
+                  handleSignOut={this.handleSignOut}
                   newTeammateId={newTeammateId}
                   newTeammateName={newTeammateName}
                   newTeammateRole={newTeammateRole}
@@ -254,17 +325,45 @@ export default class App extends Component {
                   ownerBlockstackId={ownerBlockstackId}
                   accountId={accountId}
                   editing={editing}
+                  onboardingComplete={onboardingComplete}
                   />}
               />
               <Route exact path="/design" render={(props) =>
                 <Design {...props}
                   handleCodeChanges={this.handleCodeChanges}
+                  saveMainHtml={this.saveMainHtml}
+                  loadMainHtml={this.loadMainHtml}
+                  handleSignOut={this.handleSignOut}
                   pageHTML={pageHTML}
+                  team={team}
+                  onboardingComplete={onboardingComplete}
+                  logo={logo}
+                  accountName={accountName}
                 />}
               />
               <Route exact path="/acceptances" render={(props) =>
                 <Acceptances {...props}
                   confirmAcceptance={this.confirmAcceptance}
+                />}
+              />
+              <Route exact path="/sites/:id" render={(props) =>
+                <Publication
+                  accountId={accountId}
+                  pageHTML={pageHTML}
+                  loadMainHtml={this.loadMainHtml}
+                  handleContentChange={this.handleContentChange}
+                />}
+              />
+              <Route exact path="/post/:id" render={(props) =>
+                <SinglePost {...props}
+                  loadPost={this.loadPost}
+                  loadMyPublishedPosts={this.loadMyPublishedPosts}
+                  handleTitleChange={this.handleTitleChange}
+                  handleSavePost={this.handleSavePost}
+                  handleContentChange={this.handleContentChange}
+                  title={title}
+                  content={content}
+                  unsavedChanges={unsavedChanges}
                 />}
               />
               <Route exact path="/success" component={PaymentSuccess} />

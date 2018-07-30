@@ -38,7 +38,7 @@ export default class Invites extends Component {
           :
           <div className="container payment-wrapper">
             <div className="center-align">
-              <h3>You have been invite to join the <u>{this.props.accountName}</u> team.</h3>
+              <h3>You have been invited to join the <u>{this.props.accountName}</u> team.</h3>
               <p>Click below to accept the invite. You will have access to write, but until the person who invited you confirms the invite acceptance, you will not be able to interact with the team.</p>
               <p>Read more about Graphite Publishing's{/*'*/} security <a>here</a>.</p>
               <button onClick={this.props.acceptInvite} className="btn black">Accept Invite</button>

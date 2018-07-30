@@ -14,7 +14,7 @@ export default class Header extends Component {
       const { logo, accountName, onboardingComplete } = this.props;
       return (
         <div>
-          <nav>
+          <nav className="main-header">
             <div className="nav-wrapper">
               {onboardingComplete ? <h3><a href="/" className="brand-logo">{logo !== "" && logo !== undefined ? <img src={logo} alt="Account logo" /> : accountName}</a></h3> : <div className="hide" />}
               <a data-target="mobile-demo" className="sidenav-trigger"><i className="material-icons">menu</i></a>

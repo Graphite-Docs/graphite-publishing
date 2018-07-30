@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Dropzone from 'react-dropzone';
+import Header from '../Header';
 
 export default class Settings extends Component {
 
@@ -10,7 +11,7 @@ export default class Settings extends Component {
   }
 
   render() {
-    const { logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, accountId } = this.props;
+    const { onboardingComplete, logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, accountId } = this.props;
     let originalDomain;
     if(accountName !== undefined && accountName !== "") {
       originalDomain = "https://publishing.graphitedocs.com/sites/" + accountId;
@@ -24,6 +25,12 @@ export default class Settings extends Component {
     const dropzoneStyle = {};
     return (
       <div>
+      <Header
+        handleSignOut={this.props.handleSignOut}
+        onboardingComplete={onboardingComplete}
+        logo={logo}
+        accountName={accountName}
+       />
       <div className="container">
         <div className="center-align">
           <div className="row account-settings">
