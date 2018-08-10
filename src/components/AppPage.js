@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Signin from "./Signin";
+import Header from './Header';
 import {
   isSignInPending,
   isUserSignedIn,
@@ -40,6 +41,7 @@ export default class AppPage extends Component {
   }
 
   render() {
+    const { onboardingComplete, logo, accountName } = this.props;
 
     return (
       <div>
@@ -48,7 +50,18 @@ export default class AppPage extends Component {
             {!isUserSignedIn() ? (
                 <Signin handleSignIn={this.handleSignIn} />
               ) : (
-                <Posts />
+                <div>
+                <Header
+                  handleSignOut={this.props.handleSignOut}
+                  onboardingComplete={onboardingComplete}
+                  logo={logo}
+                  accountName={accountName}
+                 />
+                <Posts
+                  newPost={this.props.newPost}
+                  posts={this.props.posts}
+                />
+                </div>
               )
             }
           </div>

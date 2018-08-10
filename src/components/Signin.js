@@ -5,8 +5,9 @@ import {
 
 export default class Signin extends Component {
   handleSignIn(e) {
+    const origin = window.location.origin;
     e.preventDefault();
-    redirectToSignIn();
+    redirectToSignIn(origin, origin + '/manifest.json', ['store_write', 'publish_data'])
   }
 
   render() {

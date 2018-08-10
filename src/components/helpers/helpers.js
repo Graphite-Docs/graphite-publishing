@@ -3,6 +3,15 @@ import {
   putFile,
 } from "blockstack";
 
+export function getDate() {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const monthDayYear = month + "/" + day + "/" + year;
+  return monthDayYear
+}
+
 export function loadLogo() {
   getFile("logo.json", {decrypt: true})
    .then((fileContents) => {
@@ -18,10 +27,13 @@ export function loadLogo() {
 }
 
 export function loadAccount() {
+  this.setState({ editing: false, count: 0 });
   getFile("account.json", {decrypt: true})
     .then((fileContents) => {
-      console.log(JSON.parse(fileContents || '{}'))
       if(fileContents){
+        if(this.state.logging === true) {
+          console.log(JSON.parse(fileContents || '{}'))
+        }
         this.setState({
           accountName: JSON.parse(fileContents || '{}').accountName,
           ownerBlockstackId: JSON.parse(fileContents || '{}').ownerBlockstackId,
@@ -32,10 +44,10 @@ export function loadAccount() {
           accountType: JSON.parse(fileContents || '{}').accountType,
           paymentDue: JSON.parse(fileContents || '{}').paymentDue,
           onboardingComplete: JSON.parse(fileContents || '{}').onboardingComplete,
-          logo: JSON.parse(fileContents || '{}').logo.link,
+          logo: JSON.parse(fileContents || '{}').logo,
           newDomain: JSON.parse(fileContents || '{}').newDomain,
-          team: JSON.parse(fileContents || '{}').team,
-          integrations: JSON.parse(fileContents || '{}').integrations,
+          team: JSON.parse(fileContents || '{}').team || [],
+          integrations: JSON.parse(fileContents || '{}').integrations || [],
           lastUpdated: JSON.parse(fileContents || '{}').lastUpdated
         })
       } else {
@@ -57,6 +69,15 @@ export function loadAccount() {
         });
       }
     })
+    .then(() => {
+      if(this.state.accountName === "" || this.state.accountName === undefined) {
+        console.log("loading invite status");
+        this.loadInviteStatus();
+      }
+    })
+    .then(() => {
+      this.loadMyPublishedPosts();
+    })
     .catch(error => {
       console.log(error);
     })
@@ -76,4 +97,13 @@ export function clearAccountData() {
     .catch(error => {
       console.log(error);
     })
+
+  this.deleteAllPosts();
+}
+
+export function copyLink() {
+  var copyText = document.getElementById("copy");
+  copyText.select();
+  document.execCommand("Copy");
+  window.M.toast({html: "Link copied to clipboard"});
 }
