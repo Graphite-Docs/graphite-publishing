@@ -5,6 +5,7 @@ import {
 const { decryptECIES } = require('blockstack/lib/encryption');
 
 export function confirmAcceptance() {
+  this.setState({ loading: true });
   let mainLink = window.location.href;
   let userToLoadFrom = mainLink.split('?')[1];
   let fileRoot = mainLink.split('?')[2];
@@ -24,7 +25,8 @@ export function confirmAcceptance() {
         newTeammateBlockstackId: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteeBlockstackId,
         inviteDate: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteDate,
         inviter: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviter,
-        inviteAccepted: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteAccepted
+        inviteAccepted: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteAccepted,
+        confirmationDone: true
       })
     })
     .then(() => {
@@ -37,6 +39,9 @@ export function confirmAcceptance() {
       this.setState({
         teammateIndex: team.findIndex(findObjectIndex)});
       setTimeout(this.updateRole, 300);
+    })
+    .then(() => {
+      this.savePostCollectionToTeam();
     })
     .catch(error => {
       console.log(error);

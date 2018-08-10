@@ -2,15 +2,12 @@ import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 import Header from '../Header';
 
+
 export default class Posts extends Component {
 
   componentDidMount() {
+    // this.props.loadMyPublishedPosts();
     window.$('.tap-target').tapTarget();
-    if(this.props.posts === undefined || this.props.posts.length < 1) {
-
-      window.$('.tap-target').tapTarget('open');
-      setTimeout(this.close, 3000)
-    }
   }
 
   close() {
@@ -18,17 +15,20 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { posts, appliedFilter, onboardingComplete, accountName, logo } = this.props;
-    let postsA;
-    posts === undefined || posts === null ? postsA = [] : postsA = posts;
+    const { onboardingComplete, accountName, logo, posts, appliedFilter, postLoadingDone } = this.props;
+    if(postLoadingDone === true && posts.length < 1) {
+      window.$('.tap-target').tapTarget('open');
+      setTimeout(this.close, 3000)
+    }
       return (
         <div>
-        <Header
-          handleSignOut={this.props.handleSignOut}
-          onboardingComplete={onboardingComplete}
-          logo={logo}
-          accountName={accountName}
-         />
+          <Header
+            handleSignOut={this.props.handleSignOut}
+            clearAccountData={this.clearAccountData}
+            onboardingComplete={onboardingComplete}
+            accountName={accountName}
+            logo={logo}
+          />
           <div className="posts">
 
               <div className="container project-pane">
@@ -36,7 +36,7 @@ export default class Posts extends Component {
                 <div>
                 <div className="row">
                   <div className="col s12 m6">
-                    <h5>Posts ({postsA.length})
+                    <h5>Posts ({posts.length})
                       {appliedFilter === false ? <span className="filter"><a data-activates="slide-out" className="menu-button-collapse button-collapse">Filter</a></span> : <span className="hide"><a data-activates="slide-out" className="menu-button-collapse button-collapse">Filter<i className="filter-icon material-icons">arrow_drop_down</i></a></span>}
                       {appliedFilter === true ? <span className="filter"><a className="card filter-applied" onClick={() => this.setState({ appliedFilter: false, filteredValue: this.state.value})}>Clear</a></span> : <div />}
                     </h5>
@@ -79,7 +79,7 @@ export default class Posts extends Component {
                     </thead>
                     <tbody>
                   {
-                    postsA.map(post => {
+                    posts.map(post => {
                       let statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
                     return(
                       <tr key={post.id}>

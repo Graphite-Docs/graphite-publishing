@@ -16,7 +16,8 @@ export function loadInviteStatus() {
             inviteAccepted: JSON.parse(fileContents || '{}').inviteAccepted,
             accountName: JSON.parse(fileContents || '{}').accountName,
             inviter: JSON.parse(fileContents || '{}').inviter,
-            ownerEmail: JSON.parse(fileContents || '{}').ownerEmail
+            ownerEmail: JSON.parse(fileContents || '{}').ownerEmail,
+            onboardingComplete: true //need to programatically set this
           })
         } else {
           this.setState({
@@ -31,10 +32,11 @@ export function loadInviteStatus() {
           this.loadInvite();
         } else {
           if(this.state.inviter !== "" && this.state.inviter !== undefined){
+            console.log(this.state.inviter);
             this.loadBasicInviteInfo();
           } else {
             this.setLoadedFile();
-          }  
+          }
         }
       })
       .catch(error => {
@@ -43,6 +45,7 @@ export function loadInviteStatus() {
 }
 
 export function loadInvite() {
+  console.log("loading invite")
   let mainLink = window.location.href;
   let userToLoadFrom = mainLink.split('?')[1];
   let fileRoot = mainLink.split('?')[2];
@@ -62,7 +65,7 @@ export function loadInvite() {
         inviteeId: JSON.parse(fileContents || '{}').inviteeId,
         inviteeKey: getPublicKeyFromPrivate(loadUserData().appPrivateKey),
         inviterEmail: JSON.parse(fileContents || '{}').inviterEmail,
-        inviteAccepted: JSON.parse(fileContents || '{}').inviteAccepted
+        inviteAccepted: JSON.parse(fileContents || '{}').inviteAccepted,
       })
     })
     .then(() => {
@@ -97,6 +100,7 @@ export function inviteInfo() {
 }
 
 export function acceptInvite() {
+  this.setState({ loading: true });
   const object = {};
   object.inviteAccepted = true;
   object.accountName = this.state.accountName;
@@ -108,6 +112,7 @@ export function acceptInvite() {
   object.inviteeRole = this.state.inviteeRole;
   object.inviteeId = this.state.inviteeId;
   object.inviteeKey = getPublicKeyFromPrivate(loadUserData().appPrivateKey);
+  object.onboardingComplete = true;
   this.setState({ inviteDetails: object });
   putFile('inviteStatus.json', JSON.stringify(object), {encrypt: true})
     .then(() => {

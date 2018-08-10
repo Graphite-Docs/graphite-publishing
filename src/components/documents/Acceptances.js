@@ -10,7 +10,7 @@ import Signin from '../Signin';
 
 export default class Acceptances extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     if (isSignInPending()) {
       handlePendingSignIn().then((userData) => {
         window.location = window.location.origin;
@@ -30,6 +30,9 @@ export default class Acceptances extends Component {
   }
 
   render() {
+    const { loading, confirmationDone } = this.props;
+    let mainLink = window.location.href;
+    let userToLoadFrom = mainLink.split('?')[1];
     return (
       <div>
         { !isUserSignedIn() ?
@@ -37,8 +40,20 @@ export default class Acceptances extends Component {
           :
           <div className="container payment-wrapper">
             <div className="center-align">
-              <h3>Confirm invite acceptance</h3>
-              <button onClick={this.props.confirmAcceptance} className="btn black">Confirm Invite Acceptance</button>
+              {
+                confirmationDone === false ?
+                <div>
+                  <h3>Confirm invite acceptance</h3>
+                  <h5>Invite accepted by: <strong>{userToLoadFrom}</strong></h5>
+                  <button onClick={this.props.confirmAcceptance} className="btn black">{loading === true ? <span className="animated-dots">Confirming</span> : <span>Confirm Invite Acceptance</span>}</button>
+                </div>
+                :
+                <div>
+                  <h3>Teammate confirmed!</h3>
+                  <a href='/settings'><button className="btn black">Go to Settings</button></a>
+                </div>
+              }
+
             </div>
           </div>
         }

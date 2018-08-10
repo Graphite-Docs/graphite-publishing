@@ -16,6 +16,7 @@ export function handleEmail(e) {
 }
 
 export function signUp() {
+  this.setState({ loading: true });
   let re = /\S+@\S+\.\S+/;
   if(re.test(this.state.ownerEmail) === true){
     axios.get('http://worldclockapi.com/api/json/est/now')

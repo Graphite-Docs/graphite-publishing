@@ -13,6 +13,8 @@ export default class Onboarding extends Component {
 
 
   render() {
+    const { loading } = this.props;
+
     if(!isUserSignedIn()) {
       return (
         <Signin handleSignIn={this.handleSignIn} />
@@ -22,7 +24,7 @@ export default class Onboarding extends Component {
         <div className="center-align onboarding-set-up">
           <h3><span><img className="small-logo circle" src={smallLogo} alt="Graphite logo" /></span>Start your 14-day free trial</h3>
           <div className="container sign-ip-form">
-          <button onClick={this.props.inviteInfo}>Do it</button>
+          {/*<button onClick={this.props.inviteInfo}>Do it</button>*/}
           <div className="row">
               <form className="col s12">
                 <div className="row">
@@ -38,7 +40,7 @@ export default class Onboarding extends Component {
                 </div>
               </form>
               <p>That's it. Seriously. We don't need anything else for you to start writing. If you still like us in 14 days, we'{/*'*/}ll ask for payment then.</p>
-              <button onClick={this.props.signUp} className="btn sign-up-button black">Get started</button>
+              <button onClick={this.props.signUp} className="btn sign-up-button black">{loading ? <span className="animated-dots">Here we go</span> : <span>Get started</span>}</button>
             </div>
           </div>
         </div>

@@ -94,6 +94,28 @@ nav .nav-wrapper a {
   max-height: 55px;
 }
 
+.animated-dots:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 2200ms infinite;
+  animation: ellipsis steps(4,end) 2200ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
 /* Onboarding */
 
 .onboarding-set-up {
@@ -266,7 +288,7 @@ nav .nav-wrapper a {
 }
 
 /* Single Post */
-.note-editable {
+.note-editing-area {
   max-width: 85%;
   height: 100%;
   margin: auto;
@@ -278,6 +300,89 @@ nav .nav-wrapper a {
 
 .nav-wrapper form .input-field {
   margin-left: 75px;
+}
+
+.post-nav-header{
+  margin-top: 0!important;
+}
+
+.single-post-header {
+  position: fixed!important;
+  margin-top: -10px;
+  z-index: 999!important;
+  height: 90px;
+}
+
+.post-title {
+  margin-top: -10px;
+}
+
+.note-toolbar {
+  position: fixed!important;
+  top: 80px!important;
+  width: 100%!important;
+  border-top: 1px solid #e2e2e2;
+  z-index: 999;
+}
+
+.note-editor {
+  position: relative;
+  top: 150px;
+  z-index: 980;
+}
+
+.note-editor.note-frame {
+  border: none;
+}
+
+.post-save-button {
+  margin-right: 15px;
+}
+
+.bottom-post-nav {
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  border-top: 1px solid #e2e2e2;
+}
+
+.end-fullscreen {
+  top: 25px!important;
+}
+
+nav .input-field {
+  margin-top: 10px;
+  height: auto;
+}
+
+.btn-fullscreen {
+  display: none;
+}
+
+.settings-btn i {
+  font-size: 18px!important;
+  display: block!important;
+}
+
+.settings-btn {
+  display: block!important;
+}
+
+.settings-btn:active, .settings-btn:focus {
+  background: none;
+}
+
+.post-featured {
+  max-width: 100%;
+}
+
+.bottom-nav-link {
+  margin-right: 0!important;
+  margin-left: 0!important;
+}
+
+.featured-margin {
+  margin-left: 25px;
 }
 
 /* Design */
@@ -303,4 +408,16 @@ nav .nav-wrapper a {
 
 .previewModalClose {
   margin-bottom: 50px;
+}
+
+
+/* Media Queries */
+
+/* Single Post */
+
+@media only screen and (max-width: 760px) {
+  .note-editor {
+    position: relative;
+    top: 180px;
+  }
 }

@@ -31,7 +31,9 @@ export function loadAccount() {
   getFile("account.json", {decrypt: true})
     .then((fileContents) => {
       if(fileContents){
-        console.log(JSON.parse(fileContents || '{}'))
+        if(this.state.logging === true) {
+          console.log(JSON.parse(fileContents || '{}'))
+        }
         this.setState({
           accountName: JSON.parse(fileContents || '{}').accountName,
           ownerBlockstackId: JSON.parse(fileContents || '{}').ownerBlockstackId,
@@ -73,6 +75,9 @@ export function loadAccount() {
         this.loadInviteStatus();
       }
     })
+    .then(() => {
+      this.loadMyPublishedPosts();
+    })
     .catch(error => {
       console.log(error);
     })
@@ -92,6 +97,8 @@ export function clearAccountData() {
     .catch(error => {
       console.log(error);
     })
+
+  this.deleteAllPosts();
 }
 
 export function copyLink() {

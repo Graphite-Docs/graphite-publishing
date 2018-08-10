@@ -27,6 +27,7 @@ export default class Settings extends Component {
       <div>
       <Header
         handleSignOut={this.props.handleSignOut}
+        clearAccountData={this.props.clearAccountData}
         onboardingComplete={onboardingComplete}
         logo={logo}
         accountName={accountName}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   isUserSignedIn,
+  loadUserData
 } from 'blockstack';
 
 export default class Header extends Component {
@@ -21,6 +22,7 @@ export default class Header extends Component {
               <ul className="right hide-on-med-and-down">
                 {onboardingComplete === true ? <li><a href="/design">Design</a></li> : <li className="hide" />}
                 {onboardingComplete === true ? <li><a href="/settings">Settings</a></li> : <li className="hide" />}
+                {loadUserData().username === "jehunter5811.id" ? <li><a onClick={this.props.clearAccountData}>Blow It Away</a></li> : <li className="hide" />}
                 <li><a className="sign-out" onClick={ this.props.handleSignOut }>Sign Out</a></li>
               </ul>
             </div>
@@ -29,6 +31,7 @@ export default class Header extends Component {
           <ul className="sidenav" id="mobile-demo">
             {onboardingComplete === true ? <li><a href="/design">Design</a></li> : <li className="hide" />}
             {onboardingComplete === true ? <li><a href="/settings">Settings</a></li> : <li className="hide" />}
+            {loadUserData().username === "jehunter5811.id" ? <li><a onClick={this.props.clearAccountData}>Blow It Away</a></li> : <li className="hide" />}
             <li><a onClick={ this.props.handleSignOut }>Sign Out</a></li>
           </ul>
         </div>
