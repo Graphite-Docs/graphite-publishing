@@ -45,6 +45,23 @@ a:hover {
   cursor: pointer;
 }
 
+.dropdown-content li>a, .dropdown-content li>span {
+  color: #282828!important;
+}
+
+.select-wrapper input.select-dropdown:focus {
+  border-bottom: 1px solid #282828!important;
+}
+
+.tap-target {
+  color: #fff;
+  background-color: #282828;
+  a {
+    color: #fff;
+    text-decoration:underline;
+  }
+}
+
 /* Sign-In Page */
 
 .sign-in-page {
@@ -77,6 +94,28 @@ nav .nav-wrapper a {
   max-height: 55px;
 }
 
+.animated-dots:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 2200ms infinite;
+  animation: ellipsis steps(4,end) 2200ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
 /* Onboarding */
 
 .onboarding-set-up {
@@ -101,6 +140,16 @@ nav .nav-wrapper a {
 
 .sign-up-button {
   margin-top: 20px;
+}
+
+.more-btn {
+  padding: 10px!important;
+}
+
+.more-icon {
+  position: relative;
+  top: -23px;
+  font-size: 14px!important;
 }
 
 /* Posts Collection */
@@ -131,6 +180,28 @@ nav .nav-wrapper a {
   box-shadow: none!important;
 }
 
+.filter {
+  font-size: 18px!important;
+  margin-left: 10px;
+}
+
+.filter-icon {
+  margin-bottom: -5px;
+}
+
+.searchinput::-webkit-input-placeholder {
+  font-size: 16px;
+}
+.searchinput::-moz-placeholder {
+  font-size: 16px;
+}
+.searchinput:-ms-input-placeholder {
+  font-size: 16px;
+}
+.searchinput::placeholder {
+  font-size: 16px;
+}
+
 /* Account Settings */
 
 .account-settings {
@@ -157,6 +228,10 @@ nav .nav-wrapper a {
 
 .settings-logo {
   max-height: 75px;
+}
+
+.addteammate h4 {
+  margin-bottom: 55px;
 }
 
 /* Payment */
@@ -204,8 +279,160 @@ nav .nav-wrapper a {
   margin-top: 45px;
 }
 
+.link {
+  margin-left: 15px;
+  margin-bottom: -10px;
+}
+
+#copy span {
+  margin-left: 10px;
+}
+#copy span a i {
+  margin-bottom: -10px;
+}
+
 /* Posts */
 
 .posts {
   margin-top: 75px;
+}
+
+/* Single Post */
+.note-editing-area {
+  max-width: 85%;
+  height: 100%;
+  margin: auto;
+}
+
+.note-statusbar {
+  display: none;
+}
+
+.nav-wrapper form .input-field {
+  margin-left: 75px;
+}
+
+.post-nav-header{
+  margin-top: 0!important;
+}
+
+.single-post-header {
+  position: fixed!important;
+  margin-top: -10px;
+  z-index: 999!important;
+  height: 90px;
+}
+
+.post-title {
+  margin-top: -10px;
+}
+
+.note-toolbar {
+  position: fixed!important;
+  top: 80px!important;
+  width: 100%!important;
+  border-top: 1px solid #e2e2e2;
+  z-index: 999;
+}
+
+.note-editor {
+  position: relative;
+  top: 150px;
+  z-index: 980;
+}
+
+.note-editor.note-frame {
+  border: none;
+}
+
+.post-save-button {
+  margin-right: 15px;
+}
+
+.bottom-post-nav {
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  border-top: 1px solid #e2e2e2;
+}
+
+.end-fullscreen {
+  top: 25px!important;
+}
+
+nav .input-field {
+  margin-top: 10px;
+  height: auto;
+}
+
+.btn-fullscreen {
+  display: none;
+}
+
+.settings-btn i {
+  font-size: 18px!important;
+  display: block!important;
+}
+
+.settings-btn {
+  display: block!important;
+}
+
+.settings-btn:active, .settings-btn:focus {
+  background: none;
+}
+
+.post-featured {
+  max-width: 100%;
+}
+
+.bottom-nav-link {
+  margin-right: 0!important;
+  margin-left: 0!important;
+}
+
+.featured-margin {
+  margin-left: 25px;
+}
+
+.nav-wrapper form .input-field {
+  margin-left: 50px;
+  width: 180px;
+}
+
+/* Design */
+
+#html-editor {
+  width: 100%!important;
+}
+
+.previewMainParent .modal {
+  max-height: 99vh!important;
+}
+
+#previewMain {
+  height: 99vh!important;
+  width: 100%!important;
+  top: 1%!important;
+}
+
+#previewFooter {
+  position: relative!important;
+  top: 70%!important;
+}
+
+.previewModalClose {
+  margin-bottom: 50px;
+}
+
+
+/* Media Queries */
+
+/* Single Post */
+
+@media only screen and (max-width: 760px) {
+  .note-editor {
+    position: relative;
+    top: 180px;
+  }
 }

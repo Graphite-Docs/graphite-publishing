@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import Dropzone from 'react-dropzone';
+import Header from '../Header';
 
 export default class Settings extends Component {
 
   componentDidMount() {
     window.$('.modal').modal();
     window.$('.tooltipped').tooltip();
+    window.$('select').formSelect();
   }
 
   render() {
-    const { logo, accountName, team, integrations, newDomain, ownerBlockstackId } = this.props;
+    const { onboardingComplete, logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, accountId } = this.props;
     let originalDomain;
     if(accountName !== undefined && accountName !== "") {
-      originalDomain = "https://publishing.graphitedocs.com/sites/" + ownerBlockstackId;
+      originalDomain = "https://publishing.graphitedocs.com/sites/" + accountId;
     } else {
       originalDomain = "https://publishing.graphitedocs.com/sites/";
     }
@@ -23,6 +25,13 @@ export default class Settings extends Component {
     const dropzoneStyle = {};
     return (
       <div>
+      <Header
+        handleSignOut={this.props.handleSignOut}
+        clearAccountData={this.props.clearAccountData}
+        onboardingComplete={onboardingComplete}
+        logo={logo}
+        accountName={accountName}
+       />
       <div className="container">
         <div className="center-align">
           <div className="row account-settings">
@@ -64,25 +73,56 @@ export default class Settings extends Component {
             </div>
             <div className="col s12">
             <div className="col s12 account-settings-section">
-              <h5 className="left">Your Team {(1+1 === 2) ? <button className="btn-floating btn-small black" onClick={() => this.setState({ editing: true, hideMain: "hide", teammateModal: "" })}><i className="material-icons white-text">add</i></button> : <span className="note"><a className="note-link" onClick={() => window.Materialize.toast('Your main account admin can add teammates.', 4000)}>?</a></span>}</h5>
+              <h5 className="left">Your Team {(1+1 === 2) ? <button className="btn-floating btn-small black modal-trigger" data-target="modal3"><i className="material-icons white-text">add</i></button> : <span className="note"><a className="note-link" onClick={() => window.Materialize.toast('Your main account admin can add teammates.', 4000)}>?</a></span>}</h5>
 
               <table className="bordered">
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Date Added</th>
-                    <th>Role <span><a data-position="top" data-tooltip="Learn more about roles <a href='https://graphitedocs.com'>here</a>." className="tooltipped info"><i className="material-icons">info_outline</i></a></span></th>
+                    <th>ID</th>
+                    <th>Role <span><a className="info modal-trigger" href="#roleInfoModal"><i className="material-icons">info_outline</i></a></span></th>
                     {(1+1 === 2) ? <th></th> : <div />}
                   </tr>
                 </thead>
                 <tbody>
-                    {teamList.slice(0).reverse().map(mate => {
+                    {teamList.slice(0).map(mate => {
                         return (
                           <tr key={mate.name}>
-                            <td><a onClick={() => this.setState({ selectedTeammate: mate.name, updateTeammateModal: "", hideMain: "hide", editing: true})}>{mate.name}</a></td>
-                            <td>{mate.added}</td>
-                            <td>{mate.role}</td>
-                            {(1+1 === 2) ? <td><a onClick={() => this.setState({ deleteContact: mate.name, deleteTeammateModal: "" })} ><i className="material-icons red-text">delete</i></a></td> : <div />}
+
+                          <td id="shareLinkModal" className="modal">
+                            <div className="modal-content">
+                              <h4>Share Invite Link</h4>
+                              <input type="text" defaultValue={mate.inviteLink} id="copy" /><span><a onClick={this.props.copyLink}><i className="material-icons tiny">content_copy</i></a></span>
+                            </div>
+                          </td>
+
+                            {
+                              mate.invitedAccepted === false ?
+                              <td><a data-target="modal4" className="modal-trigger">{mate.name}</a><span><a data-target="shareLinkModal" className="modal-trigger"><i className="material-icons tiny link">link</i></a></span></td>
+                              :
+                              <td><a data-target="modal4" className="modal-trigger">{mate.name}</a></td>
+                            }
+                            <td>{mate.blockstackId}</td>
+                            <td>{mate.role.charAt(0).toUpperCase() + mate.role.slice(1)}</td>
+                            {(1+1 === 2 && mate.role !== "Owner") ? <td><a onClick={() => this.props.teammateToDelete(mate.id)} ><i className="material-icons red-text">delete</i></a></td> : <td></td>}
+                            <td id="modal4" className="modal center-align modal-fixed-footer">
+                              <div className="modal-content">
+                                <h4>Update Role for {mate.name}</h4>
+                                <div className="input-field col s12">
+                                  <select defaultValue="select" onChange={this.props.handleTeammateRole}>
+                                    <option value="select" disabled>Select Role</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="editor">Editor</option>
+                                    <option value="author">Author</option>
+                                  </select>
+                                  <label>Role</label>
+                                </div>
+                              </div>
+                              <div className="modal-footer">
+                                <a className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                                <a onClick={() => this.props.updateTeammate(mate.id)} className="modal-close waves-effect waves-green btn black">Update</a>
+                              </div>
+                            </td>
                           </tr>
                         )
                       })
@@ -133,7 +173,7 @@ export default class Settings extends Component {
 
                   </div>
                   <div className="modal-footer">
-                    <a className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                    <a onClick={this.props.clearDomainName} className="modal-close waves-effect waves-green btn-flat">Cancel</a>
                     <a onClick={this.props.accountDetails} className="modal-close waves-effect waves-green btn black">Create Domain</a>
                   </div>
                 </div>
@@ -151,6 +191,47 @@ export default class Settings extends Component {
                   </div>
                 </div>
                 {/*Edit Account Name*/}
+
+                {/*Add Teammate*/}
+                <div id="modal3" className="modal modal-fixed-footer">
+                  <div className="modal-content addteammate">
+                    <h4>Add Teammate</h4>
+                    <div className="input-field col s12 m6">
+                      <input value={newTeammateName} onChange={this.props.handleTeammateName} type="text" placeholder="Johnny Cash" />
+                      <label className="active">Teammate Name<span className="red-text">*</span></label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input value={newTeammateEmail} onChange={this.props.handleTeammateEmail} type="text" placeholder="johnny@cash.com" />
+                      <label className="active">Teammate Email<span className="red-text">*</span></label>
+                    </div>
+                    <div className="input-field col s12">
+                      <select value={newTeammateRole} onChange={this.props.handleTeammateRole}>
+                        <option value="" disabled>Select Role</option>
+                        <option value="admin">Administrator</option>
+                        <option value="editor">Editor</option>
+                        <option value="author">Author</option>
+                      </select>
+                      <label>Role<span className="red-text">*</span></label>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <a onClick={this.props.clearNewTeammate} className="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                    <a onClick={this.props.addTeammate} className="modal-close waves-effect waves-green btn black">Add Teammate</a>
+                  </div>
+                </div>
+                {/*End Add Teammate*/}
+
+                {/*Role Info Modal */}
+                <div id="roleInfoModal" className="modal">
+                  <div className="modal-content">
+                    <h4>Modal Header</h4>
+                    <p>A bunch of text</p>
+                  </div>
+                  <div className="modal-footer">
+                    <a href="#!" className="modal-close waves-effect waves-green btn-flat">Agree</a>
+                  </div>
+                </div>
+                {/*End Role Info Modal */}
             </div>
           </div>
         </div>
