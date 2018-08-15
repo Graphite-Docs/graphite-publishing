@@ -45,7 +45,6 @@ export function loadInviteStatus() {
 }
 
 export function loadInvite() {
-  console.log("loading invite")
   let mainLink = window.location.href;
   let userToLoadFrom = mainLink.split('?')[1];
   let fileRoot = mainLink.split('?')[2];

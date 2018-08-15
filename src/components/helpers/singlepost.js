@@ -31,6 +31,8 @@ export function loadSingle() {
         createdDate: JSON.parse(fileContents || '{}').createdDate,
         postURL: JSON.parse(fileContents || '{}').url || JSON.parse(fileContents || '{}').title.replace(/\s+/, "-"),
         featuredImg: JSON.parse(fileContents || '{}').featureImg || "",
+        publishPost: JSON.parse(fileContents || '{}').publishPost || false,
+        status: JSON.parse(fileContents || '{}').status || "Draft",
      })
    })
    .then(() => {
@@ -48,7 +50,7 @@ export function loadSingle() {
 export function handleTitleChange(e) {
   this.setState({
     title: e.target.value,
-    unsavedChanges: true,
+    editing: true,
   });
   // clearTimeout(this.timeout);
   // this.timeout = setTimeout(this.handleAutoAdd, 1500)
@@ -56,6 +58,12 @@ export function handleTitleChange(e) {
 
 export function handlePostURL(e) {
   this.setState({ postURL: e.target.value });
+}
+
+export function onSwitchClick(e) {
+  const target = e.target;
+  const value = target.type === 'checkbox' ? target.checked : target.value;
+  this.setState({ publishPost: value })
 }
 
 export function handleFeaturedDrop(files) {
@@ -72,7 +80,7 @@ export function handleFeaturedDrop(files) {
        this.handleDropRejected();
        console.log("file too large")
      }else {
-       this.setState({featuredImg: object.link});
+       this.setState({featuredImg: object.link, editing: true});
      }
    };
    reader.readAsDataURL(file);
@@ -85,7 +93,6 @@ export function handleSavePost() {
   object.id = window.location.pathname.split('/post/')[1];
   object.author = loadUserData().username;
   object.title = this.state.title;
-  object.status = "Draft";
   object.tags = [];
   object.wordcount = 0;
   object.forReview = false;
@@ -93,11 +100,23 @@ export function handleSavePost() {
   object.createdDate = this.state.createdDate;
   object.lastUpdated = getDate();
   object.url = this.state.postURL.replace(/\s+/, "-");
+  object.link = window.location.origin + '/sites/' + this.state.ownerBlockstackId + '/public/' + window.location.pathname.split('/post/')[1];
+  object.featureImg = this.state.featuredImg;
+  if(this.state.publishPost === true) {
+    object.status = "Published";
+    objectTwo.status = "Published";
+    this.setState({ status: "Published" });
+  } else {
+    object.status = "Draft";
+    objectTwo.status = "Draft";
+    this.setState({ status: "Draft" });
+  }
+  object.publishPost = this.state.publishPost;
   objectTwo.id = window.location.pathname.split('/post/')[1];
+  objectTwo.link = window.location.origin + '/sites/' + this.state.ownerBlockstackId + '/public/' + window.location.pathname.split('/post/')[1];
   objectTwo.author = loadUserData().username;
   objectTwo.title = this.state.title;
   objectTwo.content = this.state.content || "";
-  objectTwo.status = this.state.status;
   objectTwo.shortDescription = "";
   objectTwo.tags = [];
   objectTwo.featureImg = this.state.featuredImg;
@@ -106,13 +125,51 @@ export function handleSavePost() {
   objectTwo.forReview = false;
   objectTwo.needsEdits = false;
   objectTwo.createdDate = this.state.createdDate
+  objectTwo.publishPost = this.state.publishPost;
   objectTwo.lastUpdated = getDate();
   const index = this.state.index;
-  const updatedPost = update(this.state.myPosts, {$splice: [[index, 1, objectTwo]]});
+  const updatedPost = update(this.state.myPosts, {$splice: [[index, 1, object]]});
   this.setState({singlePost: objectTwo, myPosts: updatedPost });
-  setTimeout(this.savePostCollectionToTeam, 300);
+  setTimeout(this.savePostsCollection, 300);
 }
 
 export function handleContentChange(props) {
-  this.setState({ content: props });
+  this.setState({ content: props, editing: true });
+}
+
+export function loadSinglePublic() {
+  const userToLoadFrom = window.location.href.split('/sites/')[1].split('/')[0];
+  const fullFile = 'public/' + window.location.href.split('/public/')[1] + '.json';
+  const options = { username: userToLoadFrom, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false };
+  getFile(fullFile, options)
+   .then((fileContents) => {
+      this.setState({
+        title: JSON.parse(fileContents || '{}').title,
+        content: JSON.parse(fileContents || '{}').content,
+        author: JSON.parse(fileContents || '{}').author,
+        createdDate: JSON.parse(fileContents || '{}').createdDate,
+        postURL: JSON.parse(fileContents || '{}').url || JSON.parse(fileContents || '{}').title.replace(/\s+/, "-"),
+        featuredImg: JSON.parse(fileContents || '{}').featureImg || "",
+        publishPost: JSON.parse(fileContents || '{}').publishPost || false,
+        status: JSON.parse(fileContents || '{}').status || "Draft",
+        lastUpdated: JSON.parse(fileContents || '{}').lastUpdated
+     })
+   })
+   .then(() => {
+     var data, template;
+
+     data = {
+       "title" : this.state.title,
+       "content" : this.state.content,
+       "author" : this.state.author,
+       "published" : this.state.lastUpdated,
+       "featuredImg" : this.state.featuredImg
+     }
+     template = window.Handlebars.compile(this.state.postHTML);
+     window.$('#designed-post').html(template(data));
+     window.$('#designed-post-content').html(this.state.content);
+     })
+    .catch(error => {
+      console.log(error);
+    });
 }

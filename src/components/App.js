@@ -35,7 +35,14 @@ import {
   loadPublishedPosts,
   savePostCollectionToTeam,
   saveSinglePostToTeam,
-  deleteAllPosts
+  deleteAllPosts,
+  savePublicPostsCollection,
+  saveNewSinglePublicPost,
+  loadPublicPostsCollection,
+  loadPostToDelete,
+  deletePost,
+  saveUpdatePostCollection,
+  saveUpdatedPublicPostsCollection
 } from './helpers/posts';
 import {
   loadPost,
@@ -44,7 +51,9 @@ import {
   handleSavePost,
   handleContentChange,
   handlePostURL,
-  handleFeaturedDrop
+  handleFeaturedDrop,
+  onSwitchClick,
+  loadSinglePublic
 } from './helpers/singlepost';
 import {
   loadInvite,
@@ -89,7 +98,11 @@ import {
 import {
   handleCodeChanges,
   saveMainHtml,
-  loadMainHtml
+  loadMainHtml,
+  handlePostCodeChanges,
+  savePostHtml,
+  loadPostHtml,
+  loadMainHtmlPublic
 } from './helpers/design';
 import Main from './documents/Main';
 import Posts from './documents/Posts';
@@ -103,6 +116,7 @@ import Acceptances from './documents/Acceptances';
 import Design from './documents/Design';
 import Publication from './Publication';
 import SinglePost from './documents/SinglePost';
+import SinglePublic from './documents/SinglePublic';
 const Config = require('Config');
 
 export default class App extends Component {
@@ -154,6 +168,8 @@ export default class App extends Component {
       pageHTML: "",
       checking: false,
       mainPage: {},
+      postHTML: "",
+      postPage: {},
       posts: [],
       myPosts: [],
       singlePost: {},
@@ -173,11 +189,14 @@ export default class App extends Component {
       postLoadingDone: false,
       featuredImg: "",
       postURL: "",
-      postLoading: false
+      postLoading: false,
+      publishPost: false,
+      publicPosts: [],
+      link: ""
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (isSignInPending()) {
       handlePendingSignIn().then((userData) => {
         window.location = window.location.origin;
@@ -237,6 +256,9 @@ export default class App extends Component {
     this.loadMainHtml = loadMainHtml.bind(this);
     this.loadDb = loadDb.bind(this);
     this.getDate = getDate.bind(this);
+    this.handlePostCodeChanges = handlePostCodeChanges.bind(this);
+    this.savePostHtml = savePostHtml.bind(this);
+    this.loadPostHtml = loadPostHtml.bind(this);
 
     //Posts
     this.newPost = newPost.bind(this);
@@ -248,6 +270,12 @@ export default class App extends Component {
     this.loadSingle = loadSingle.bind(this);
     this.savePostCollectionToTeam = savePostCollectionToTeam.bind(this);
     this.deleteAllPosts = deleteAllPosts.bind(this);
+    this.loadPublicPostsCollection = loadPublicPostsCollection.bind(this);
+    this.loadMainHtmlPublic = loadMainHtmlPublic.bind(this);
+    this.loadPostToDelete = loadPostToDelete.bind(this);
+    this.deletePost = deletePost.bind(this);
+    this.saveUpdatePostCollection = saveUpdatePostCollection.bind(this);
+    this.saveUpdatedPublicPostsCollection = saveUpdatedPublicPostsCollection.bind(this);
 
     //Single Post
     this.handleTitleChange = handleTitleChange.bind(this);
@@ -256,17 +284,18 @@ export default class App extends Component {
     this.saveSinglePostToTeam = saveSinglePostToTeam.bind(this);
     this.handlePostURL = handlePostURL.bind(this);
     this.handleFeaturedDrop = handleFeaturedDrop.bind(this);
+    this.onSwitchClick = onSwitchClick.bind(this);
+    this.savePublicPostsCollection = savePublicPostsCollection.bind(this);
+    this.saveNewSinglePublicPost = saveNewSinglePublicPost.bind(this);
+    this.loadSinglePublic = loadSinglePublic.bind(this);
 
     isUserSignedIn() ?  this.loadAccount() : loadUserData();
-    // isUserSignedIn() ? this.loadMyPublishedPosts() : loadUserData();
-  }
 
-  componentDidMount() {
     console.log('Build Date: ', Config.BUILD_DATE_STAMP)
     console.log('Build Time: ', Config.BUILD_TIME_STAMP)
-    if(isUserSignedIn()) {
-      setTimeout(this.checkForLatest, 1000);
-    }
+    // if(isUserSignedIn()) {
+    //   setTimeout(this.checkForLatest, 1000);
+    // }
   }
 
   handleSignIn(e) {
@@ -283,8 +312,8 @@ export default class App extends Component {
   render() {
     const { pageHTML, inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete,
             paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing, posts, filteredPosts, appliedFilter, tempDocId,
-            myPosts, title, content, unsavedChanges, loading, confirmationDone, postLoadingDone, featuredImg, postURL, postLoading } = this.state;
-
+            myPosts, title, content, unsavedChanges, loading, confirmationDone, postLoadingDone, featuredImg, postURL, postLoading, publishPost, status, publicPosts,
+            postHTML, postPage } = this.state;
     if(onboardingComplete && !paymentDue) {
       return (
         <div>
@@ -297,6 +326,7 @@ export default class App extends Component {
                   handleSignOut={this.handleSignOut}
                   deleteAllPosts={this.deleteAllPosts}
                   clearAccountData={this.clearAccountData}
+                  loadPostToDelete={this.loadPostToDelete}
                   posts={posts}
                   filteredPosts={filteredPosts}
                   appliedFilter={appliedFilter}
@@ -316,6 +346,7 @@ export default class App extends Component {
                   handleSignOut={this.handleSignOut}
                   deleteAllPosts={this.deleteAllPosts}
                   clearAccountData={this.clearAccountData}
+                  loadPostToDelete={this.loadPostToDelete}
                   posts={posts}
                   filteredPosts={filteredPosts}
                   appliedFilter={appliedFilter}
@@ -367,14 +398,22 @@ export default class App extends Component {
               <Route exact path="/design" render={(props) =>
                 <Design {...props}
                   handleCodeChanges={this.handleCodeChanges}
+                  handlePostCodeChanges={this.handlePostCodeChanges}
                   saveMainHtml={this.saveMainHtml}
                   loadMainHtml={this.loadMainHtml}
                   handleSignOut={this.handleSignOut}
+                  loadPublicPostsCollection={this.loadPublicPostsCollection}
+                  loadPostHtml={this.loadPostHtml}
+                  savePostHtml={this.savePostHtml}
                   pageHTML={pageHTML}
+                  postHTML = {postHTML}
+                  postPage={postPage}
+                  loading={loading}
                   team={team}
                   onboardingComplete={onboardingComplete}
                   logo={logo}
                   accountName={accountName}
+                  editing={editing}
                 />}
               />
               <Route exact path="/acceptances" render={(props) =>
@@ -388,8 +427,17 @@ export default class App extends Component {
                 <Publication
                   accountId={accountId}
                   pageHTML={pageHTML}
-                  loadMainHtml={this.loadMainHtml}
+                  publicPosts={publicPosts}
+                  accountName={accountName}
                   handleContentChange={this.handleContentChange}
+                  loadPublicPostsCollection={this.loadPublicPostsCollection}
+                  loadMainHtmlPublic={this.loadMainHtmlPublic}
+                />}
+              />
+              <Route exact path="/sites/:id/public/:id" render={(props) =>
+                <SinglePublic
+                  loadSinglePublic={this.loadSinglePublic}
+                  loadPostHtml={this.loadPostHtml}
                 />}
               />
               <Route exact path="/post/:id" render={(props) =>
@@ -401,6 +449,8 @@ export default class App extends Component {
                   handleContentChange={this.handleContentChange}
                   handlePostURL={this.handlePostURL}
                   handleFeaturedDrop={this.handleFeaturedDrop}
+                  onSwitchClick={this.onSwitchClick}
+                  publishPost={publishPost}
                   title={title}
                   content={content}
                   unsavedChanges={unsavedChanges}
@@ -408,6 +458,8 @@ export default class App extends Component {
                   featuredImg={featuredImg}
                   postURL={postURL}
                   postLoading={postLoading}
+                  status={status}
+                  editing={editing}
                 />}
               />
               <Route exact path="/success" component={PaymentSuccess} />

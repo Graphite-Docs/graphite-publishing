@@ -32,7 +32,7 @@ export function loadAccount() {
     .then((fileContents) => {
       if(fileContents){
         if(this.state.logging === true) {
-          console.log(JSON.parse(fileContents || '{}'))
+          // console.log(JSON.parse(fileContents || '{}'))
         }
         this.setState({
           accountName: JSON.parse(fileContents || '{}').accountName,

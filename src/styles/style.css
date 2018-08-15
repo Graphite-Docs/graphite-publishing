@@ -293,6 +293,12 @@ nav .nav-wrapper a {
 
 /* Posts */
 
+.bigger {
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .posts {
   margin-top: 75px;
 }
@@ -352,7 +358,7 @@ nav .nav-wrapper a {
 .bottom-post-nav {
   position: fixed;
   bottom: 0;
-  z-index: 999;
+  z-index: 980;
   border-top: 1px solid #e2e2e2;
 }
 
@@ -400,7 +406,30 @@ nav .input-field {
   width: 180px;
 }
 
+.pub-post {
+  margin-left: 25px;
+}
+
 /* Design */
+
+.tabs .tab a:hover, .tabs .tab a.active {
+  color: #282828!important;
+}
+.tabs .tab a:focus, .tabs .tab a:focus.active {
+  background-color: #fff!important;
+}
+
+.tabs .indicator {
+  background-color:#282828!important;
+}
+
+.tabs .tab a {
+  color: #282828!important;
+}
+
+.main-design {
+  margin-top: 45px;
+}
 
 #html-editor {
   width: 100%!important;
@@ -410,7 +439,7 @@ nav .input-field {
   max-height: 99vh!important;
 }
 
-#previewMain {
+#previewMain, #previewPost {
   height: 99vh!important;
   width: 100%!important;
   top: 1%!important;
@@ -425,6 +454,9 @@ nav .input-field {
   margin-bottom: 50px;
 }
 
+.design-page {
+  margin-bottom: 35px;
+}
 
 /* Media Queries */
 

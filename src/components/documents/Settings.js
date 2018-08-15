@@ -11,16 +11,16 @@ export default class Settings extends Component {
   }
 
   render() {
-    const { onboardingComplete, logo, accountName, team, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail, accountId } = this.props;
+    const { onboardingComplete, logo, accountName, ownerBlockstackId, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail } = this.props;
     let originalDomain;
     if(accountName !== undefined && accountName !== "") {
-      originalDomain = "https://publishing.graphitedocs.com/sites/" + accountId;
+      originalDomain = "https://publishing.graphitedocs.com/sites/" + ownerBlockstackId;
     } else {
       originalDomain = "https://publishing.graphitedocs.com/sites/";
     }
-    let teamList;
+    // let teamList;
     let integrationsList
-    team === undefined ? teamList = [] : teamList = team;
+    // team === undefined ? teamList = [] : teamList = team;
     integrations === undefined ? integrationsList = [] : integrationsList = integrations;
     const dropzoneStyle = {};
     return (
@@ -35,7 +35,7 @@ export default class Settings extends Component {
       <div className="container">
         <div className="center-align">
           <div className="row account-settings">
-            <button onClick={this.props.clearAccountData}>Do it</button>
+            {/*<button onClick={this.props.clearAccountData}>Do it</button>*/}
             <div className="col s12">
               <h5>Logo</h5>
               { logo !== "" && logo !== undefined ?
@@ -73,19 +73,19 @@ export default class Settings extends Component {
             </div>
             <div className="col s12">
             <div className="col s12 account-settings-section">
-              <h5 className="left">Your Team {(1+1 === 2) ? <button className="btn-floating btn-small black modal-trigger" data-target="modal3"><i className="material-icons white-text">add</i></button> : <span className="note"><a className="note-link" onClick={() => window.Materialize.toast('Your main account admin can add teammates.', 4000)}>?</a></span>}</h5>
+              <h5 className="left">Your Team {/*(1+1 === 2) ? <button className="btn-floating btn-small black modal-trigger" data-target="modal3"><i className="material-icons white-text">add</i></button> : <span className="note"><a className="note-link" onClick={() => window.Materialize.toast('Your main account admin can add teammates.', 4000)}>?</a></span>*/}</h5>
 
               <table className="bordered">
                 <thead>
                   <tr>
                     <th>Name</th>
                     <th>ID</th>
-                    <th>Role <span><a className="info modal-trigger" href="#roleInfoModal"><i className="material-icons">info_outline</i></a></span></th>
+                    <th>Role {/*<span><a className="info modal-trigger" href="#roleInfoModal"><i className="material-icons">info_outline</i></a></span>*/}</th>
                     {(1+1 === 2) ? <th></th> : <div />}
                   </tr>
                 </thead>
                 <tbody>
-                    {teamList.slice(0).map(mate => {
+                    {/*teamList.slice(0).map(mate => {
                         return (
                           <tr key={mate.name}>
 
@@ -126,14 +126,19 @@ export default class Settings extends Component {
                           </tr>
                         )
                       })
-                    }
+                    */}
+                    <tr>
+                      <td>Team publications coming soon!</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
                 </tbody>
               </table>
             </div>
             {/* Integrations */}
                 <div className="col s12 account-settings-section">
                   <div className="row">
-                  <h5 className="left">Integrations <button className="add-teammate-button btn-floating btn-small black" onClick={() => this.setState({ integrationsModal: "", editing: true })}><i className="material-icons white-text">add</i></button></h5>
+                  <h5 className="left">Integrations <button className="modal-trigger add-teammate-button btn-floating btn-small black" href="#integrationsModal"><i className="material-icons white-text">add</i></button></h5>
                   <table className="permissions">
                     <thead>
                       <tr>
@@ -232,6 +237,20 @@ export default class Settings extends Component {
                   </div>
                 </div>
                 {/*End Role Info Modal */}
+
+                {/*Integrations Modal*/}
+                <div id="integrationsModal" className="modal">
+                  <div className="modal-content">
+                    <h4>Integrations</h4>
+                    <p>Connect your publication or learn about available integrations.</p>
+                    <h5>Comming Soon!</h5>
+                  </div>
+                  <div className="modal-footer">
+                    <a className="modal-close waves-effect waves-green btn-flat">Done</a>
+                  </div>
+                </div>
+
+                {/*End Integrations Modal*/}
             </div>
           </div>
         </div>

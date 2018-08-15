@@ -4,18 +4,31 @@ import Header from '../Header';
 
 
 export default class Posts extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      post: {}
+    }
+  }
 
   componentDidMount() {
     // this.props.loadMyPublishedPosts();
     window.$('.tap-target').tapTarget();
+    window.$('.modal').modal();
   }
 
   close() {
     window.$('.tap-target').tapTarget('close')
   }
 
+  deleteModal(props) {
+    this.setState({ post: props, })
+    window.$('#deleteModal').modal('open')
+  }
+
   render() {
     const { onboardingComplete, accountName, logo, posts, appliedFilter, postLoadingDone } = this.props;
+
     if(postLoadingDone === true && posts.length < 1) {
       window.$('.tap-target').tapTarget('open');
       setTimeout(this.close, 3000)
@@ -75,12 +88,18 @@ export default class Posts extends Component {
                         <th>Author</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
                   {
                     posts.map(post => {
-                      let statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
+                      let statusButton;
+                      if(post.status === "Published") {
+                        statusButton = "btn-floating center-align btn-small waves-effect waves-light green darken-2";
+                      } else {
+                        statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
+                      }
                     return(
                       <tr key={post.id}>
                         <td><input type="checkbox" value={post.id} id={post.id} onChange={this.handleCheckbox} /><label htmlFor={post.id}></label></td>
@@ -88,12 +107,26 @@ export default class Posts extends Component {
                         <td>{post.author}</td>
                         <td>{post.createdDate}</td>
                         <td><p className={statusButton}>{post.status.charAt(0)}</p></td>
+                        <td><a onClick={() => this.deleteModal(post)}><i className="material-icons red-text delete-button">delete</i></a></td>
                       </tr>
                     );
                     })
                   }
                   </tbody>
                 </table>
+
+                {/* Delete Post Modal */}
+                <div id="deleteModal" className="modal">
+                 <div className="modal-content">
+                   <h4>Delete Post</h4>
+                   <p>Are you sure you want to delete <span className="bigger">{this.state.post.title}</span>?</p>
+                 </div>
+                 <div className="modal-footer">
+                   <a onClick={() => this.props.loadPostToDelete(this.state.post)} className="btn red">Delete</a>
+                   <a className="modal-close btn grey">Cancel</a>
+                 </div>
+               </div>
+                {/* End Delete Post Modal */}
                 </div>
               </div>
             </div>

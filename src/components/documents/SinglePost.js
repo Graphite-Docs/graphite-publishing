@@ -34,6 +34,7 @@ export default class SinglePost extends Component {
 
       this.props.handleContentChange(contents);
     }.bind(this));
+    window.$('.dropdown-trigger').dropdown();
   }
 
   expand() {
@@ -117,8 +118,22 @@ export default class SinglePost extends Component {
 
 
   render() {
-      const { postLoading, loading, content, featuredImg, postURL } = this.props;
+
+      const { status, postLoading, loading, content, featuredImg, postURL, publishPost, editing } = this.props;
       const dropzoneStyle = {};
+      let saveBtn;
+      let saveBtnClass;
+      if(publishPost && status === "Published") {
+        saveBtn = "Published";
+        saveBtnClass = "btn green";
+      } else if(publishPost && status === "Draft") {
+        saveBtn = "Publish";
+        saveBtnClass = "btn green";
+      } else {
+        saveBtn = "Save"
+        saveBtnClass = "btn blue";
+      }
+
       return (
         <div>
         {
@@ -130,7 +145,7 @@ export default class SinglePost extends Component {
           </nav> :
           <nav className="navbar-fixed single-post-header">
             <div className="nav-wrapper">
-              <h3 className="post-nav-header"><a href="/posts" className="brand-logo left"><i className="material-icons">arrow_back</i></a></h3>
+              <h3 className="post-nav-header">{editing === true ? <a href="#dirtyModal" className="modal-trigger brand-logo left"><i className="material-icons">arrow_back</i></a> : <a href="/posts" className="brand-logo left"><i className="material-icons">arrow_back</i></a>}</h3>
               <form className="left post-title">
                 <div className="input-field">
                   <input value={this.props.title} onChange={this.props.handleTitleChange} id="search" type="search" required />
@@ -138,7 +153,7 @@ export default class SinglePost extends Component {
                 </div>
               </form>
               <ul className="right">
-                {loading === true ? <span className="post-save-button"><button className="btn grey">Saving</button></span> : <span className="post-save-button"><button onClick={this.props.handleSavePost} className="btn blue">Save</button><button className="more-btn btn black"><i className="more-icon material-icons">arrow_downward</i></button></span>}
+                {loading === true ? <span className="post-save-button"><button className="btn grey">Saving</button></span> : <span className="post-save-button"><button onClick={this.props.handleSavePost} className={saveBtnClass}>{saveBtn}</button></span>}
               </ul>
             </div>
           </nav>
@@ -181,8 +196,31 @@ export default class SinglePost extends Component {
             <li><div className="divider"></div></li>
             <li><a className="subheader">Post URL</a></li>
             {postURL !== "" ? <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + postURL.replace(/\s+/, "-")} /></li> : <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + this.props.title.replace(/\s+/, "-")} /></li>}
+            <li><div className="divider"></div></li>
+            <li><a className="subheader">Publish Post?</a></li>
+            <div className="pub-post switch">
+              <label>
+                False
+                <input type="checkbox" onClick={this.props.onSwitchClick} checked={this.props.publishPost} />
+                <span className="lever"></span>
+                True
+              </label>
+            </div>
             </ul>
           {/*End Side Nav*/}
+
+          {/* Dirty Detection */}
+          <div id="dirtyModal" className="modal">
+            <div className="modal-content">
+              <h4>Unsaved Changes</h4>
+              <p>You have unsaved changes. Do you want to save?</p>
+            </div>
+            <div className="modal-footer">
+              <a onClick={this.props.handleSavePost} className="modal-close waves-effect waves-green btn-flat">Save</a>
+              <a href="/posts" className="modal-close waves-effect waves-green btn-flat">Nope</a>
+            </div>
+          </div>
+          {/*End Dirty Detection */}
 
           <nav className="bottom-post-nav">
             <div className="nav-wrapper">

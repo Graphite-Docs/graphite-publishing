@@ -24,6 +24,7 @@ export function newPost() {
   object.needsEdits = false;
   object.createdDate = getDate();
   object.lastUpdated = getDate();
+  object.link = window.location.origin + '/public/' + this.state.ownerBlockstackId + '/posts/' + object.id;
   objectTwo.id = object.id;
   objectTwo.author = loadUserData().username;
   objectTwo.title = "Untitled";
@@ -41,8 +42,8 @@ export function newPost() {
   this.setState({ filteredPosts: [...this.state.filteredPosts, object] });
   this.setState({ singlePost: objectTwo });
   this.setState({ tempDocId: object.id, redirect: true});
-  // setTimeout(this.savePostsCollection, 300);
-  setTimeout(this.savePostCollectionToTeam, 300);
+  setTimeout(this.savePostsCollection, 300);
+  // setTimeout(this.savePostCollectionToTeam, 300);
 }
 
 export function savePostCollectionToTeam() {
@@ -154,6 +155,7 @@ export function saveSinglePostToTeam() {
 }
 
 export function savePostsCollection() {
+  this.setState({ editing: false });
   putFile("posts.json", JSON.stringify(this.state.myPosts), {encrypt:true})
     .then(() => {
       this.saveNewSinglePost();
@@ -178,7 +180,13 @@ export function saveNewSinglePost() {
       this.setState({ loading: false });
       if(this.state.redirect) {
         window.location.replace('/post/' + this.state.tempDocId)
+      } else {
+        this.savePublicPostsCollection()
       }
+
+      // if(this.state.status === "Published") {
+      //  this.savePublicPostsCollection()
+      // }
 
     })
     .catch(e => {
@@ -187,18 +195,112 @@ export function saveNewSinglePost() {
     });
 }
 
+export function savePublicPostsCollection() {
+  const { myPosts } = this.state;
+  var publishedPosts = myPosts.filter(post => post.status === "Published");
+  putFile("publicposts.json", JSON.stringify(publishedPosts), {encrypt:false})
+    .then(() => {
+      this.saveNewSinglePublicPost();
+    })
+    .catch(e => {
+      console.log("e");
+      console.log(e);
+    });
+}
+
+export function saveNewSinglePublicPost() {
+  let file;
+  if(this.state.tempDocId !== "") {
+    file = this.state.tempDocId;
+  } else {
+    file = window.location.pathname.split('/post/')[1];
+  }
+  const fullFile = 'public/' + file + '.json'
+  if(this.state.status === "Published") {
+    putFile(fullFile, JSON.stringify(this.state.singlePost), {encrypt:false})
+      .then(() => {
+        console.log("Saved!");
+        this.setState({ loading: false });
+      })
+      .catch(e => {
+        console.log("e");
+        console.log(e);
+      });
+  } else {
+    const object = {};
+    putFile(fullFile, JSON.stringify(object), {encrypt:false})
+      .then(() => {
+        console.log("Saved!");
+        this.setState({ loading: false });
+      })
+      .catch(e => {
+        console.log("e");
+        console.log(e);
+      });
+  }
+
+}
+
+export function loadPublicPostsCollection() {
+  let userToLoadFrom;
+  if(window.location.pathname === '/design') {
+    userToLoadFrom = this.state.ownerBlockstackId;
+  } else {
+    userToLoadFrom = window.location.href.split('/')[4].split('?')[0]
+  }
+  const options = { username: userToLoadFrom, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false}
+  getFile('publicposts.json', options)
+    .then((fileContents) => {
+      console.log(JSON.parse(fileContents || '{}'))
+      this.setState({ publicPosts: JSON.parse(fileContents || '{}') });
+    })
+    .then(() => {
+        var data,
+         template;
+        let posts = this.state.publicPosts;
+        data = {
+          "posts" : posts
+        }
+         // source = document.getElementById("handlebars-template").innerHTML;
+         template = window.Handlebars.compile(this.state.pageHTML);
+         window.$('#designed-page').html(template(data));
+    })
+    .then(() => {
+      let publicPosts = this.state.publicPosts;
+      if(publicPosts.length > 0) {
+        var data, template;
+        let postCount = publicPosts.length;
+        let randomPostIndex = Math.floor(Math.random() * postCount) + 0 ;
+        let randomPost = publicPosts[randomPostIndex];
+
+        data = {
+          "title" : randomPost.title || "",
+          "content" : randomPost.content || "",
+          "author" : randomPost.author || "",
+          "published" : randomPost.lastUpdated || "",
+          "featuredImg" : randomPost.featureImg || "",
+          "link" : window.location.origin + '/public/' + this.state.ownerBlockstackId + '/posts/' + randomPost.id
+        }
+        template = window.Handlebars.compile(this.state.postHTML);
+        window.$('#designed-post').html(template(data));
+        window.$('#designed-post-content').html(randomPost.content);
+      }
+
+    })
+}
+
 export function loadMyPublishedPosts() {
   getFile('posts.json', {decrypt: true})
     .then((fileContents) => {
       if(fileContents) {
-        this.setState({ myPosts: JSON.parse(fileContents || '{}'), posts: JSON.parse(fileContents || '{}') });
+        this.setState({ myPosts: JSON.parse(fileContents || '{}'), posts: JSON.parse(fileContents || '{}'), postLoadingDone: true });
       } else {
-        this.setState({ myPosts: [], posts: []});
+        this.setState({ myPosts: [], posts: [], postLoadingDone: true });
       }
     })
-    .then(() => {
-      this.loadPublishedPosts();
-    })
+    // .then(() => {
+    //   this.loadPublishedPosts();
+    // })
     .catch(error => {
       console.log(error);
     })
@@ -240,4 +342,58 @@ export function loadPublishedPosts() {
     console.log("see ya")
     this.setState({ myPosts: [] });
     setTimeout(this.savePostCollectionToTeam, 300);
+  }
+
+  export function loadPostToDelete(props) {
+    let posts = this.state.myPosts;
+    const thisPost = posts.find((post) => { return post.id === props.id });
+    let index = thisPost && thisPost.id;
+    function findObjectIndex(post) {
+        return post.id === index;
+    }
+    this.setState({index: posts.findIndex(findObjectIndex), tempDocId: props.id });
+    setTimeout(this.deletePost);
+  }
+
+  export function deletePost() {
+    const fullFile = '/posts/' + this.state.tempDocId + '.json';
+    const object = {};
+
+    putFile(fullFile, JSON.stringify(object), {encrypt: true})
+      .then(() => {
+        let updatedArray = window.$.grep(this.state.myPosts, function(e){
+             return e.id !== this.state.tempDocId;
+        }.bind(this));
+        this.setState({singlePost: {}, myPosts: updatedArray, posts: updatedArray, filteredPosts: updatedArray });
+        window.$('#deleteModal').modal('close')
+        setTimeout(this.saveUpdatePostCollection, 300);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+  }
+
+  export function saveUpdatePostCollection() {
+    putFile("posts.json", JSON.stringify(this.state.myPosts), {encrypt:true})
+      .then(() => {
+        this.saveUpdatedPublicPostsCollection();
+      })
+      .catch(e => {
+        console.log("e");
+        console.log(e);
+      });
+  }
+
+  export function saveUpdatedPublicPostsCollection() {
+    const { myPosts } = this.state;
+    var publishedPosts = myPosts.filter(post => post.status === "Published");
+    putFile("publicposts.json", JSON.stringify(publishedPosts), {encrypt:false})
+      .then(() => {
+        this.loadMyPublishedPosts();
+      })
+      .catch(e => {
+        console.log("e");
+        console.log(e);
+      });
   }
