@@ -14,9 +14,9 @@ export default class Settings extends Component {
     const { onboardingComplete, logo, accountName, ownerBlockstackId, integrations, newDomain, newTeammateName, newTeammateRole, newTeammateEmail } = this.props;
     let originalDomain;
     if(accountName !== undefined && accountName !== "") {
-      originalDomain = "https://publishing.graphitedocs.com/sites/" + ownerBlockstackId;
+      originalDomain = window.location.origin + "/sites/" + ownerBlockstackId;
     } else {
-      originalDomain = "https://publishing.graphitedocs.com/sites/";
+      originalDomain = window.location.origin + "/sites/";
     }
     // let teamList;
     let integrationsList
