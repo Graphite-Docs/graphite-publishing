@@ -42,7 +42,8 @@ import {
   loadPostToDelete,
   deletePost,
   saveUpdatePostCollection,
-  saveUpdatedPublicPostsCollection
+  saveUpdatedPublicPostsCollection,
+  filterList
 } from './helpers/posts';
 import {
   loadPost,
@@ -102,9 +103,10 @@ import {
   handlePostCodeChanges,
   savePostHtml,
   loadPostHtml,
-  loadMainHtmlPublic
+  loadMainHtmlPublic,
+  loadPostHtmlPublic,
+  loadFile
 } from './helpers/design';
-import Main from './documents/Main';
 import Posts from './documents/Posts';
 import Settings from './documents/Settings';
 import PaymentSuccess from './documents/PaymentSuccess';
@@ -192,11 +194,15 @@ export default class App extends Component {
       postLoading: false,
       publishPost: false,
       publicPosts: [],
-      link: ""
+      link: "",
+      initialLoad: true
     }
   }
 
   componentDidMount() {
+    if(window.location.pathname.includes('/sites/')) {
+      this.setState({onboardingComplete: true, paymentDue: false });
+    }
     if (isSignInPending()) {
       handlePendingSignIn().then((userData) => {
         window.location = window.location.origin;
@@ -259,6 +265,8 @@ export default class App extends Component {
     this.handlePostCodeChanges = handlePostCodeChanges.bind(this);
     this.savePostHtml = savePostHtml.bind(this);
     this.loadPostHtml = loadPostHtml.bind(this);
+    this.loadPostHtmlPublic = loadPostHtmlPublic.bind(this);
+    this.loadFile = loadFile.bind(this);
 
     //Posts
     this.newPost = newPost.bind(this);
@@ -276,6 +284,7 @@ export default class App extends Component {
     this.deletePost = deletePost.bind(this);
     this.saveUpdatePostCollection = saveUpdatePostCollection.bind(this);
     this.saveUpdatedPublicPostsCollection = saveUpdatedPublicPostsCollection.bind(this);
+    this.filterList = filterList.bind(this);
 
     //Single Post
     this.handleTitleChange = handleTitleChange.bind(this);
@@ -313,7 +322,7 @@ export default class App extends Component {
     const { pageHTML, inviter, inviterKey, inviteAccepted, newTeammateId, newTeammateName, newTeammateRole, newTeammateEmail, newTeammateBlockstackId, onboardingComplete,
             paymentDue, logo, accountName, ownerEmail, integrations, team, newDomain, ownerBlockstackId, accountId, editing, posts, filteredPosts, appliedFilter, tempDocId,
             myPosts, title, content, unsavedChanges, loading, confirmationDone, postLoadingDone, featuredImg, postURL, postLoading, publishPost, status, publicPosts,
-            postHTML, postPage } = this.state;
+            postHTML, postPage, initialLoad } = this.state;
     if(onboardingComplete && !paymentDue) {
       return (
         <div>
@@ -326,6 +335,7 @@ export default class App extends Component {
                   handleSignOut={this.handleSignOut}
                   deleteAllPosts={this.deleteAllPosts}
                   clearAccountData={this.clearAccountData}
+                  filterList={filterList}
                   loadPostToDelete={this.loadPostToDelete}
                   posts={posts}
                   filteredPosts={filteredPosts}
@@ -336,9 +346,10 @@ export default class App extends Component {
                   logo={logo}
                   accountName={accountName}
                   postLoadingDone={postLoadingDone}
+                  initialLoad={initialLoad}
+                  paymentDue={paymentDue}
                 />}
               />
-              <Route exact path="/documents" component={Main} />
               <Route exact path="/posts"  render={(props) =>
                 <Posts {...props}
                   newPost={this.newPost}
@@ -347,6 +358,7 @@ export default class App extends Component {
                   deleteAllPosts={this.deleteAllPosts}
                   clearAccountData={this.clearAccountData}
                   loadPostToDelete={this.loadPostToDelete}
+                  filterList={this.filterList}
                   posts={posts}
                   filteredPosts={filteredPosts}
                   appliedFilter={appliedFilter}
@@ -355,6 +367,8 @@ export default class App extends Component {
                   onboardingComplete={onboardingComplete}
                   logo={logo}
                   accountName={accountName}
+                  initialLoad={initialLoad}
+                  paymentDue={paymentDue}
                 />}
               />
               <Route exact path="/settings"
@@ -379,6 +393,7 @@ export default class App extends Component {
                   clearDomainName={this.clearDomainName}
                   clearNewTeammate={this.clearNewTeammate}
                   handleSignOut={this.handleSignOut}
+                  initialLoad={initialLoad}
                   newTeammateId={newTeammateId}
                   newTeammateName={newTeammateName}
                   newTeammateRole={newTeammateRole}
@@ -393,6 +408,7 @@ export default class App extends Component {
                   accountId={accountId}
                   editing={editing}
                   onboardingComplete={onboardingComplete}
+                  paymentDue={paymentDue}
                   />}
               />
               <Route exact path="/design" render={(props) =>
@@ -405,12 +421,14 @@ export default class App extends Component {
                   loadPublicPostsCollection={this.loadPublicPostsCollection}
                   loadPostHtml={this.loadPostHtml}
                   savePostHtml={this.savePostHtml}
+                  initialLoad={initialLoad}
                   pageHTML={pageHTML}
                   postHTML = {postHTML}
                   postPage={postPage}
                   loading={loading}
                   team={team}
                   onboardingComplete={onboardingComplete}
+                  paymentDue={paymentDue}
                   logo={logo}
                   accountName={accountName}
                   editing={editing}
@@ -420,7 +438,10 @@ export default class App extends Component {
                 <Acceptances {...props}
                   confirmAcceptance={this.confirmAcceptance}
                   loading={loading}
+                  initialLoad={initialLoad}
                   confirmationDone={confirmationDone}
+                  onboardingComplete={onboardingComplete}
+                  paymentDue={paymentDue}
                 />}
               />
               <Route exact path="/sites/:id" render={(props) =>
@@ -429,6 +450,7 @@ export default class App extends Component {
                   pageHTML={pageHTML}
                   publicPosts={publicPosts}
                   accountName={accountName}
+                  initialLoad={initialLoad}
                   handleContentChange={this.handleContentChange}
                   loadPublicPostsCollection={this.loadPublicPostsCollection}
                   loadMainHtmlPublic={this.loadMainHtmlPublic}
@@ -437,7 +459,8 @@ export default class App extends Component {
               <Route exact path="/sites/:id/public/:id" render={(props) =>
                 <SinglePublic
                   loadSinglePublic={this.loadSinglePublic}
-                  loadPostHtml={this.loadPostHtml}
+                  loadPostHtmlPublic={this.loadPostHtmlPublic}
+                  initialLoad={initialLoad}
                 />}
               />
               <Route exact path="/post/:id" render={(props) =>
@@ -460,6 +483,8 @@ export default class App extends Component {
                   postLoading={postLoading}
                   status={status}
                   editing={editing}
+                  onboardingComplete={onboardingComplete}
+                  paymentDue={paymentDue}
                 />}
               />
               <Route exact path="/success" component={PaymentSuccess} />
@@ -518,6 +543,7 @@ export default class App extends Component {
             accountName={accountName}
             ownerEmail={ownerEmail}
             loading={loading}
+            initialLoad={initialLoad}
           />
         </div>
       );

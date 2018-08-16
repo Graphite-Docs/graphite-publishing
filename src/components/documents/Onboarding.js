@@ -3,6 +3,7 @@ import {
   isUserSignedIn,
 } from 'blockstack';
 import Signin from '../Signin';
+import Loading from '../Loading';
 import smallLogo from '../../images/graphiteSquare.jpg';
 
 export default class Onboarding extends Component {
@@ -13,11 +14,17 @@ export default class Onboarding extends Component {
 
 
   render() {
-    const { loading } = this.props;
+    const { loading, initialLoad } = this.props;
 
     if(!isUserSignedIn()) {
       return (
         <Signin handleSignIn={this.handleSignIn} />
+      );
+    } else if(initialLoad){
+      return (
+        <div className="center-align onboarding-set-up">
+          <Loading />
+        </div>
       );
     } else {
       return (

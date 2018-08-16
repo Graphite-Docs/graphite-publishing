@@ -6,6 +6,7 @@ import {
 import {
   getDate
 } from './helpers';
+import axios from 'axios';
 const uuidv4 = require('uuid/v4');
 const { getPublicKeyFromPrivate } = require('blockstack');
 const { encryptECIES } = require('blockstack/lib/encryption');
@@ -245,16 +246,64 @@ export function loadPublicPostsCollection() {
   let userToLoadFrom;
   if(window.location.pathname === '/design') {
     userToLoadFrom = this.state.ownerBlockstackId;
+    const options = { username: userToLoadFrom, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false, verify: false}
+    getFile('publicposts.json', options)
+      .then((fileContents) => {
+        console.log(JSON.parse(fileContents || '{}'))
+        this.setState({ publicPosts: JSON.parse(fileContents || '{}') });
+      })
+      .then(() => {
+          var data,
+           template;
+          let posts = this.state.publicPosts;
+          data = {
+            "posts" : posts
+          }
+           // source = document.getElementById("handlebars-template").innerHTML;
+           template = window.Handlebars.compile(JSON.stringify(this.state.pageHTML));
+           window.$('#designed-page').html(template(data));
+      })
+      .then(() => {
+        let publicPosts = this.state.publicPosts;
+        if(publicPosts.length > 0) {
+          var data, template;
+          let postCount = publicPosts.length;
+          let randomPostIndex = Math.floor(Math.random() * postCount) + 0 ;
+          let randomPost = publicPosts[randomPostIndex];
+          const fullFile = '/posts/' + randomPost.id + '.json';
+          getFile(fullFile, {decrypt: true})
+            .then((fileContents) => {
+              data = {
+                "title" : JSON.parse(fileContents).title || "",
+                "content" : JSON.parse(fileContents).content || "",
+                "author" : JSON.parse(fileContents).author || "",
+                "published" : JSON.parse(fileContents).lastUpdated || "",
+                "featuredImg" : JSON.parse(fileContents).featureImg || "",
+                "link" : window.location.origin + '/public/' + this.state.ownerBlockstackId + '/posts/' + JSON.parse(fileContents).id
+              }
+            })
+            .then(() => {
+              template = window.Handlebars.compile(this.state.postHTML);
+              window.$('#designed-post').html(template(data));
+              window.$('#designed-post-content').html(data.content);
+            })
+            .catch(error => {
+              console.log(error);
+            })
+
+        }
+
+      })
   } else {
     userToLoadFrom = window.location.href.split('/')[4].split('?')[0]
-  }
-  const options = { username: userToLoadFrom, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false}
-  getFile('publicposts.json', options)
-    .then((fileContents) => {
-      console.log(JSON.parse(fileContents || '{}'))
-      this.setState({ publicPosts: JSON.parse(fileContents || '{}') });
-    })
-    .then(() => {
+    const url ='https://gaia-gateway.com/';
+    if(window.location.origin === 'http://localhost:3000'){
+      console.log("bingo");
+      axios.get(url + userToLoadFrom + '/localhost%3A3000/publicposts.json')
+      .then((response) => {
+        this.setState({ publicPosts: response.data });
+      })
+      .then(() => {
         var data,
          template;
         let posts = this.state.publicPosts;
@@ -264,36 +313,58 @@ export function loadPublicPostsCollection() {
          // source = document.getElementById("handlebars-template").innerHTML;
          template = window.Handlebars.compile(this.state.pageHTML);
          window.$('#designed-page').html(template(data));
-    })
-    .then(() => {
-      let publicPosts = this.state.publicPosts;
-      if(publicPosts.length > 0) {
-        var data, template;
-        let postCount = publicPosts.length;
-        let randomPostIndex = Math.floor(Math.random() * postCount) + 0 ;
-        let randomPost = publicPosts[randomPostIndex];
-
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    } else if (window.location.origin === 'https://app.graphitedocs.com') {
+      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/app.graphitedocs.com/publicposts.json')
+      .then((response) => {
+        this.setState({ publicPosts: response.data });
+      })
+      .then(() => {
+        var data,
+         template;
+        let posts = this.state.publicPosts;
         data = {
-          "title" : randomPost.title || "",
-          "content" : randomPost.content || "",
-          "author" : randomPost.author || "",
-          "published" : randomPost.lastUpdated || "",
-          "featuredImg" : randomPost.featureImg || "",
-          "link" : window.location.origin + '/public/' + this.state.ownerBlockstackId + '/posts/' + randomPost.id
+          "posts" : posts
         }
-        template = window.Handlebars.compile(this.state.postHTML);
-        window.$('#designed-post').html(template(data));
-        window.$('#designed-post-content').html(randomPost.content);
-      }
+         // source = document.getElementById("handlebars-template").innerHTML;
+         template = window.Handlebars.compile(this.state.pageHTML);
+         window.$('#designed-page').html(template(data));
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    } else {
+      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/serene-hamilton-56e88e.netlify.com/publicposts.json')
+      .then((response) => {
+        this.setState({ publicPosts: response.data });
+      })
+      .then(() => {
+        var data,
+         template;
+        let posts = this.state.publicPosts;
+        data = {
+          "posts" : posts
+        }
+         // source = document.getElementById("handlebars-template").innerHTML;
+         template = window.Handlebars.compile(this.state.pageHTML);
+         window.$('#designed-page').html(template(data));
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    }
+  }
 
-    })
 }
 
 export function loadMyPublishedPosts() {
   getFile('posts.json', {decrypt: true})
     .then((fileContents) => {
       if(fileContents) {
-        this.setState({ myPosts: JSON.parse(fileContents || '{}'), posts: JSON.parse(fileContents || '{}'), postLoadingDone: true });
+        this.setState({ myPosts: JSON.parse(fileContents || '{}'), filteredPosts: JSON.parse(fileContents || '{}'), posts: JSON.parse(fileContents || '{}'), postLoadingDone: true });
       } else {
         this.setState({ myPosts: [], posts: [], postLoadingDone: true });
       }
@@ -396,4 +467,13 @@ export function loadPublishedPosts() {
         console.log("e");
         console.log(e);
       });
+  }
+
+  export function filterList(event){
+    var updatedList = this.state.myPosts;
+    updatedList = updatedList.filter(function(item){
+      return item.title.toLowerCase().search(
+        event.target.value.toLowerCase()) !== -1;
+    });
+    this.setState({filteredPosts: updatedList});
   }

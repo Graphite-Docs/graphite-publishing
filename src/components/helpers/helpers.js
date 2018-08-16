@@ -27,7 +27,7 @@ export function loadLogo() {
 }
 
 export function loadAccount() {
-  this.setState({ editing: false, count: 0 });
+  this.setState({ editing: false, count: 0, initialLoad: true });
   getFile("account.json", {decrypt: true})
     .then((fileContents) => {
       if(fileContents){
@@ -70,6 +70,7 @@ export function loadAccount() {
       }
     })
     .then(() => {
+      this.setState({initialLoad: false});
       if(this.state.accountName === "" || this.state.accountName === undefined) {
         console.log("loading invite status");
         this.loadInviteStatus();

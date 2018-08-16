@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 export default class Publication extends Component {
 
   componentDidMount() {
-    this.props.loadMainHtmlPublic();
     const script = document.createElement("script");
     script.src = "https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js";
     script.async = true;
@@ -11,8 +10,10 @@ export default class Publication extends Component {
     script.type = "text/handlebars-template";
     document.body.appendChild(script);
     document.title = this.props.accountName;
-    setTimeout(this.props.loadMainHtmlPublic, 300);
+    this.props.loadMainHtmlPublic();
     setTimeout(this.props.loadPublicPostsCollection, 500);
+    // setTimeout(this.props.loadMainHtmlPublic, 300);
+    // setTimeout(this.props.loadPublicPostsCollection, 500);
   }
 
   render() {

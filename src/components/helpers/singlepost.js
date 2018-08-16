@@ -5,6 +5,7 @@ import {
 import {
   getDate
 } from './helpers';
+import axios from 'axios';
 import update from 'immutability-helper';
 
 export function loadPost() {
@@ -24,7 +25,6 @@ export function loadSingle() {
 
   getFile(fullFile, {decrypt: true})
    .then((fileContents) => {
-     console.log(JSON.parse(fileContents || '{}'));
       this.setState({
         title: JSON.parse(fileContents || '{}').title,
         content: JSON.parse(fileContents || '{}').content,
@@ -138,38 +138,47 @@ export function handleContentChange(props) {
 }
 
 export function loadSinglePublic() {
+  const url = 'https://gaia-gateway.com';
   const userToLoadFrom = window.location.href.split('/sites/')[1].split('/')[0];
   const fullFile = 'public/' + window.location.href.split('/public/')[1] + '.json';
-  const options = { username: userToLoadFrom, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false };
-  getFile(fullFile, options)
-   .then((fileContents) => {
-      this.setState({
-        title: JSON.parse(fileContents || '{}').title,
-        content: JSON.parse(fileContents || '{}').content,
-        author: JSON.parse(fileContents || '{}').author,
-        createdDate: JSON.parse(fileContents || '{}').createdDate,
-        postURL: JSON.parse(fileContents || '{}').url || JSON.parse(fileContents || '{}').title.replace(/\s+/, "-"),
-        featuredImg: JSON.parse(fileContents || '{}').featureImg || "",
-        publishPost: JSON.parse(fileContents || '{}').publishPost || false,
-        status: JSON.parse(fileContents || '{}').status || "Draft",
-        lastUpdated: JSON.parse(fileContents || '{}').lastUpdated
-     })
-   })
-   .then(() => {
-     var data, template;
+  let origin;
+  if(window.location.origin === 'http://localhost:3000') {
+    origin = 'localhost%3A3000';
+  } else {
+    origin = 'publishing.graphitedocs.com';
+  }
+  axios.get(url + '/' + userToLoadFrom + '/' + origin + '/' + fullFile)
+  .then((response) => {
+     this.setState({
+       title: response.data.title,
+       content: response.data.content,
+       author: response.data.author,
+       createdDate: response.data.createdDate,
+       postURL: response.data.url || response.data.title.replace(/\s+/, "-"),
+       featuredImg: response.data.featureImg || "",
+       publishPost: response.data.publishPost || false,
+       status: response.data.status || "Draft",
+       lastUpdated: response.data.lastUpdated
+    })
+  })
+  .then(() => {
+    this.loadPostHtmlPublic();
+  })
+  .then(() => {
+    var data, template;
 
-     data = {
-       "title" : this.state.title,
-       "content" : this.state.content,
-       "author" : this.state.author,
-       "published" : this.state.lastUpdated,
-       "featuredImg" : this.state.featuredImg
-     }
-     template = window.Handlebars.compile(this.state.postHTML);
-     window.$('#designed-post').html(template(data));
-     window.$('#designed-post-content').html(this.state.content);
-     })
-    .catch(error => {
-      console.log(error);
-    });
+    data = {
+      "title" : this.state.title,
+      "content" : this.state.content,
+      "author" : this.state.author,
+      "published" : this.state.lastUpdated,
+      "featuredImg" : this.state.featuredImg
+    }
+    template = window.Handlebars.compile(this.state.postHTML);
+    window.$('#designed-post').html(template(data));
+    window.$('#designed-post-content').html(this.state.content);
+    })
+   .catch(error => {
+     console.log(error);
+   });
 }

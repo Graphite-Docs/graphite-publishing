@@ -154,6 +154,10 @@ nav .nav-wrapper a {
 
 /* Posts Collection */
 
+td, th {
+  padding: 5px!important;
+}
+
 .searchform {
   padding: 10px;
   height: 70px;
