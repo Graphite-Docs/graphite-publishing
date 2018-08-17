@@ -12,7 +12,6 @@ export default class Onboarding extends Component {
     window.$('.tooltipped').tooltip();
   }
 
-
   render() {
     const { loading, initialLoad } = this.props;
 

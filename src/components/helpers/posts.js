@@ -297,7 +297,7 @@ export function loadPublicPostsCollection() {
   } else {
     userToLoadFrom = window.location.href.split('/')[4].split('?')[0]
     const url ='https://gaia-gateway.com/';
-    if(window.location.origin === 'http://localhost:3000'){
+    if(window.location.origin === 'http://localhost:3000' || window.location.origin === 'http://192.168.1.194:3000'){
       console.log("bingo");
       axios.get(url + userToLoadFrom + '/localhost%3A3000/publicposts.json')
       .then((response) => {
@@ -317,7 +317,26 @@ export function loadPublicPostsCollection() {
       .catch(error => {
         console.log(error);
       })
-    } else if (window.location.origin === 'https://app.graphitedocs.com') {
+    } else if (window.location.origin === 'https://staging-publishing.graphitedocs.com/') {
+      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
+      .then((response) => {
+        this.setState({ publicPosts: response.data });
+      })
+      .then(() => {
+        var data,
+         template;
+        let posts = this.state.publicPosts;
+        data = {
+          "posts" : posts
+        }
+         // source = document.getElementById("handlebars-template").innerHTML;
+         template = window.Handlebars.compile(this.state.pageHTML);
+         window.$('#designed-page').html(template(data));
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    } else if (window.location.origin === 'https://publishing.graphitedocs.com') {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/app.graphitedocs.com/publicposts.json')
       .then((response) => {
         this.setState({ publicPosts: response.data });

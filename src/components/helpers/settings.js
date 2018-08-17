@@ -2,7 +2,7 @@ import {
   getFile,
   putFile
 } from "blockstack";
-import axios from 'axios';
+import { getMonthDayYear } from './timestamp';
 
 export function loadDomain() {
   getFile("newDomain.json", {decrypt: true})
@@ -26,54 +26,27 @@ export function handleNewDomain(e) {
 
 export function accountDetails() {
   if(this.state.checking === false) {
-    axios.get('http://worldclockapi.com/api/json/est/now')
-      .then((response) => {
-        const object = {};
-        if(this.state.newAccountName !== "") {
-          object.accountName = this.state.newAccountName;
-        } else {
-          object.accountName = this.state.accountName;
-        }
-        object.ownerEmail = this.state.ownerEmail;
-        object.ownerBlockstackId = this.state.ownerBlockstackId;
-        object.accountId = this.state.accountId;
-        object.signUpDate = this.state.signUpDate;
-        object.paymentDue = this.state.paymentDue;
-        object.onboardingComplete = this.state.onboardingComplete;
-        object.accountType = this.state.accountType;
-        object.trialPeriod = this.state.trialPeriod;
-        object.logo = this.state.logo;
-        object.newDomain = this.state.newDomain;
-        object.team = this.state.team;
-        object.integrations = this.state.integrations;
-        object.lastUpdated = response.data.currentFileTime;
-        this.setState({accountDetails: object});
-        setTimeout(this.saveAccount, 300)
-      })
-      .catch(error => {
-        console.log(error);
-        const object = {};
-        if(this.state.newAccountName !== "") {
-          object.accountName = this.state.newAccountName;
-        } else {
-          object.accountName = this.state.accountName;
-        }
-        object.ownerEmail = this.state.ownerEmail;
-        object.onwerBlockstackId = this.state.ownerBlockstackId;
-        object.accountId = this.state.accountId;
-        object.signUpDate = this.state.signUpDate;
-        object.paymentDue = this.state.paymentDue;
-        object.onboardingComplete = this.state.onboardingComplete;
-        object.accountType = this.state.accountType;
-        object.trialPeriod = this.state.trialPeriod;
-        object.logo = this.state.logo;
-        object.newDomain = this.state.newDomain;
-        object.team = this.state.team;
-        object.integrations = this.state.integrations;
-        object.lastUpdated = Date.now();
-        this.setState({accountDetails: object});
-        setTimeout(this.saveAccount, 300)
-      })
+    const object = {};
+    if(this.state.newAccountName !== "") {
+      object.accountName = this.state.newAccountName;
+    } else {
+      object.accountName = this.state.accountName;
+    }
+    object.ownerEmail = this.state.ownerEmail;
+    object.ownerBlockstackId = this.state.ownerBlockstackId;
+    object.accountId = this.state.accountId;
+    object.signUpDate = this.state.signUpDate;
+    object.paymentDue = this.state.paymentDue;
+    object.onboardingComplete = this.state.onboardingComplete;
+    object.accountType = this.state.accountType;
+    object.trialPeriod = this.state.trialPeriod;
+    object.logo = this.state.logo;
+    object.newDomain = this.state.newDomain;
+    object.team = this.state.team;
+    object.integrations = this.state.integrations;
+    object.lastUpdated = getMonthDayYear();
+    this.setState({accountDetails: object});
+    setTimeout(this.saveAccount, 300)
   } else {
     setTimeout(this.accountDetails, 1000);
   }
