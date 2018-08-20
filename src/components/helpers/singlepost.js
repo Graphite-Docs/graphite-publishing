@@ -144,6 +144,8 @@ export function loadSinglePublic() {
   let origin;
   if(window.location.origin === 'http://localhost:3000') {
     origin = 'localhost%3A3000';
+  } else if(window.location.origin === 'https://staging-publishing.graphitedocs.com') {
+    origin = 'staging-publishing.graphitedocs.com';
   } else {
     origin = 'publishing.graphitedocs.com';
   }

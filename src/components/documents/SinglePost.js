@@ -72,6 +72,7 @@ export default class SinglePost extends Component {
       document.getElementsByClassName('subheader')[1].style.color = '#fff';
       document.getElementById('search').style.background = '#282828';
       document.getElementById('slide-out').style.background = '#282828';
+      document.getElementsByTagName("BODY")[0].style.background = '#282828';
       var noteBtn = document.getElementsByClassName('note-btn');
         for (var i = 0; i < noteBtn.length; ++i) {
             var item = noteBtn[i];
@@ -102,6 +103,7 @@ export default class SinglePost extends Component {
       document.getElementsByClassName('subheader')[1].style.color = '#000';
       document.getElementById('search').style.background = '#fff';
       document.getElementById('slide-out').style.background = '#fff';
+      document.getElementsByTagName("BODY")[0].style.background = '#fff';
       noteBtn = document.getElementsByClassName('note-btn');
         for (i = 0; i < noteBtn.length; ++i) {
             item = noteBtn[i];
@@ -109,6 +111,7 @@ export default class SinglePost extends Component {
             item.style.color = '#000';
             item.style.border = '1px solid #fff';
         }
+
         bottomLinks = document.getElementsByClassName('bottom-nav-link');
           for (a = 0; a < bottomLinks.length; ++a) {
               ax = bottomLinks[a];

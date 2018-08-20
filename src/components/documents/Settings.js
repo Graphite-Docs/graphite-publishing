@@ -37,7 +37,7 @@ export default class Settings extends Component {
         <div className="container">
           <div className="center-align">
             <div className="row account-settings">
-              <button onClick={this.props.clearAccountData}>Do it</button>
+              {/*<button onClick={this.props.clearAccountData}>Do it</button>*/}
               <div className="col s12">
                 <h5>Logo</h5>
                 { logo !== "" && logo !== undefined ?

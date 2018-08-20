@@ -159,7 +159,7 @@ export default class Design extends Component {
                     <li>{openBracket}title{closedBracket}</li>
                     <li>{openBracket}author{closedBracket}</li>
                     <li>{openBracket}featuredImg{closedBracket}</li>
-                    <li>{openBracket}published{closedBracket}</li>
+                    <li>{openBracket}lastUpdated{closedBracket}</li>
                     <li>{openBracket}link{closedBracket}</li>
                   </ul>
                   <p>Graphite Publishing supports full Handlebars syntax, including conditionals. Here is an example that conditionally renders a featured image for each post if one is available: </p>

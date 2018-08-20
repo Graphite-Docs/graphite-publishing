@@ -9,14 +9,13 @@ export default class Posts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      post: {}
+      post: {},
     }
+    this.deleteModal = this.deleteModal.bind(this);
   }
 
   componentDidMount() {
-    // this.props.loadMyPublishedPosts();
-    window.$('.tap-target').tapTarget();
-    window.$('.modal').modal();
+
   }
 
   close() {
@@ -24,18 +23,19 @@ export default class Posts extends Component {
   }
 
   deleteModal(props) {
+    document.getElementsByClassName("modal")[0].style.display = "block";
+    document.getElementsByClassName("modal")[0].style.top = "20%";
+    document.getElementsByClassName("modal")[0].style.zIndex = "999";
     this.setState({ post: props, })
-    window.$('#deleteModal').modal('open')
+    // window.$('#deleteModal').modal('open');
+  }
+
+  closeModal() {
+    document.getElementsByClassName("modal")[0].style.display = "none";
   }
 
   render() {
-    const { onboardingComplete, paymentDue, accountName, logo, filteredPosts, postLoadingDone, initialLoad } = this.props;
-
-    if(postLoadingDone === true && filteredPosts.length < 1) {
-      window.$('.tap-target').tapTarget('open');
-      setTimeout(this.close, 3000)
-    }
-
+    const { onboardingComplete, paymentDue, accountName, logo, filteredPosts, initialLoad } = this.props;
     if(initialLoad) {
       if(onboardingComplete && !paymentDue) {
         return (
@@ -83,6 +83,9 @@ export default class Posts extends Component {
                         {appliedFilter === false ? <span className="filter"><a data-activates="slide-out" className="menu-button-collapse button-collapse">Filter</a></span> : <span className="hide"><a data-activates="slide-out" className="menu-button-collapse button-collapse">Filter<i className="filter-icon material-icons">arrow_drop_down</i></a></span>}
                         {appliedFilter === true ? <span className="filter"><a className="card filter-applied" onClick={() => this.setState({ appliedFilter: false, filteredValue: this.state.value})}>Clear</a></span> : <div />}
                       */}
+                       <a id="add-button" onClick={this.props.newPost} className="btn-floating btn-small black">
+                        <i className="large material-icons">add</i>
+                       </a>
                       </h5>
                     </div>
                     <div className="col right s12 m6">
@@ -95,22 +98,16 @@ export default class Posts extends Component {
                     </div>
                   </div>
 
-                  {/* Feature Discovery */}
-                  <div className="tap-target" data-target="add-button">
-                    <div className="tap-target-content">
-                      <h5>Create a new post</h5>
-                      <p>Looks like you don'{/*'*/}t have any posts. Create one by clicking this button.</p>
+                  {/* Feature Discovery
+                  <div className={this.state.featureDiscovery}>
+                    <div className="feature-discovery">
+                    	<div className="hidden-circle">
+                    		<p className="feature-discovery-p">It looks like you </p>
+                    		<div className="hidden-wave"></div>
+                    	</div>
                     </div>
-                  </div>
+                  </div>*/}
                   {/* End Feature Discovery */}
-
-                  {/* Add button */}
-                  <div className="fixed-action-btn">
-                      <a id="add-button" onClick={this.props.newPost} className="btn-floating btn-large black">
-                        <i className="large material-icons">add</i>
-                      </a>
-                  </div>
-                  {/* End Add Button */}
 
                     <table className="bordered">
                       <thead>
@@ -155,7 +152,7 @@ export default class Posts extends Component {
                    </div>
                    <div className="modal-footer">
                      <a onClick={() => this.props.loadPostToDelete(this.state.post)} className="btn red">Delete</a>
-                     <a className="modal-close btn grey">Cancel</a>
+                     <a onClick={this.closeModal} className="modal-close btn grey">Cancel</a>
                    </div>
                  </div>
                   {/* End Delete Post Modal */}

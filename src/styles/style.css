@@ -154,6 +154,82 @@ nav .nav-wrapper a {
 
 /* Posts Collection */
 
+.hidden-circle {
+  height: 800px;
+	width: 800px;
+	background-color: pink;
+	border-radius: 50%;
+	position: fixed;
+	right: -370px;
+	bottom: -370px;
+	background-color: #282828;
+}
+
+	.feature-discovery-p {
+    margin: 0;
+    padding: 15px 0;
+    position: fixed;
+    bottom: 120px;
+    right: 40px;
+    max-width: 22%;
+    color: #fff;
+    font-weight: lighter;
+  }
+
+	.hidden-wave {
+    position: fixed;
+		height: 108px;
+		width: 108px;
+		bottom: 0;
+		right: 0;
+		background-color: #fff;
+		border-radius: 50%;
+		animation: pulse infinite cubic-bezier(0.24, 0, 0.38, 1) 1s both;
+  }
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0px 0px 0px 0px rgba(255,255,255,0.5);
+  }
+
+	100% {
+    box-shadow: 0px 0px 0px 30px rgba(255,255,255,0);
+  }
+}
+
+.fadeOut {
+  animation-name: fadeOut;
+  -webkit-animation-name: fadeOut;
+
+  animation-duration: 0.4s;
+  -webkit-animation-duration: 0.4s;
+
+  animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+
+  visibility: visible !important;
+}
+@keyframes fadeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1.0;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0.0;
+  }
+}
+@-webkit-keyframes fadeOut {
+  0% {
+    -webkit-transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(0);
+    opacity: 0.0;
+  }
+}
+
 td, th {
   padding: 5px!important;
 }
@@ -307,11 +383,19 @@ td, th {
   margin-top: 75px;
 }
 
+#add-button {
+  margin-left: 10px;
+}
+
 /* Single Post */
 .note-editing-area {
   max-width: 85%;
   height: 100%;
   margin: auto;
+}
+
+.note-modal-footer {
+  display: none;
 }
 
 .note-statusbar {

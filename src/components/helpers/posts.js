@@ -260,7 +260,7 @@ export function loadPublicPostsCollection() {
             "posts" : posts
           }
            // source = document.getElementById("handlebars-template").innerHTML;
-           template = window.Handlebars.compile(JSON.stringify(this.state.pageHTML));
+           template = window.Handlebars.compile(this.state.pageHTML);
            window.$('#designed-page').html(template(data));
       })
       .then(() => {
@@ -317,7 +317,7 @@ export function loadPublicPostsCollection() {
       .catch(error => {
         console.log(error);
       })
-    } else if (window.location.origin === 'https://staging-publishing.graphitedocs.com/') {
+    } else if (window.location.origin === 'https://staging-publishing.graphitedocs.com') {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
         this.setState({ publicPosts: response.data });
@@ -337,7 +337,7 @@ export function loadPublicPostsCollection() {
         console.log(error);
       })
     } else if (window.location.origin === 'https://publishing.graphitedocs.com') {
-      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/app.graphitedocs.com/publicposts.json')
+      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
         this.setState({ publicPosts: response.data });
       })
@@ -356,7 +356,7 @@ export function loadPublicPostsCollection() {
         console.log(error);
       })
     } else {
-      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/serene-hamilton-56e88e.netlify.com/publicposts.json')
+      axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
         this.setState({ publicPosts: response.data });
       })
@@ -455,7 +455,8 @@ export function loadPublishedPosts() {
              return e.id !== this.state.tempDocId;
         }.bind(this));
         this.setState({singlePost: {}, myPosts: updatedArray, posts: updatedArray, filteredPosts: updatedArray });
-        window.$('#deleteModal').modal('close')
+        // window.$('#deleteModal').modal('close')
+        document.getElementsByClassName("modal")[0].style.display = "none";
         setTimeout(this.saveUpdatePostCollection, 300);
       })
       .catch(error => {

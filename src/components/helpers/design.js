@@ -60,7 +60,7 @@ export function loadMainHtmlPublic() {
     .catch(error => {
       console.log(error);
     })
-  } else if (window.location.origin === 'https://app.graphitedocs.com') {
+  } else if (window.location.origin === 'https://publishing.graphitedocs.com') {
     axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/app.graphitedocs.com/mainpagedesign.json')
     .then((response) => {
       this.setState({ pageHTML: response.data.pageHTML });
@@ -69,7 +69,7 @@ export function loadMainHtmlPublic() {
       console.log(error);
     })
   } else {
-    axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/serene-hamilton-56e88e.netlify.com/mainpagedesign.json')
+    axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/mainpagedesign.json')
     .then((response) => {
       this.setState({ pageHTML: response.data.pageHTML });
     })
@@ -122,6 +122,8 @@ export function loadPostHtmlPublic() {
   let origin;
   if(window.location.origin === 'http://localhost:3000') {
     origin = '/localhost%3A3000';
+  } else if(window.location.origin === 'https://staging-publishing.graphitedocs.com') {
+    origin = '/staging-publishing.graphitedocs.com';
   } else {
     origin = '/publishing.graphitedocs.com';
   }

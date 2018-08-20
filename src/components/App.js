@@ -302,9 +302,6 @@ export default class App extends Component {
 
     console.log('Build Date: ', Config.BUILD_DATE_STAMP)
     console.log('Build Time: ', Config.BUILD_TIME_STAMP)
-    // if(isUserSignedIn()) {
-    //   setTimeout(this.checkForLatest, 1000);
-    // }
   }
 
   handleSignIn(e) {
