@@ -40,6 +40,13 @@ export function loadMainHtml() {
         pageHTML: JSON.parse(fileContents || '{}').pageHTML
       })
     })
+    .then(() => {
+      if(this.state.pageHTML === undefined || this.state.pageHTML === "") {
+        this.setState({
+          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a href={{link}}><button class='btn'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
+        })
+      }
+    })
     .catch(error => {
       console.log(error);
     })
@@ -55,7 +62,11 @@ export function loadMainHtmlPublic() {
       this.setState({ pageHTML: response.data.pageHTML });
     })
     .then(() => {
-      console.log(this.state.pageHTML);
+      if(this.state.pageHTML === undefined || this.state.pageHTML === "") {
+        this.setState({
+          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a href={{link}}><button class='btn'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
+        })
+      }
     })
     .catch(error => {
       console.log(error);
@@ -65,6 +76,13 @@ export function loadMainHtmlPublic() {
     .then((response) => {
       this.setState({ pageHTML: response.data.pageHTML });
     })
+    .then(() => {
+      if(this.state.pageHTML === undefined || this.state.pageHTML === "") {
+        this.setState({
+          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a href={{link}}><button class='btn'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
+        })
+      }
+    })
     .catch(error => {
       console.log(error);
     })
@@ -72,6 +90,13 @@ export function loadMainHtmlPublic() {
     axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/mainpagedesign.json')
     .then((response) => {
       this.setState({ pageHTML: response.data.pageHTML });
+    })
+    .then(() => {
+      if(this.state.pageHTML === undefined || this.state.pageHTML === "") {
+        this.setState({
+          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a href={{link}}><button class='btn'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
+        })
+      }
     })
     .catch(error => {
       console.log(error);
@@ -106,10 +131,17 @@ export function savePostHtml() {
 export function loadPostHtml() {
   getFile('postpagedesign.json', {decrypt: false})
     .then((fileContents) => {
-      console.log(JSON.parse(fileContents || '{}'))
       this.setState({
         postHTML: JSON.parse(fileContents || '{}').postHTML,
       })
+    })
+    .then(() => {
+      console.log(this.state.postHTML)
+      if(this.state.postHTML === undefined || this.state.postHTML === "") {
+        this.setState({
+          postHTML: "<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>"
+        })
+      }
     })
     .catch(error => {
       console.log(error);
@@ -134,7 +166,11 @@ export function loadPostHtmlPublic() {
     })
   })
   .then(() => {
-    console.log(this.state.postHTML);
+    if(this.state.postHTML === undefined) {
+      this.setState({
+        postHTML: "<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<div>\n<h5>Published: {{published}}</h5>\n<div id='designed-post-content'></div>\n</div>\n</div>"
+      })
+    }
   })
   .catch(error => {
     console.log(error);
