@@ -138,6 +138,7 @@ export function handleContentChange(props) {
 }
 
 export function loadSinglePublic() {
+  this.setState({ loading: true });
   const url = 'https://gaia-gateway.com';
   const userToLoadFrom = window.location.href.split('/sites/')[1].split('/')[0];
   const fullFile = 'public/' + window.location.href.split('/public/')[1] + '.json';
@@ -179,6 +180,9 @@ export function loadSinglePublic() {
     template = window.Handlebars.compile(this.state.postHTML);
     window.$('#designed-post').html(template(data));
     window.$('#designed-post-content').html(this.state.content);
+    })
+    .then(() => {
+      this.setState({ loading: false})
     })
    .catch(error => {
      console.log(error);

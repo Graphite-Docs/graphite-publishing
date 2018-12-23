@@ -4,7 +4,8 @@ export default class SinglePublic extends Component {
 
   componentDidMount() {
     this.loadScript();
-    this.props.loadPostHtmlPublic()
+    this.props.loadPostHtmlPublic();
+    setInterval(this.props.loadPostHtmlPublic, 2000);
     setTimeout(this.props.loadSinglePublic, 500);
   }
 

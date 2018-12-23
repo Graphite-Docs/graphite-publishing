@@ -1,7 +1,7 @@
 {
-  "name": "Graphite",
-  "start_url": "localhost:8080",
-  "description": "Documents, spreadsheets, converations, and more. All decentralized and encrypted.",
+  "name": "Graphite Publishing",
+  "start_url": "/",
+  "description": "Your words, your thoughts, your blog.",
   "icons": [{
     "src": "https://image.ibb.co/hde71b/AppIcon.png",
     "sizes": "192x192",

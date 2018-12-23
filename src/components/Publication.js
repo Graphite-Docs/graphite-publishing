@@ -11,6 +11,7 @@ export default class Publication extends Component {
     document.body.appendChild(script);
     document.title = this.props.accountName;
     this.props.loadMainHtmlPublic();
+    setInterval(this.props.loadMainHtmlPublic, 5000);
     setTimeout(this.props.loadPublicPostsCollection, 500);
     // setTimeout(this.props.loadMainHtmlPublic, 300);
     // setTimeout(this.props.loadPublicPostsCollection, 500);

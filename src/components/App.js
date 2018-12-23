@@ -105,7 +105,9 @@ import {
   loadPostHtml,
   loadMainHtmlPublic,
   loadPostHtmlPublic,
-  loadFile
+  loadFile,
+  setTheme,
+  setPostTheme
 } from './helpers/design';
 import Posts from './documents/Posts';
 import Settings from './documents/Settings';
@@ -267,6 +269,8 @@ export default class App extends Component {
     this.loadPostHtml = loadPostHtml.bind(this);
     this.loadPostHtmlPublic = loadPostHtmlPublic.bind(this);
     this.loadFile = loadFile.bind(this);
+    this.setTheme = setTheme.bind(this);
+    this.setPostTheme = setPostTheme.bind(this);
 
     //Posts
     this.newPost = newPost.bind(this);
@@ -418,6 +422,8 @@ export default class App extends Component {
                   loadPublicPostsCollection={this.loadPublicPostsCollection}
                   loadPostHtml={this.loadPostHtml}
                   savePostHtml={this.savePostHtml}
+                  setTheme={this.setTheme}
+                  setPostTheme={this.setPostTheme}
                   initialLoad={initialLoad}
                   pageHTML={pageHTML}
                   postHTML = {postHTML}
@@ -458,6 +464,7 @@ export default class App extends Component {
                   loadSinglePublic={this.loadSinglePublic}
                   loadPostHtmlPublic={this.loadPostHtmlPublic}
                   initialLoad={initialLoad}
+                  loading={loading}
                 />}
               />
               <Route exact path="/post/:id" render={(props) =>

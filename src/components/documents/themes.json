@@ -1,0 +1,50 @@
+{
+  "designer": {
+    "themes":
+    [
+      {
+        "name": "Clean",
+        "pageHTML":
+        "<div>
+          <nav style='text-align: center;'>
+            <div class='nav-wrapper'>
+              <h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>
+              <p style='text-align: center'>The best words on the internet</p>
+            </div>
+          </nav>
+          <div style='max-width: 75%;margin: auto;margin-bottom: 25px'>
+          {{#posts}}
+            <h3>{{title}}</h3>
+            {{#if featureImg}}
+            <img style='max-width:50%;margin:auto;' src={{featureImg}} alt={{title}} />
+            {{/if}}
+            <h5>{{author}}</h5>
+            <h5>{{lastPublished}}</h5>
+            <hr />
+          {{/posts}}
+          </div>
+        </div>"
+      },
+      {
+        "name": "Night",
+        "pageHTML":
+        "<div style='background: #282828;color:#eee;padding-bottom:45px;'>
+          <div style='background: #000;width:100%;padding:10px;'>
+              <h1>Your Site Name</h1>
+          </div>
+          <div style='margin:auto;margin-top: 65px; max-width: 85%;margin-bottom:45px;'>
+            {{#posts}}
+            <p>{{lastPublished}}</p>
+            <h3>{{title}}</h3>
+            {{#if featureImg}}
+              <img style='max-width:50%;margin:auto;' alt={{title}} />
+            {{/if}}
+            <p>Written by {{author}}</p>
+            <button style='color:#000;background: #eee;' class='btn'>Read</button>
+            {{/posts}}
+          </div>
+        </div>"
+      }
+    ]
+  }
+}

@@ -13,6 +13,7 @@ export default class Onboarding extends Component {
   }
 
   render() {
+    window.$('.tooltipped').tooltip();
     const { loading, initialLoad } = this.props;
 
     if(!isUserSignedIn()) {
@@ -28,7 +29,8 @@ export default class Onboarding extends Component {
     } else {
       return (
         <div className="center-align onboarding-set-up">
-          <h3><span><img className="small-logo circle" src={smallLogo} alt="Graphite logo" /></span>Start your 14-day free trial</h3>
+          <h3><span><img className="small-logo circle" src={smallLogo} alt="Graphite logo" /></span>Start your free beta trial</h3>
+          <h5>Graphite Publishing is in early release. Beta testers will have access to the system at no charge.</h5>
           <div className="container sign-ip-form">
           {/*<button onClick={this.props.inviteInfo}>Do it</button>*/}
           <div className="row">
@@ -45,7 +47,7 @@ export default class Onboarding extends Component {
                   </div>
                 </div>
               </form>
-              <p>That's it. Seriously. We don't need anything else for you to start writing. If you still like us in 14 days, we'{/*'*/}ll ask for payment then.</p>
+              <p>That's it. Seriously. We don't need anything else for you to start writing. If you still like us when we are out of beta, we'{/*'*/}ll talk money then 😉.</p>
               <button onClick={this.props.signUp} className="btn sign-up-button black">{loading ? <span className="animated-dots">Here we go</span> : <span>Get started</span>}</button>
             </div>
           </div>

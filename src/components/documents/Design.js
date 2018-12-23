@@ -34,6 +34,8 @@ export default class Design extends Component {
       return(
         <div>
         <h3 className="center-align">Post Design <span><a className="modal-trigger" href="#postHelpModal"><i className="material-icons  blue-text">help_outline</i></a></span></h3>
+        <p>Start with the template included, pick from one of the templates below, or write your own.</p>
+        <button onClick={() => this.props.setPostTheme('card')} className='btn blue'>Card Style</button><button onClick={() => this.props.setPostTheme('night')} className='btn black'>Night</button><button onClick={() => this.props.setPostTheme('clean')} className='btn grey'>Clean</button>
         <AceEditor
         editorProps={{
            $blockScrolling: Infinity
@@ -53,7 +55,10 @@ export default class Design extends Component {
     } else {
       return (
         <div>
+
         <h3 className="center-align">Main Page Design <span><a className="modal-trigger" href="#pageHelpModal"><i className="material-icons  blue-text">help_outline</i></a></span></h3>
+        <p>Start with the template included, pick from one of the templates below, or write your own.</p>
+        <button onClick={() => this.props.setTheme('card')} className='btn blue'>Card Style</button><button onClick={() => this.props.setTheme('night')} className='btn black'>Night</button><button onClick={() => this.props.setTheme('clean')} className='btn grey'>Clean</button>
         <AceEditor
         editorProps={{
            $blockScrolling: Infinity
