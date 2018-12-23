@@ -250,7 +250,7 @@ export function loadPublicPostsCollection() {
     getFile('publicposts.json', options)
       .then((fileContents) => {
         console.log(JSON.parse(fileContents || '{}'))
-        this.setState({ publicPosts: JSON.parse(fileContents || '{}') });
+        this.setState({ publicPosts: JSON.parse(fileContents || '{}').slice(0).reverse() });
       })
       .then(() => {
           var data,
@@ -301,7 +301,7 @@ export function loadPublicPostsCollection() {
       console.log("bingo");
       axios.get(url + userToLoadFrom + '/localhost%3A3000/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data });
+        this.setState({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
@@ -320,7 +320,7 @@ export function loadPublicPostsCollection() {
     } else if (window.location.origin === 'https://staging-publishing.graphitedocs.com') {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data });
+        this.setState({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
@@ -339,7 +339,7 @@ export function loadPublicPostsCollection() {
     } else if (window.location.origin === 'https://publishing.graphitedocs.com') {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data });
+        this.setState({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
@@ -358,7 +358,7 @@ export function loadPublicPostsCollection() {
     } else {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data });
+        this.setState({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
