@@ -103,7 +103,7 @@ export function loadMainHtmlPublic() {
       console.log(error);
     })
   } else if (window.location.origin === 'https://publishing.graphitedocs.com') {
-    axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/app.graphitedocs.com/mainpagedesign.json')
+    axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/publishing.graphitedocs.com/mainpagedesign.json')
     .then((response) => {
       this.setState({ pageHTML: response.data.pageHTML });
     })
