@@ -87,6 +87,11 @@ export function handleFeaturedDrop(files) {
 }
 
 export function handleSavePost() {
+  var paras = document.getElementsByTagName("p");
+    for (var i=0; i < paras.length; i++) {
+      var item = paras[i];
+      item.style.color = '#000';
+    }
   this.setState({ loading: true });
   const object = {};
   const objectTwo = {};

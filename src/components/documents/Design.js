@@ -137,7 +137,7 @@ export default class Design extends Component {
                   <ul>
                     <li>{openBracket}title{closedBracket}</li>
                     <li>{openBracket}author{closedBracket}</li>
-                    <li>{openBracket}featuredImg{closedBracket}</li>
+                    <li>{openBracket}featureImg{closedBracket}</li>
                     <li>{openBracket}published{closedBracket}</li>
                   </ul>
                   <p>Graphite Publishing supports full Handlebars syntax, including conditionals. Here is an example that uses all variables and a conditional if block: </p>

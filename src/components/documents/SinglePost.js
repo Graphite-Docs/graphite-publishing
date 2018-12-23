@@ -81,6 +81,12 @@ export default class SinglePost extends Component {
             item.style.border = 'none';
         }
 
+      var paras = document.getElementsByTagName("p");
+        for (var b=0; b < paras.length; b++) {
+          var name = paras[b];
+          name.style.color = '#fff';
+        }
+
       var bottomLinks = document.getElementsByClassName('bottom-nav-link');
         for (var a = 0; a < bottomLinks.length; ++a) {
             var ax = bottomLinks[a];
@@ -111,6 +117,12 @@ export default class SinglePost extends Component {
             item.style.color = '#000';
             item.style.border = '1px solid #fff';
         }
+
+        var paraEl = document.getElementsByTagName("p");
+          for (var c=0; c < paraEl.length; c++) {
+            var pName = paraEl[c];
+            pName.style.color = '#000';
+          }
 
         bottomLinks = document.getElementsByClassName('bottom-nav-link');
           for (a = 0; a < bottomLinks.length; ++a) {

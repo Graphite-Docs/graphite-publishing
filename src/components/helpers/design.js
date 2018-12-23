@@ -8,22 +8,22 @@ let html;
 
 export function setTheme(name) {
   if(name === 'card') {
-    this.setState({ pageHTML: "<div>\n<nav>\n<div class='nav-wrapper'>\n<h3><a href='#' className='brand-logo'>Your Name or Image</a></h3>\n</div>\n</nav>\n<div class='row'>\n{{#posts}}\n<div class='col s6 m4'>\n<div class='card small'>\n<div class='card-image'>\n{{#if featuredImg}}\n<img src={{featureImg}} />\n{{/if}}\n<span style='color:#000;' class='card-title'>\n{{title}}\n</span>\n</div>\n<div class='card-content'>\n<p>Published: {{lastPublished}}</p>\n<p>By: {{author}}</p>\n</div>\n<div class='card-action'>\n<a style='color: #000' href={{link}}>Read It</a>\n</div>\n</div>\n</div>\n{{/posts}}\n</div>\n</div>" })
+    this.setState({ pageHTML: "<div>\n<nav>\n<div class='nav-wrapper'>\n<h3><a href='#' className='brand-logo'>Your Name or Image</a></h3>\n</div>\n</nav>\n<div class='row'>\n{{#posts}}\n<div class='col s6 m4'>\n<div class='card small'>\n<div class='card-image'>\n{{#if featureImg}}\n<img src={{featureImg}} />\n{{/if}}\n<span style='color:#000;' class='card-title'>\n{{title}}\n</span>\n</div>\n<div class='card-content'>\n<p>Published: {{lastUpdated}}</p>\n<p>By: {{author}}</p>\n</div>\n<div class='card-action'>\n<a style='color: #000' href={{link}}>Read It</a>\n</div>\n</div>\n</div>\n{{/posts}}\n</div>\n</div>" })
   } else if(name === 'clean') {
-    this.setState({ pageHTML: "<div>\n<nav style='text-align: center;'>\n<div class='nav-wrapper'>\n<h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>\n<p style='text-align: center'>The best words on the internet</p>\n</div>\n</nav>\n<div style='max-width: 75%;margin: auto;margin-bottom: 25px'>\n{{#posts}}\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img style='max-width:50%;margin:auto;' src={{featureImg}} alt={{title}} />\n{{/if}}\n<h5>{{author}}</h5>\n<h5>{{lastPublished}}</h5>\n<hr />\n{{/posts}}\n</div>\n</div>" })
+    this.setState({ pageHTML: "<div><nav style='text-align: center;'>\n<div class='nav-wrapper'>\n<h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>\n<p style='text-align: center'>The best words on the internet</p>\n</div>\n</nav>\n<div style='max-width: 75%;margin: auto;margin-bottom: 25px;margin-top:50px;padding-top:25px;'>\n{{#posts}}\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img style='max-width:50%;margin:auto;' src={{featureImg}} alt={{title}} />\n{{/if}}\n<h5>{{author}}</h5>\n<h5>{{lastUpdated}}</h5>\n<a style='color:#fff' href={{link}}><button class='btn black'>Read More</button></a>\n<hr />\n{{/posts}}\n</div>\n</div>" })
   } else if(name === 'night') {
-    this.setState({ pageHTML: "<div style='background: #282828;color:#eee;padding-bottom:45px;'>\n<div style='background: #000;width:100%;padding:10px;'>\n<h1>Your Site Name</h1>\n</div>\n<div style='margin:auto;margin-top: 65px; max-width: 85%;margin-bottom:45px;'>\n{{#posts}}\n<p>{{lastPublished}}</p>\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img style='max-width:50%;margin:auto;' alt={{title}} />\n{{/if}}\n<p>Written by {{author}}</p>\n<button style='color:#000;background: #eee;' class='btn'>Read</button>\n{{/posts}}\n</div>\n</div>" })
+    this.setState({ pageHTML: "<div style='background: #282828;color:#eee;padding-bottom:45px;'>\n<div style='background: #000;width:100%;padding:10px;'>\n<h1>Your Site Name</h1>\n</div>\n<div style='margin:auto;margin-top: 65px; max-width: 85%;margin-bottom:45px;'>\n{{#posts}}\n<div style='margin-top:25px;'>\n</div>\n<p>{{lastUpdated}}</p>\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img src={{featureImg}} style='max-width:50%;margin:auto;' alt={{title}} />\n{{/if}}\n<p>Written by {{author}}</p>\n<a href={{link}} style='color:#000'><button style='color:#000;background: #eee;' class='btn'>Read</button></a>\n{{/posts}}\n</div>\n</div>\n</div>" })
   }
 }
 
 export function setPostTheme(name) {
   if(name === 'card') {
     this.setState({
-      postHTML: "<div>\n<nav>\n<div class='nav-wrapper'>\n<h3><a href='#' className='brand-logo'>Your Name or Image</a></h3>\n</div>\n</nav>\n<div style='padding:15px;margin-top:45px' class='card'>\n<h3>{{title}}</h3>\n<p>{{author}}</p>\n<p>{{published}}</p>\n<div id='designed-post-content'></div>\n</div>\n</div>"
+      postHTML: "<div>\n<nav>\n<div class='nav-wrapper'>\n<h3 style='margin-left:10px;'><a href='#' className='brand-logo'>Your Name or Image</a></h3>\n</div>\n</nav>\n<div style='padding:15px;margin:auto;margin-top:45px;max-width:85%;' class='card'>\n<h3>{{title}}</h3>\n<p>{{author}}</p>\n<p>{{published}}</p>\n<div id='designed-post-content'></div>\n</div>\n</div>"
     })
   } else if(name === 'clean') {
     this.setState({
-      postHTML: "<div>\n<<nav style='text-align: center;'>\n<div class='nav-wrapper'>\n<h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>\n</div>\n</nav>\n<div style='max-width: 75%;margin: auto;margin-bottom: 25px'>\n<h3>{{title}}</h3>\n<p>By {{author}}</p>\n<div id='designed-post-content'></div>\n</div>\n</div>"
+      postHTML: "<div>\n<nav style='text-align: center;'>\n<div class='nav-wrapper'>\n<h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>\n</div>\n</nav>\n<div style='max-width: 75%;margin: auto;margin-bottom: 25px'>\n<h3>{{title}}</h3>\n<p>By {{author}}</p>\n<div id='designed-post-content'></div>\n</div>\n</div>"
     })
   } else if(name === 'night') {
     this.setState({
@@ -148,15 +148,20 @@ export function loadFile() {
 }
 
 export function savePostHtml() {
-  this.setState({ loading: true });
-  putFile('postpagedesign.json', JSON.stringify(this.state.postPage), {encrypt: false})
-    .then(() => {
-      this.loadPublicPostsCollection();
-      this.setState({ loading: false, editing: false });
-    })
-    .catch(error => {
-      console.log(error);
-    })
+  const object = {};
+  object.accountId = this.state.accountId;
+  object.postHTML = this.state.postHTML;
+  this.setState({ postHTML: this.state.postHTML, postPage: object, editing: true }, () => {
+    this.setState({ loading: true });
+    putFile('postpagedesign.json', JSON.stringify(this.state.postPage), {encrypt: false})
+      .then(() => {
+        this.loadPublicPostsCollection();
+        this.setState({ loading: false, editing: false });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  });
 }
 
 export function loadPostHtml() {

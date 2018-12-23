@@ -433,6 +433,7 @@ td, th {
   position: relative;
   top: 150px;
   z-index: 980;
+  margin-bottom: 95px!important;
 }
 
 .note-editor.note-frame {
