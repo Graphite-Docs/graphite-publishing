@@ -8,6 +8,11 @@ body {
   color: #282828;
 }
 
+img {
+  max-width: 90%;
+  margin:auto;
+}
+
 h1, h2, h3, h4, h5 {
   font-weight: 200;
 }
@@ -388,6 +393,11 @@ td, th {
 }
 
 /* Single Post */
+
+.aspectRatioPlaceholder {
+  width: auto!important;
+}
+
 .note-editing-area {
   max-width: 85%;
   height: 100%;
@@ -555,5 +565,6 @@ nav .input-field {
   .note-editor {
     position: relative;
     top: 180px;
+    margin-bottom:95px!important;
   }
 }

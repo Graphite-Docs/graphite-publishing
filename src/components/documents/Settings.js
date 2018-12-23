@@ -171,17 +171,18 @@ export default class Settings extends Component {
                   <div id="modal1" className="modal">
                     <div className="modal-content requestDomain">
                       <h4>Request a Custom Domain</h4>
-                      <p>Please provide your desired domain.</p>
+                      <p>Coming soon...</p>
+                      {/*<p>Please provide your desired domain.</p>
                       <input onChange={this.props.handleNewDomain} type="text" placeholder="https://www.mydomain.com" />
                       <br />
                       <p className="left-align">To complete the set up of your custom domain, add a CNAME record with your domain registrar and point it to <code className="code">{originalDomain}</code>.</p>
                       <br />
-                      <p className="left-align">Example: If your custom domain is set to www.mydomain.com, you would add a CNAME record to the DNS for www and point it to the target of {originalDomain}.</p>
+                      <p className="left-align">Example: If your custom domain is set to www.mydomain.com, you would add a CNAME record to the DNS for www and point it to the target of {originalDomain}.</p>*/}
 
                     </div>
                     <div className="modal-footer">
                       <a onClick={this.props.clearDomainName} className="modal-close waves-effect waves-green btn-flat">Cancel</a>
-                      <a onClick={this.props.accountDetails} className="modal-close waves-effect waves-green btn black">Create Domain</a>
+                      {/*<a onClick={this.props.accountDetails} className="modal-close waves-effect waves-green btn black">Create Domain</a>*/}
                     </div>
                   </div>
                   {/*End Request Domain*/}
