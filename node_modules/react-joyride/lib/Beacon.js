@@ -1,0 +1,116 @@
+'use strict';
+
+exports.__esModule = true;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _utils = require('./utils');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var isTouch = false;
+
+/* istanbul ignore else */
+if (typeof window !== 'undefined') {
+  isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+}
+
+var JoyrideBeacon = function (_React$Component) {
+  _inherits(JoyrideBeacon, _React$Component);
+
+  function JoyrideBeacon() {
+    _classCallCheck(this, JoyrideBeacon);
+
+    return _possibleConstructorReturn(this, (JoyrideBeacon.__proto__ || Object.getPrototypeOf(JoyrideBeacon)).apply(this, arguments));
+  }
+
+  _createClass(JoyrideBeacon, [{
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          eventType = _props.eventType,
+          onTrigger = _props.onTrigger,
+          step = _props.step,
+          xPos = _props.xPos,
+          yPos = _props.yPos;
+
+      var styles = {
+        beacon: {
+          left: xPos,
+          position: step.isFixed === true ? 'fixed' : 'absolute',
+          top: yPos
+        },
+        inner: {},
+        outer: {}
+      };
+      var stepStyles = step.style || {};
+      var rgb = void 0;
+
+      /* istanbul ignore else */
+      if (stepStyles.beacon) {
+        if (typeof stepStyles.beacon === 'string') {
+          rgb = (0, _utils.hexToRGB)(stepStyles.beacon);
+
+          styles.inner.backgroundColor = stepStyles.beacon;
+          styles.outer = {
+            backgroundColor: 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 0.2)',
+            borderColor: stepStyles.beacon
+          };
+        } else {
+          if (stepStyles.beacon.inner) {
+            styles.inner.backgroundColor = stepStyles.beacon.inner;
+          }
+
+          if (stepStyles.beacon.outer) {
+            rgb = (0, _utils.hexToRGB)(stepStyles.beacon.outer);
+
+            styles.outer = {
+              backgroundColor: 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 0.4)',
+              borderColor: stepStyles.beacon.outer
+            };
+          }
+        }
+      }
+
+      return _react2.default.createElement(
+        'button',
+        {
+          className: 'joyride-beacon',
+          style: styles.beacon,
+          onClick: eventType === 'click' || isTouch ? onTrigger : null,
+          onMouseEnter: eventType === 'hover' && !isTouch ? onTrigger : null },
+        _react2.default.createElement('span', { className: 'joyride-beacon__inner', style: styles.inner }),
+        _react2.default.createElement('span', { className: 'joyride-beacon__outer', style: styles.outer })
+      );
+    }
+  }]);
+
+  return JoyrideBeacon;
+}(_react2.default.Component);
+
+JoyrideBeacon.propTypes = {
+  eventType: _propTypes2.default.string.isRequired,
+  onTrigger: _propTypes2.default.func.isRequired,
+  step: _propTypes2.default.object.isRequired,
+  xPos: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]).isRequired,
+  yPos: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]).isRequired
+};
+JoyrideBeacon.defaultProps = {
+  xPos: -1000,
+  yPos: -1000
+};
+exports.default = JoyrideBeacon;

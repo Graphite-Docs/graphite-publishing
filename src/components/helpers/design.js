@@ -75,7 +75,7 @@ export function loadMainHtml() {
     .then(() => {
       if(this.state.pageHTML === undefined || this.state.pageHTML === "") {
         this.setState({
-          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a href={{link}}><button class='btn'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
+          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style='color: #000' href={{link}}><button style='color:#fff' class='btn black'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
         })
       }
     })

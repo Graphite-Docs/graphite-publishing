@@ -80,6 +80,7 @@
     "react-dropzone": "^4.2.13",
     "react-froala-wysiwyg": "^2.8.4",
     "react-handsontable": "^0.3.1",
+    "react-joyride": "^1.11.4",
     "react-pdf-js": "^3.0.7",
     "react-quill": "^1.2.2",
     "react-redux": "^5.0.7",

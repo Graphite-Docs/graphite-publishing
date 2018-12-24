@@ -446,6 +446,12 @@ td, th {
   margin-bottom: 95px!important;
 }
 
+.note-editable {
+  padding-bottom: 95px!important;
+}
+
+
+
 .note-editor.note-frame {
   border: none;
 }

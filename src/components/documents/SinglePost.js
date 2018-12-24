@@ -135,7 +135,7 @@ export default class SinglePost extends Component {
 
   render() {
 
-      const { onboardingComplete, paymentDue, status, postLoading, loading, content, featuredImg, postURL, publishPost, editing, initialLoad } = this.props;
+      const { onboardingComplete, paymentDue, status, postLoading, loading, content, featuredImg, publishPost, editing, initialLoad } = this.props;
       const dropzoneStyle = {};
       let saveBtn;
       let saveBtnClass;
@@ -224,7 +224,8 @@ export default class SinglePost extends Component {
                 </div></li>
                 <li><div className="divider"></div></li>
                 <li><a className="subheader">Post URL</a></li>
-                {postURL !== "" ? <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + postURL.replace(/\s+/, "-")} /></li> : <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + this.props.title.replace(/\s+/, "-")} /></li>}
+                <li><a>Coming soon...</a></li>
+                {/*postURL !== "" ? <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + postURL.replace(/\s+/, "-")} /></li> : <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + this.props.title.replace(/\s+/, "-")} /></li>*/}
                 <li><div className="divider"></div></li>
                 <li><a className="subheader">Publish Post?</a></li>
                 <div className="pub-post switch">

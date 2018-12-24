@@ -14,6 +14,8 @@ export default class AppPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      onboardingComplete: false,
+      run: false
     };
 
   }

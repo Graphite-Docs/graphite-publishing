@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Header from '../Header';
 import Loading from '../Loading';
+// import Joyride from "react-joyride";
 
 
 export default class Posts extends Component {
@@ -11,11 +12,19 @@ export default class Posts extends Component {
     this.state = {
       post: {},
     }
+
     this.deleteModal = this.deleteModal.bind(this);
   }
 
-  componentDidMount() {
-
+  checkOnboarding = () => {
+    console.log("checking")
+    if(JSON.parse(localStorage.getItem('onboarding'))) {
+      this.setState({ run: false, onboardingComplete: true})
+    } else {
+      this.setState({ run: true }, () => {
+        localStorage.setItem('onboarding', JSON.stringify(true));
+      })
+    }
   }
 
   close() {
@@ -36,6 +45,66 @@ export default class Posts extends Component {
 
   render() {
     const { onboardingComplete, paymentDue, accountName, logo, filteredPosts, initialLoad } = this.props;
+//     const steps = [
+//   {
+//     content: <h2>Welcome to Graphite Publishing! Let'{/*'*/}s take a quick tour.</h2>,
+//     placement: "center",
+//     disableBeacon: true,
+//     styles: {
+//       options: {
+//         zIndex: 100000
+//       }
+//     },
+//     locale: {
+//       skip: "Skip tour"
+//     },
+//     target: "body"
+//   },
+//   {
+//     content: <p>This is your Posts page. All of your published and draft posts will show here. The Status column will show a "D" for draft posts and a "P" for published posts.</p>,
+//     placement: "bottom",
+//     disableBeacon: true,
+//     styles: {
+//       options: {
+//         zIndex: 100000
+//       }
+//     },
+//     locale: {
+//       skip: "Skip tour"
+//     },
+//     target: "table"
+//   },
+//   {
+//     content: <p>Click the plus button to create a new draft post. Don't worry, it won't be published until you say so.</p>,
+//     placement: "top",
+//     disableBeacon: true,
+//     styles: {
+//       options: {
+//         zIndex: 100000
+//       }
+//     },
+//     locale: {
+//       skip: "Skip tour"
+//     },
+//     target: "#add-button"
+//   },
+//   {
+//     content: <p>Here is your quick navigation. You access your Posts page, the Design page, and your Settings page. The Design page is where you can design your public home page and public posts page. Settings is where you will find your public URL.</p>,
+//     placement: "top",
+//     disableBeacon: true,
+//     styles: {
+//       options: {
+//         zIndex: 100000
+//       }
+//     },
+//     locale: {
+//       skip: "Skip tour"
+//     },
+//     target: ".nav-wrapper"
+//   }
+// ]
+
+
     if(initialLoad) {
       if(onboardingComplete && !paymentDue) {
         return (
@@ -71,6 +140,7 @@ export default class Posts extends Component {
               accountName={accountName}
               logo={logo}
             />
+
             <div className="posts">
 
                 <div className="container project-pane">
