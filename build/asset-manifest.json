@@ -1,9 +1,14 @@
 {
   "main.css": "static/css/main.6b92be2f.css",
   "main.css.map": "static/css/main.6b92be2f.css.map",
-  "main.js": "static/js/main.a1fb30de.js",
+  "main.js": "static/js/main.90d9a2a5.js",
   "static/media/advanced_example.png": "static/media/advanced_example.7439cd4d.png",
+  "static/media/branding.png": "static/media/branding.2777fcfe.png",
+  "static/media/brooke.jpg": "static/media/brooke.0048d4e1.jpg",
   "static/media/conditional.png": "static/media/conditional.0b247e13.png",
+  "static/media/darktheme.png": "static/media/darktheme.8b7a192f.png",
   "static/media/div_example.png": "static/media/div_example.c69cb275.png",
-  "static/media/main.png": "static/media/main.03414a11.png"
+  "static/media/main.png": "static/media/main.03414a11.png",
+  "static/media/pagedesign.png": "static/media/pagedesign.fdbb8dc6.png",
+  "static/media/posts.png": "static/media/posts.45d2dec8.png"
 }
