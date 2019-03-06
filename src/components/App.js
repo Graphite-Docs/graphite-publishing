@@ -329,6 +329,7 @@ export default class App extends Component {
         <div>
         <BrowserRouter>
             <div className="main-container">
+              {/*<Route exact path='/' component={Posts} />*/}
               <Route exact path="/" render={(props) =>
                 <Posts {...props}
                   newPost={this.newPost}

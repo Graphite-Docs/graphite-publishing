@@ -1,0 +1,25 @@
+// Color system
+$px-theme:						#8053f6 !default; // Main theme color
+$px-theme2nd:					#00e29a !default; // Secondary theme color
+$px-body-color:					#55595c !default; // Body text color
+$px-black:						#000000 !default; 
+$px-white:						#ffffff !default;
+$px-dark:						#1a2858 !default; // Dark Text Color
+
+// Font system
+$px-base-font:					15px !default;
+$px-h1-font:                	40px !default;
+$px-h2-font:                	30px !default;
+$px-h3-font:                	28px !default;
+$px-h4-font:                	24px !default;
+$px-h5-font:                	20px !default;
+$px-h6-font:                	$px-base-font !default;
+
+$px-font-family:				'Montserrat', sans-serif; // Main Font Family
+$px-font-family-alt:			'Ubuntu', sans-serif;	  // Alternative Font Family	
+
+
+// Breakpoints
+$px-media-sm:					767px !default;
+$px-media-md:					991px !default;
+$px-media-lg:					1200px !default;

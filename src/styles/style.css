@@ -69,6 +69,27 @@ a:hover {
 
 /* Sign-In Page */
 
+.header-nav .navbar-brand .light-logo, .header-nav .navbar-brand .dark-logo {
+  height: 70px!important;
+}
+
+.header-nav .navbar-nav > li > a:not(.nav-link-btn) {
+  color: #8053f6;
+}
+
+.fixed-header .navbar-nav > li > a:not(.nav-link-btn) {
+  color: #fff;
+}
+
+.fixed-header .header-nav {
+  background: #8053f6;
+}
+
+.fixed-header .navbar-nav > li > a:not(.nav-link-btn):hover {
+  color: #fff;
+}
+
+
 .sign-in-page {
   margin: 40px;
   margin-top: 250px;

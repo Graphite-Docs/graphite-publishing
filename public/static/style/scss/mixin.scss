@@ -1,0 +1,93 @@
+// generic transform
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+          transform: $transforms;
+}
+// rotate
+@mixin rotate ($deg) {
+  @include transform(rotate(#{$deg}deg));
+}
+ 
+// scale
+@mixin scale($scale) {
+	 @include transform(scale($scale));
+} 
+// translate
+@mixin translate ($x, $y) {
+   @include transform(translate($x, $y));
+}
+// skew
+@mixin skew ($x, $y) {
+   @include transform(skew(#{$x}deg, #{$y}deg));
+}
+//transform origin
+@mixin transform-origin ($origin) {
+    -moz-transform-origin: $origin;
+	     -o-transform-origin: $origin;
+	    -ms-transform-origin: $origin;
+	-webkit-transform-origin: $origin;
+          transform-origin: $origin;
+}
+
+
+//Transition
+@mixin transition($transition) {
+    -moz-transition:    $transition;
+    -o-transition:      $transition;
+    -webkit-transition: $transition;
+    transition:         $transition;
+}
+//Transition Delay
+@mixin transition-delay($delay) {
+    -moz-transition-delay:    $delay;
+    -o-transition-delay:      $delay;
+    -webkit-transition-delay: $delay;
+    transition-delay:         $delay;
+}
+
+// Media Responsive
+@mixin up-sm {
+	@media(min-width: $px-media-sm + 1 ){
+		@content;
+	}
+}
+
+@mixin down-sm {
+	@media(max-width: $px-media-sm){
+		@content;
+	}
+}
+
+@mixin up-md {
+	@media(min-width: $px-media-md + 1 ){
+		@content;
+	}
+}
+
+@mixin down-md {
+	@media(max-width: $px-media-md){
+		@content;
+	}
+}
+
+@mixin up-lg {
+	@media(min-width: $px-media-lg + 1 ){
+		@content;
+	}
+}
+
+@mixin down-lg {
+	@media(max-width: $px-media-lg){
+		@content;
+	}
+}
+
+// Hover 
+@mixin px-hover {
+	&:hover {
+		@content;
+	}
+}
