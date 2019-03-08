@@ -11,7 +11,7 @@ const { setup } = require('radiks-server');
 //   });
 
 setup({
-    mongoDBUrl: 'mongodb://graphite_admin:xFn1WMCkPD6F@cluster0-shard-00-00-nrzr1.mongodb.net:27017,cluster0-shard-00-01-nrzr1.mongodb.net:27017,cluster0-shard-00-02-nrzr1.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true'
+    mongoDBUrl: process.env.MONGO_URI
   }).then((RadiksController) => {
     app.use('/radiks', RadiksController);
   });
