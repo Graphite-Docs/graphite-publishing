@@ -4,8 +4,40 @@
 
 /* Apply Everywhere */
 body {
-  font-family: "Muli";
+  font-family: "Muli", sans-serif!important;
   color: #282828;
+  font-weight: 200!important;
+}
+
+#growl {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 10px;
+  right: 10px;
+  width: 40%;
+  max-height: 40%;
+  background: #282828;
+  border-radius: 8px;
+  -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 1s; /* Firefox < 16 */
+   -ms-animation: fadein 1s; /* Internet Explorer */
+    -o-animation: fadein 1s; /* Opera < 12.1 */
+       animation: fadein 1s;
+}
+
+#growl-message {
+  color: #fff;
+  text-align: center;
+  max-width: 80%;
+  max-height: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 0.85; }
 }
 
 img {
@@ -13,17 +45,26 @@ img {
   margin:auto;
 }
 
-h1, h2, h3, h4, h5 {
-  font-weight: 200;
+h1, h2, h3, h4, h5, button {
+  font-family: "Montserrat", serif!important;
+  font-weight: 200!important;
+}
+
+.ui.menu .item::before {
+  background: none!important;
 }
 
 .btn, .btn-large, .btn-small {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-
 .edit-icon {
   margin-left: 10px;
+}
+
+.ui.small.modal {
+  padding-top: 150px;
+  padding-left: 100px;
 }
 
 .smaller-button-text {
@@ -38,6 +79,12 @@ h1, h2, h3, h4, h5 {
   background: #282828;
   color: #fff;
   padding: 5px;
+}
+
+.accountLogo {
+  font-family: "Muli", sans-serif;
+  font-size: 24px;
+  font-weight: 200;
 }
 
 input:not([type]):focus:not([readonly]), input[type=text]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=url]:not(.browser-default):focus:not([readonly]), input[type=time]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=datetime]:not(.browser-default):focus:not([readonly]), input[type=datetime-local]:not(.browser-default):focus:not([readonly]), input[type=tel]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=search]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
@@ -179,6 +226,12 @@ nav .nav-wrapper a {
 }
 
 /* Posts Collection */
+
+.menuDrop {
+  position: relative;
+  left: -40px!important;
+  right: 40x!important;
+}
 
 .hidden-circle {
   height: 800px;
@@ -442,10 +495,10 @@ td, th {
 }
 
 .single-post-header {
-  position: fixed!important;
+  /* position: fixed!important;
   margin-top: -10px;
   z-index: 999!important;
-  height: 90px;
+  height: 90px; */
 }
 
 .post-title {
@@ -454,7 +507,7 @@ td, th {
 
 .note-toolbar {
   position: fixed!important;
-  top: 80px!important;
+  top: 60px!important;
   width: 100%!important;
   border-top: 1px solid #e2e2e2;
   z-index: 999;
@@ -483,13 +536,21 @@ td, th {
 
 .bottom-post-nav {
   position: fixed;
-  bottom: 0;
+  bottom: -10px;
   z-index: 980;
-  border-top: 1px solid #e2e2e2;
+  display: -ms-flexbox;
+  border: none!important;
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
+  border-radius: none!important;
+  border-top: 1px solid rgba(34,36,38,.15);
 }
 
 .end-fullscreen {
+  position: fixed;
+  right: 15px!important;
   top: 25px!important;
+  z-index: 999;
 }
 
 nav .input-field {

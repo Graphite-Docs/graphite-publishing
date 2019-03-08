@@ -5,6 +5,7 @@ import App from './components/App';
 import './styles/style.css';
 import 'semantic-ui-css/semantic.min.css';
 import * as serviceWorker from './registerServiceWorker';
+import { configure } from 'radiks';
 
 setGlobal({
     logo: "",
@@ -77,8 +78,16 @@ setGlobal({
     publishPost: false,
     publicPosts: [],
     link: "",
-    initialLoad: true
+    initialLoad: true, 
+    publications: [],
+    multiBlog: false, 
+    darkmode: false, 
+    fullscreen: false
 })
+
+configure({
+    apiServer: 'http://localhost:5000'
+  });
 
 ReactDOM.render(<App />, document.getElementById('root'));
 serviceWorker.register();

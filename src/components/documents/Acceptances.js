@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'reactn';
 import {
   isSignInPending,
   redirectToSignIn,
@@ -30,7 +30,7 @@ export default class Acceptances extends Component {
   }
 
   render() {
-    const { loading, confirmationDone } = this.props;
+    const { loading, confirmationDone } = this.global;
     let mainLink = window.location.href;
     let userToLoadFrom = mainLink.split('?')[1];
     return (

@@ -2,6 +2,7 @@ import {
   getFile,
   loadUserData
 } from 'blockstack';
+import { setGlobal, getGlobal } from 'reactn';
 import {
   getDate
 } from './helpers';
@@ -9,14 +10,14 @@ import axios from 'axios';
 import update from 'immutability-helper';
 
 export function loadPost() {
-    this.setState({postLoading: true})
-    let posts = this.state.myPosts;
+    setGlobal({postLoading: true})
+    let posts = getGlobal().myPosts;
     const thisPost = posts.find((post) => { return post.id === window.location.pathname.split('/post/')[1]});
     let index = thisPost && thisPost.id;
     function findObjectIndex(post) {
         return post.id === index;
     }
-    this.setState({index: posts.findIndex(findObjectIndex)})
+    setGlobal({index: posts.findIndex(findObjectIndex)})
     setTimeout(this.loadSingle, 200);
 }
 
@@ -25,7 +26,7 @@ export function loadSingle() {
 
   getFile(fullFile, {decrypt: true})
    .then((fileContents) => {
-      this.setState({
+      setGlobal({
         title: JSON.parse(fileContents || '{}').title,
         content: JSON.parse(fileContents || '{}').content,
         createdDate: JSON.parse(fileContents || '{}').createdDate,
@@ -36,8 +37,8 @@ export function loadSingle() {
      })
    })
    .then(() => {
-     this.setState({postLoading: false})
-     let markupStr = this.state.content;
+     setGlobal({postLoading: false})
+     let markupStr = getGlobal().content;
      if(markupStr !=="") {
        window.$('.summernote').summernote('code', markupStr);
      }
@@ -48,7 +49,7 @@ export function loadSingle() {
 }
 
 export function handleTitleChange(e) {
-  this.setState({
+  setGlobal({
     title: e.target.value,
     editing: true,
   });
@@ -57,13 +58,13 @@ export function handleTitleChange(e) {
 }
 
 export function handlePostURL(e) {
-  this.setState({ postURL: e.target.value });
+  setGlobal({ postURL: e.target.value });
 }
 
 export function onSwitchClick(e) {
   const target = e.target;
   const value = target.type === 'checkbox' ? target.checked : target.value;
-  this.setState({ publishPost: value })
+  setGlobal({ publishPost: value })
 }
 
 export function handleFeaturedDrop(files) {
@@ -80,7 +81,7 @@ export function handleFeaturedDrop(files) {
        this.handleDropRejected();
        console.log("file too large")
      }else {
-       this.setState({featuredImg: object.link, editing: true});
+       setGlobal({featuredImg: object.link, editing: true});
      }
    };
    reader.readAsDataURL(file);
@@ -92,58 +93,58 @@ export function handleSavePost() {
       var item = paras[i];
       item.style.color = '#000';
     }
-  this.setState({ loading: true });
+  setGlobal({ loading: true });
   const object = {};
   const objectTwo = {};
   object.id = window.location.pathname.split('/post/')[1];
   object.author = loadUserData().username;
-  object.title = this.state.title;
+  object.title = getGlobal().title;
   object.tags = [];
   object.wordcount = 0;
   object.forReview = false;
   object.needsEdits = false;
-  object.createdDate = this.state.createdDate;
+  object.createdDate = getGlobal().createdDate;
   object.lastUpdated = getDate();
-  object.url = this.state.postURL.replace(/\s+/, "-");
-  object.link = window.location.origin + '/sites/' + this.state.ownerBlockstackId + '/public/' + window.location.pathname.split('/post/')[1];
-  object.featureImg = this.state.featuredImg;
-  if(this.state.publishPost === true) {
+  object.url = getGlobal().postURL.replace(/\s+/, "-");
+  object.link = window.location.origin + '/sites/' + getGlobal().ownerBlockstackId + '/public/' + window.location.pathname.split('/post/')[1];
+  object.featureImg = getGlobal().featuredImg;
+  if(getGlobal().publishPost === true) {
     object.status = "Published";
     objectTwo.status = "Published";
-    this.setState({ status: "Published" });
+    setGlobal({ status: "Published" });
   } else {
     object.status = "Draft";
     objectTwo.status = "Draft";
-    this.setState({ status: "Draft" });
+    setGlobal({ status: "Draft" });
   }
-  object.publishPost = this.state.publishPost;
+  object.publishPost = getGlobal().publishPost;
   objectTwo.id = window.location.pathname.split('/post/')[1];
-  objectTwo.link = window.location.origin + '/sites/' + this.state.ownerBlockstackId + '/public/' + window.location.pathname.split('/post/')[1];
+  objectTwo.link = window.location.origin + '/sites/' + getGlobal().ownerBlockstackId + '/public/' + window.location.pathname.split('/post/')[1];
   objectTwo.author = loadUserData().username;
-  objectTwo.title = this.state.title;
-  objectTwo.content = this.state.content || "";
+  objectTwo.title = getGlobal().title;
+  objectTwo.content = getGlobal().content || "";
   objectTwo.shortDescription = "";
   objectTwo.tags = [];
-  objectTwo.featureImg = this.state.featuredImg;
-  objectTwo.url = this.state.postURL.replace(/\s+/, "-");
+  objectTwo.featureImg = getGlobal().featuredImg;
+  objectTwo.url = getGlobal().postURL.replace(/\s+/, "-");
   objectTwo.wordcount = 0;
   objectTwo.forReview = false;
   objectTwo.needsEdits = false;
-  objectTwo.createdDate = this.state.createdDate
-  objectTwo.publishPost = this.state.publishPost;
+  objectTwo.createdDate = getGlobal().createdDate
+  objectTwo.publishPost = getGlobal().publishPost;
   objectTwo.lastUpdated = getDate();
-  const index = this.state.index;
-  const updatedPost = update(this.state.myPosts, {$splice: [[index, 1, object]]});
-  this.setState({singlePost: objectTwo, myPosts: updatedPost });
+  const index = getGlobal().index;
+  const updatedPost = update(getGlobal().myPosts, {$splice: [[index, 1, object]]});
+  setGlobal({singlePost: objectTwo, myPosts: updatedPost });
   setTimeout(this.savePostsCollection, 300);
 }
 
 export function handleContentChange(props) {
-  this.setState({ content: props, editing: true });
+  setGlobal({ content: props, editing: true });
 }
 
 export function loadSinglePublic() {
-  this.setState({ loading: true });
+  setGlobal({ loading: true });
   const url = 'https://gaia-gateway.com';
   const userToLoadFrom = window.location.href.split('/sites/')[1].split('/')[0];
   const fullFile = 'public/' + window.location.href.split('/public/')[1] + '.json';
@@ -157,7 +158,7 @@ export function loadSinglePublic() {
   }
   axios.get(url + '/' + userToLoadFrom + '/' + origin + '/' + fullFile)
   .then((response) => {
-     this.setState({
+     setGlobal({
        title: response.data.title,
        content: response.data.content,
        author: response.data.author,
@@ -176,18 +177,18 @@ export function loadSinglePublic() {
     var data, template;
 
     data = {
-      "title" : this.state.title,
-      "content" : this.state.content,
-      "author" : this.state.author,
-      "published" : this.state.lastUpdated,
-      "featuredImg" : this.state.featuredImg
+      "title" : getGlobal().title,
+      "content" : getGlobal().content,
+      "author" : getGlobal().author,
+      "published" : getGlobal().lastUpdated,
+      "featuredImg" : getGlobal().featuredImg
     }
-    template = window.Handlebars.compile(this.state.postHTML);
+    template = window.Handlebars.compile(getGlobal().postHTML);
     window.$('#designed-post').html(template(data));
-    window.$('#designed-post-content').html(this.state.content);
+    window.$('#designed-post-content').html(getGlobal().content);
     })
     .then(() => {
-      this.setState({ loading: false})
+      setGlobal({ loading: false})
     })
    .catch(error => {
      console.log(error);

@@ -3,18 +3,19 @@ import {
   putFile,
   getFile
 } from 'blockstack';
+import { setGlobal, getGlobal } from 'reactn';
 const { getPublicKeyFromPrivate } = require('blockstack');
 const { encryptECIES } = require('blockstack/lib/encryption');
 const { decryptECIES } = require('blockstack/lib/encryption');
 
 export function checkForLatest() {
-  this.setState({ checking: true });
-  if(this.state.logging === true) {
+  setGlobal({ checking: true });
+  if(getGlobal().logging === true) {
     console.log("Polling teammates...")
   }
-    if(this.state.editing === false) {
-      const { team, count } = this.state;
-      if(this.state.logging === true) {
+    if(getGlobal().editing === false) {
+      const { team, count } = getGlobal();
+      if(getGlobal().logging === true) {
         console.log("Team length greater than count?");
         console.log(team.length > count);
       }
@@ -23,59 +24,59 @@ export function checkForLatest() {
         const options = { username: user, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false };
         const privateKey = loadUserData().appPrivateKey;
         if(loadUserData().username !== user) {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log('Checking file from: ' + team[count].name);
           }
           const file = getPublicKeyFromPrivate(loadUserData().appPrivateKey) + '.json';
           getFile(file, options)
             .then((fileContents) => {
               if(fileContents){
-                if(this.state.logging === true) {
-                  console.log('Newer file? ' + JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > this.state.lastUpdated);
+                if(getGlobal().logging === true) {
+                  console.log('Newer file? ' + JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > getGlobal().lastUpdated);
                 }
-                if(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > this.state.lastUpdated) {
-                  if(this.state.logging === true) {
+                if(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).lastUpdated > getGlobal().lastUpdated) {
+                  if(getGlobal().logging === true) {
                     console.log('Setting teammate with the most recent file: ' + user);
                   }
-                  this.setState({
+                  setGlobal({
                     teamMateMostRecent: user,
-                    count: this.state.count + 1
+                    count: getGlobal().count + 1
                   });
                   setTimeout(this.checkForLatest, 300);
                 } else {
-                  this.setState({ count: this.state.count + 1 });
+                  setGlobal({ count: getGlobal().count + 1 });
                   setTimeout(this.checkForLatest, 300);
                 }
               } else {
-                if(this.state.logging === true) {
+                if(getGlobal().logging === true) {
                   console.log('No file found');
                 }
-                this.setState({ count: this.state.count + 1 });
+                setGlobal({ count: getGlobal().count + 1 });
                 setTimeout(this.checkForLatest, 300);
               }
             })
             .catch(error => {
               console.log(error);
-              this.setState({ count: this.state.count + 1 });
+              setGlobal({ count: getGlobal().count + 1 });
               setTimeout(this.checkForLatest, 300);
             })
         } else {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("Teammate to be loaded is logged in user");
           }
-          this.setState({ count: this.state.count + 1 });
+          setGlobal({ count: getGlobal().count + 1 });
           setTimeout(this.checkForLatest, 300);
         }
       } else {
-        if(this.state.inviter === "" || this.state.inviter === undefined) {
-          let teamIds = this.state.team.map(a => a.blockstackId);
+        if(getGlobal().inviter === "" || getGlobal().inviter === undefined) {
+          let teamIds = getGlobal().team.map(a => a.blockstackId);
           if(teamIds.includes(loadUserData().username)) {
             this.setLoadedFile();
           } else {
             this.loadInviteStatus();
           }
         } else {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("All done.")
           }
           this.setLoadedFile();
@@ -88,10 +89,10 @@ export function checkForLatest() {
 }
 
 export function setLoadedFile() {
-  const { teamMateMostRecent } = this.state;
-  this.setState({ count: 0 });
+  const { teamMateMostRecent } = getGlobal();
+  setGlobal({ count: 0 });
   if(teamMateMostRecent !== "") {
-    if(this.state.logging === true) {
+    if(getGlobal().logging === true) {
       console.log('There is a more recent file from: ' + teamMateMostRecent);
     }
     let user = teamMateMostRecent;
@@ -101,7 +102,7 @@ export function setLoadedFile() {
     getFile(file, options)
       .then((fileContents) => {
         if(fileContents){
-          this.setState({
+          setGlobal({
             accountName: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).accountName,
             ownerBlockstackId: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).ownerBlockstackId,
             ownerEmail: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).ownerEmail,
@@ -120,7 +121,7 @@ export function setLoadedFile() {
           })
           setTimeout(this.accountDetails, 300);
         } else {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log('No file found');
           }
         }
@@ -129,61 +130,61 @@ export function setLoadedFile() {
         console.log(error);
       })
   } else {
-    this.setState({ checking: false })
+    setGlobal({ checking: false })
     setTimeout(this.accountDetails, 300)
   }
 }
 
 export function saveToTeam() {
-  const { team, count } = this.state;
+  const { team, count } = getGlobal();
     if(team.length > count) {
       let user = team[count].name;
       let pubKey = team[count].key;
-      if(this.state.logging === true) {
+      if(getGlobal().logging === true) {
         console.log('Saving to ' + user);
       }
       if(loadUserData().username !== user) {
         if(pubKey) {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("Here's the public key: ");
             console.log(team[count].key);
           }
-          const data = this.state.accountDetails;
+          const data = getGlobal().accountDetails;
           const encryptedData = JSON.stringify(encryptECIES(pubKey, JSON.stringify(data)));
           const file = pubKey + '.json';
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log(file);
           }
           putFile(file, encryptedData, {encrypt: false})
             .then(() => {
-              if(this.state.logging === true) {
+              if(getGlobal().logging === true) {
                 console.log("Shared encrypted file ");
               }
-              this.setState({ count: count + 1 });
+              setGlobal({ count: count + 1 });
               setTimeout(this.saveToTeam, 300)
             })
             .catch(error => {
               console.log(error)
             })
         } else {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("No key yet");
           }
-          this.setState({ count: count + 1 });
+          setGlobal({ count: count + 1 });
           setTimeout(this.saveToTeam, 300)
         }
       } else {
-        if(this.state.logging === true) {
+        if(getGlobal().logging === true) {
           console.log("Teammate is logged in user");
         }
-        this.setState({ count: count + 1 });
+        setGlobal({ count: count + 1 });
         setTimeout(this.saveToTeam, 300)
       }
     } else {
-      if(this.state.logging === true) {
+      if(getGlobal().logging === true) {
         console.log("Everyone synced.");
       }
-      this.setState({ count: 0, newTeammateId: "", newTeammateKey: "", newTeammateName: "", newTeammateRole: "", newTeammateEmail: "", newTeammateBlockstackId: "" });
+      setGlobal({ count: 0, newTeammateId: "", newTeammateKey: "", newTeammateName: "", newTeammateRole: "", newTeammateEmail: "", newTeammateBlockstackId: "" });
       setTimeout(this.loadAccount, 500);
     }
 }
@@ -191,14 +192,14 @@ export function saveToTeam() {
 export function loadBasicInviteInfo() {
   let privateKey = loadUserData().appPrivateKey;
   let file = getPublicKeyFromPrivate(loadUserData().appPrivateKey) + '.json';
-  const options = { username: this.state.inviter, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false}
+  const options = { username: getGlobal().inviter, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false}
   getFile(file, options)
     .then((fileContents) => {
-      if(this.state.logging === true) {
-        console.log(this.state.inviter);
+      if(getGlobal().logging === true) {
+        console.log(getGlobal().inviter);
         console.log(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))))
       }
-      this.setState({
+      setGlobal({
         accountName: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).accountName,
         ownerBlockstackId: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).ownerBlockstackId,
         ownerEmail: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).ownerEmail,
@@ -216,13 +217,13 @@ export function loadBasicInviteInfo() {
       })
     })
     .then(() => {
-      if(this.state.team.length > 0) {
-        if(this.state.logging === true) {
-          console.log(this.state.team.length);
+      if(getGlobal().team.length > 0) {
+        if(getGlobal().logging === true) {
+          console.log(getGlobal().team.length);
         }
         this.checkForLatest();
       } else {
-        if(this.state.logging === true) {
+        if(getGlobal().logging === true) {
           console.log("End of team sync")
         }
       }

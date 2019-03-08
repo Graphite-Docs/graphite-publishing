@@ -2,10 +2,11 @@ import {
   getFile,
   loadUserData
 } from 'blockstack';
+import { setGlobal, getGlobal } from 'reactn';
 const { decryptECIES } = require('blockstack/lib/encryption');
 
 export function confirmAcceptance() {
-  this.setState({ loading: true });
+  setGlobal({ loading: true });
   let mainLink = window.location.href;
   let userToLoadFrom = mainLink.split('?')[1];
   let fileRoot = mainLink.split('?')[2];
@@ -16,7 +17,7 @@ export function confirmAcceptance() {
   getFile(fileRoot + '/inviteaccepted.json', options)
     .then((fileContents) => {
       console.log(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))))
-      this.setState({
+      setGlobal({
         newTeammateId: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteeId,
         newTeammateName: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteeName,
         newTeammateRole: JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))).inviteeRole,
@@ -30,13 +31,13 @@ export function confirmAcceptance() {
       })
     })
     .then(() => {
-      let team = this.state.team;
-      const thisMate= team.find((mate) => { return mate.id === this.state.newTeammateId});
+      let team = getGlobal().team;
+      const thisMate= team.find((mate) => { return mate.id === getGlobal().newTeammateId});
       let index = thisMate && thisMate.id;
       function findObjectIndex(mate) {
           return mate.id === index;
       }
-      this.setState({
+      setGlobal({
         teammateIndex: team.findIndex(findObjectIndex)});
       setTimeout(this.updateRole, 300);
     })

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'reactn';
 import {Link} from 'react-router-dom';
 import Header from '../Header';
 import Onboarding from './Onboarding';
@@ -79,7 +79,7 @@ export default class Design extends Component {
   }
 
   render() {
-    const { team, onboardingComplete, paymentDue, accountName, logo, editing } = this.props;
+    const { team, onboardingComplete, paymentDue, accountName, logo, editing } = this.global;
     let loggedInUser = team.filter(obj => {return obj.blockstackId === loadUserData().username});
     let openBracket = "{{";
     let closedBracket = "}}";

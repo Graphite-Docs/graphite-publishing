@@ -2,6 +2,10 @@ import {
   getFile,
   putFile,
 } from "blockstack";
+import { setGlobal } from 'reactn';
+import { loadMyPublishedPosts, deleteAllPosts } from './posts';
+import  Publication  from '../models/publications';
+import { loadUserData } from "blockstack/lib/auth/authApp";
 
 export function getDate() {
   const today = new Date();
@@ -16,9 +20,9 @@ export function loadLogo() {
   getFile("logo.json", {decrypt: true})
    .then((fileContents) => {
      if(JSON.parse(fileContents || '{}')) {
-       this.setState({ logo: JSON.parse(fileContents || '{}').link });
+       setGlobal({ logo: JSON.parse(fileContents || '{}').link });
      } else {
-       this.setState({ logo: ""})
+       setGlobal({ logo: ""})
      }
    })
     .catch(error => {
@@ -26,62 +30,28 @@ export function loadLogo() {
     });
 }
 
-export function loadAccount() {
-  this.setState({ editing: false, count: 0, initialLoad: true });
-  getFile("account.json", {decrypt: true})
-    .then((fileContents) => {
-      if(fileContents){
-        if(this.state.logging === true) {
-          // console.log(JSON.parse(fileContents || '{}'))
-        }
-        this.setState({
-          accountName: JSON.parse(fileContents || '{}').accountName,
-          ownerBlockstackId: JSON.parse(fileContents || '{}').ownerBlockstackId,
-          ownerEmail: JSON.parse(fileContents || '{}').ownerEmail,
-          accountId: JSON.parse(fileContents || '{}').accountId,
-          signUpDate: JSON.parse(fileContents || '{}').signUpDate,
-          trialPeriod: JSON.parse(fileContents || '{}').trialPeriod,
-          accountType: JSON.parse(fileContents || '{}').accountType,
-          paymentDue: JSON.parse(fileContents || '{}').paymentDue,
-          onboardingComplete: JSON.parse(fileContents || '{}').onboardingComplete,
-          logo: JSON.parse(fileContents || '{}').logo,
-          newDomain: JSON.parse(fileContents || '{}').newDomain,
-          team: JSON.parse(fileContents || '{}').team || [],
-          integrations: JSON.parse(fileContents || '{}').integrations || [],
-          lastUpdated: JSON.parse(fileContents || '{}').lastUpdated
-        })
-      } else {
-        this.setState({
-          accountName: "",
-          ownerBlockstackId: "",
-          ownerEmail: "",
-          accountId: "",
-          signUpDate: "",
-          trialPeriod: false,
-          accountType: "",
-          paymentDue: false,
-          onboardinComplete: false,
-          logo: "",
-          newDomain: "",
-          team: [],
-          integrations: [],
-          lastUpdated: ""
-        });
-      }
+export async function loadAccount() {
+  setGlobal({ editing: false, count: 0, initialLoad: true });
+  const publications = await Publication.fetchList({ creator: loadUserData().username });
+  console.log(publications);
+  publications.length > 0 ? setGlobal({onboardingComplete: true, loading: false, initialLoad: false}) : setGlobal({loading: false, initialLoad: false})
+  if(publications.length === 1) {
+    let publication = await publications[0];
+    console.log(publication);
+    await setGlobal({
+      accountName: publication.attrs.name,
+      ownerBlockstackId: publication.attrs.creator,
+      ownerEmail: publication.attrs.creatorEmail,
+      accountId: publication._id,
+      signUpDate: publication.attrs.createdAt,
+      onboardingComplete: true,
+      logo: publication.attrs.logo,
+      newDomain: publication.attrs.newDomain
     })
-    .then(() => {
-      this.setState({initialLoad: false});
-      if(this.state.accountName === "" || this.state.accountName === undefined) {
-        console.log("loading invite status");
-        this.loadInviteStatus();
-      }
-    })
-    .then(() => {
-      this.loadMyPublishedPosts();
-    })
-    .catch(error => {
-      console.log(error);
-    })
+  } else {
+    await setGlobal({ publications: publications, loading: false, initialLoad: false, onboardingComplete: true, multiBlog: true})
+  }
+  loadMyPublishedPosts();
 }
 
 export function clearAccountData() {
@@ -99,7 +69,7 @@ export function clearAccountData() {
       console.log(error);
     })
 
-  this.deleteAllPosts();
+  deleteAllPosts();
 }
 
 export function copyLink() {

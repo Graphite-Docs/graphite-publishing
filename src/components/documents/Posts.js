@@ -1,19 +1,20 @@
-import React, { Component } from "react";
+import React, { Component } from "reactn";
 import {Link} from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Header from '../Header';
 import Loading from '../Loading';
-// import Joyride from "react-joyride";
-
+import MultiBlog from '../MultiBlog';
+import {Header as SemanticHeader } from 'semantic-ui-react';
+import { Container, Input, Grid, Popup, Button, Table, Icon, Modal } from 'semantic-ui-react';
+const posts = require('../helpers/posts')
 
 export default class Posts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       post: {},
+      modalOpen: false
     }
-
-    this.deleteModal = this.deleteModal.bind(this);
   }
 
   checkOnboarding = () => {
@@ -31,12 +32,8 @@ export default class Posts extends Component {
     window.$('.tap-target').tapTarget('close')
   }
 
-  deleteModal(props) {
-    document.getElementsByClassName("modal")[0].style.display = "block";
-    document.getElementsByClassName("modal")[0].style.top = "20%";
-    document.getElementsByClassName("modal")[0].style.zIndex = "999";
-    this.setState({ post: props, })
-    // window.$('#deleteModal').modal('open');
+  deleteModal = (props) =>{
+    this.setState({ post: props, modalOpen: true })
   }
 
   closeModal() {
@@ -44,197 +41,121 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { onboardingComplete, paymentDue, accountName, logo, filteredPosts, initialLoad } = this.props;
-//     const steps = [
-//   {
-//     content: <h2>Welcome to Graphite Publishing! Let'{/*'*/}s take a quick tour.</h2>,
-//     placement: "center",
-//     disableBeacon: true,
-//     styles: {
-//       options: {
-//         zIndex: 100000
-//       }
-//     },
-//     locale: {
-//       skip: "Skip tour"
-//     },
-//     target: "body"
-//   },
-//   {
-//     content: <p>This is your Posts page. All of your published and draft posts will show here. The Status column will show a "D" for draft posts and a "P" for published posts.</p>,
-//     placement: "bottom",
-//     disableBeacon: true,
-//     styles: {
-//       options: {
-//         zIndex: 100000
-//       }
-//     },
-//     locale: {
-//       skip: "Skip tour"
-//     },
-//     target: "table"
-//   },
-//   {
-//     content: <p>Click the plus button to create a new draft post. Don't worry, it won't be published until you say so.</p>,
-//     placement: "top",
-//     disableBeacon: true,
-//     styles: {
-//       options: {
-//         zIndex: 100000
-//       }
-//     },
-//     locale: {
-//       skip: "Skip tour"
-//     },
-//     target: "#add-button"
-//   },
-//   {
-//     content: <p>Here is your quick navigation. You access your Posts page, the Design page, and your Settings page. The Design page is where you can design your public home page and public posts page. Settings is where you will find your public URL.</p>,
-//     placement: "top",
-//     disableBeacon: true,
-//     styles: {
-//       options: {
-//         zIndex: 100000
-//       }
-//     },
-//     locale: {
-//       skip: "Skip tour"
-//     },
-//     target: ".nav-wrapper"
-//   }
-// ]
-
-
-    if(initialLoad) {
-      if(onboardingComplete && !paymentDue) {
-        return (
-          <div>
-            <Header
-              handleSignOut={this.props.handleSignOut}
-              clearAccountData={this.clearAccountData}
-              onboardingComplete={onboardingComplete}
-              accountName={accountName}
-              logo={logo}
-            />
-            <div className="posts">
-
-                <div className="container project-pane">
-                  <Loading />
-                </div>
-              </div>
-          </div>
-        );
-      } else {
-        return (
-          <Onboarding />
-        )
-      }
+    const { multiBlog, loading, onboardingComplete, paymentDue, filteredPosts, initialLoad  } = this.global;
+    if(loading) {
+      return (
+        <Loading />
+      )
     } else {
-      if(onboardingComplete && !paymentDue) {
-        return (
-          <div>
-            <Header
-              handleSignOut={this.props.handleSignOut}
-              clearAccountData={this.clearAccountData}
-              onboardingComplete={onboardingComplete}
-              accountName={accountName}
-              logo={logo}
-            />
-
-            <div className="posts">
-
-                <div className="container project-pane">
-
-                  <div>
-                  <div className="row">
-                    <div className="col s12 m6">
-                      <h5>Posts ({filteredPosts.length})
-                      {/*
-                        {appliedFilter === false ? <span className="filter"><a data-activates="slide-out" className="menu-button-collapse button-collapse">Filter</a></span> : <span className="hide"><a data-activates="slide-out" className="menu-button-collapse button-collapse">Filter<i className="filter-icon material-icons">arrow_drop_down</i></a></span>}
-                        {appliedFilter === true ? <span className="filter"><a className="card filter-applied" onClick={() => this.setState({ appliedFilter: false, filteredValue: this.state.value})}>Clear</a></span> : <div />}
-                      */}
-                       <a id="add-button" onClick={this.props.newPost} className="btn-floating btn-small black">
-                        <i className="large material-icons">add</i>
-                       </a>
-                      </h5>
-                    </div>
-                    <div className="col right s12 m6">
-                      <form className="searchform">
-                        <fieldset className=" form-group searchfield">
-                        <label>Search</label>
-                        <input type="text" className="searchinput" placeholder="Search Posts" onChange={this.props.filterList}/>
-                        </fieldset>
-                        </form>
-                    </div>
-                  </div>
-
-                  {/* Feature Discovery
-                  <div className={this.state.featureDiscovery}>
-                    <div className="feature-discovery">
-                    	<div className="hidden-circle">
-                    		<p className="feature-discovery-p">It looks like you </p>
-                    		<div className="hidden-wave"></div>
-                    	</div>
-                    </div>
-                  </div>*/}
-                  {/* End Feature Discovery */}
-
-                    <table className="bordered">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Title</th>
-                          <th>Author</th>
-                          <th>Date</th>
-                          <th>Status</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                    {
-                      filteredPosts.map(post => {
-                        let statusButton;
-                        if(post.status === "Published") {
-                          statusButton = "btn-floating center-align btn-small waves-effect waves-light green darken-2";
-                        } else {
-                          statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
-                        }
-                      return(
-                        <tr key={post.id}>
-                          <td><input type="checkbox" value={post.id} id={post.id} onChange={this.handleCheckbox} /><label htmlFor={post.id}></label></td>
-                          <td><Link to={'/post/' + post.id}>{post.title.length > 30 ? post.title.substring(0,30)+"..." :  post.title}</Link></td>
-                          <td>{post.author}</td>
-                          <td>{post.createdDate}</td>
-                          <td><p className={statusButton}>{post.status.charAt(0)}</p></td>
-                          <td><a onClick={() => this.deleteModal(post)}><i className="material-icons red-text delete-button">delete</i></a></td>
-                        </tr>
-                      );
-                      })
-                    }
-                    </tbody>
-                  </table>
-
-                  {/* Delete Post Modal */}
-                  <div id="deleteModal" className="modal">
-                   <div className="modal-content">
-                     <h4>Delete Post</h4>
-                     <p>Are you sure you want to delete <span className="bigger">{this.state.post.title}</span>?</p>
-                   </div>
-                   <div className="modal-footer">
-                     <a onClick={() => this.props.loadPostToDelete(this.state.post)} className="btn red">Delete</a>
-                     <a onClick={this.closeModal} className="modal-close btn grey">Cancel</a>
-                   </div>
-                 </div>
-                  {/* End Delete Post Modal */}
-                  </div>
-                </div>
-              </div>
-          </div>
-        );
+      if(initialLoad) {
+        if(onboardingComplete && !paymentDue) {
+          return (
+            <div>
+                <Loading />
+            </div>
+          );
+        } else {
+          return (
+            <Onboarding />
+          )
+        }
       } else {
-        return (
-          <Onboarding />
-        )
+        if(onboardingComplete) {
+          if(multiBlog) {
+            return(
+              <MultiBlog />
+            )    
+          } else {
+            return (
+              <div>
+                <Header />
+                <Container style={{marginTop:"65px"}}>
+                    <div>
+                      <div>
+                        <Grid stackable columns={2}>
+                          <Grid.Column>
+                            <h2><span style={{marginRight: "10px"}}>Posts ({filteredPosts.length})</span>
+                              <Button onClick={posts.newPost} style={{marginLeft: "10px!important"}} secondary>New</Button>
+                              {/*appliedFilter === false ? <span className="filter"><a onClick={() => this.setState({visible: true})} style={{fontSize:"16px", marginLeft: "10px", cursor: "pointer"}}>Filter<Icon name='caret down' /></a></span> : <span className="hide"><a>Filter</a></span>*/}
+                              {/*appliedFilter === true ? <span className="filter"><Label style={{fontSize:"16px", marginLeft: "10px"}} as='a' basic color='grey' onClick={gdocs.clearFilter}>Clear</Label></span> : <div />*/}
+                            </h2>
+                          </Grid.Column>
+                          <Grid.Column>
+                            <Input onChange={posts.filterList} icon='search' placeholder='Search...' />
+                          </Grid.Column>
+                        </Grid>
+    
+                        <Table unstackable style={{borderRadius: "0"}}>
+                          <Table.Header>
+                            <Table.Row>
+                              <Table.HeaderCell style={{borderRadius: "0", border: "none"}}>Title</Table.HeaderCell>
+                              <Table.HeaderCell style={{borderRadius: "0", border: "none"}}>Author</Table.HeaderCell>
+                              <Table.HeaderCell style={{borderRadius: "0", border: "none"}}>Date</Table.HeaderCell>
+                              <Popup trigger={
+                                <Table.HeaderCell style={{borderRadius: "0", border: "none"}}>Status</Table.HeaderCell>
+                                } 
+                                content='P = Published, D = Draft' 
+                              />
+                              <Table.HeaderCell style={{borderRadius: "0", border: "none"}}></Table.HeaderCell>
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                        {
+                          filteredPosts.map(post => {
+                            let statusButton;
+                            if(post.status === "Published") {
+                              statusButton = "btn-floating center-align btn-small waves-effect waves-light green darken-2";
+                            } else {
+                              statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
+                            }
+                          return(
+                            <Table.Row key={post.id}>
+                              <Table.Cell><Link to={'/post/' + post.id}>{post.title.length > 30 ? post.title.substring(0,30)+"..." :  post.title}</Link></Table.Cell>
+                              <Table.Cell>{post.author}</Table.Cell>
+                              <Table.Cell>{post.createdDate}</Table.Cell>
+                              <Table.Cell><p className={statusButton}>{post.status.charAt(0)}</p></Table.Cell>
+                              <Table.Cell>
+                              <Modal open={this.state.modalOpen} trigger={
+                                    <a onClick={() => this.deleteModal(post)}><Icon name='trash alternate outline' /></a>
+                                  } basic size='small'>
+                                    <SemanticHeader icon='trash alternate outline' content={this.state.post.title ? 'Delete ' + this.state.post.title + '?' : 'Delete document?'} />
+                                    <Modal.Content>
+                                      <p>
+                                        The post cannot be restored.
+                                      </p>
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                      <div>
+                                          <div>
+                                            <Button onClick={() => this.setState({ modalOpen: false })} basic color='red' inverted>
+                                              <Icon name='remove' /> No
+                                            </Button>
+                                            <Button onClick={() => posts.loadPostToDelete(this.state.post)} color='red' inverted>
+                                              <Icon name='checkmark' /> Delete
+                                            </Button>
+                                          </div>
+                                      </div>
+                                    </Modal.Actions>
+                                </Modal>
+                              </Table.Cell>
+                            </Table.Row>
+                          );
+                          })
+                        }
+                        </Table.Body>
+                      </Table>
+                      </div>
+                    </div>
+                  
+                  </Container>
+              </div>
+            );
+          }
+        } else {
+          return (
+            <Onboarding />
+          )
+        }
       }
     }
   }

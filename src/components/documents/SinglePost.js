@@ -1,28 +1,26 @@
-import React, { Component } from "react";
+import React, { Component } from "reactn";
 import Loading from '../Loading';
 import Dropzone from 'react-dropzone';
 import Onboarding from './Onboarding';
+import { loadAccount } from "../helpers/helpers";
+import { Icon, Input, Button, Divider, Sidebar, Menu, Image, Checkbox } from 'semantic-ui-react';
+import {Menu as MainMenu} from 'semantic-ui-react';
+import { Header as SemanticHeader } from 'semantic-ui-react';
+const ui = require('../helpers/postui');
+const single = require('../helpers/singlepost.js');
 const wordcount = require('wordcount');
 
 export default class SinglePost extends Component {
   constructor(props) {
     super(props);
     this.state={
-      fullscreen: false,
-      darkmode: false
+      visible: false
     }
-    this.expand = this.expand.bind(this);
-    this.darkMode = this.darkMode.bind(this);
   }
 
-  componentDidMount() {
-    window.$('.sidenav').sidenav({ edge: 'right'});
-    window.$('.modal').modal();
-    window.$('.summernote').summernote({
-      placeholder: 'Write something great...'
-    });
-    this.props.loadMyPublishedPosts();
-    setTimeout(this.props.loadPost, 1500);
+  async componentDidMount() {
+    await loadAccount();
+    await single.loadSingle();
 
     window.$('.summernote').summernote({
       callbacks: {
@@ -33,109 +31,18 @@ export default class SinglePost extends Component {
     });
     window.$('.summernote').on('summernote.change', function(we, contents, $editable) {
 
-      this.props.handleContentChange(contents);
-    }.bind(this));
-    window.$('.dropdown-trigger').dropdown();
+      single.handleContentChange(contents);
+    });
   }
 
-  expand() {
-    if(this.state.fullscreen === false) {
-      this.setState({fullscreen: true});
-      document.getElementsByClassName('note-toolbar')[0].style.display = 'none';
-      document.getElementsByClassName('single-post-header')[0].style.display = 'none';
-      document.getElementsByClassName('note-editor')[0].style.top = '50px';
-      document.getElementsByClassName('bottom-post-nav')[0].style.display = 'none';
-    } else {
-      this.setState({fullscreen: false});
-      document.getElementsByClassName('note-toolbar')[0].style.display = 'block';
-      document.getElementsByClassName('single-post-header')[0].style.display = 'block';
-      document.getElementsByClassName('note-editor')[0].style.top = '150px';
-      document.getElementsByClassName('bottom-post-nav')[0].style.display = 'block';
-    }
-  }
-
-  darkMode() {
-    if(this.state.darkmode === false) {
-      this.setState({ darkmode: true });
-      document.getElementsByClassName('main-container')[0].style.background = '#282828';
-      document.getElementsByClassName('single-post-header')[0].style.background = '#282828';
-      document.getElementsByClassName('single-post-header')[0].style.color = '#fff';
-      document.getElementById('search').style.color = '#fff';
-      document.getElementsByClassName('note-editor')[0].style.background = '#282828';
-      document.getElementsByClassName('note-editor')[0].style.background = '#282828';
-      document.getElementsByClassName('note-toolbar')[0].style.background = '#282828';
-      document.getElementsByClassName('note-editable')[0].style.background = '#282828';
-      document.getElementsByClassName('note-editable')[0].style.color = '#fff';
-      document.getElementsByClassName('bottom-post-nav')[0].style.color = '#fff';
-      document.getElementsByClassName('bottom-post-nav')[0].style.background = '#282828';
-      document.getElementsByClassName('subheader')[0].style.color = '#fff';
-      document.getElementsByClassName('subheader')[1].style.color = '#fff';
-      document.getElementById('search').style.background = '#282828';
-      document.getElementById('slide-out').style.background = '#282828';
-      document.getElementsByTagName("BODY")[0].style.background = '#282828';
-      var noteBtn = document.getElementsByClassName('note-btn');
-        for (var i = 0; i < noteBtn.length; ++i) {
-            var item = noteBtn[i];
-            item.style.background = '#282828';
-            item.style.color = '#fff';
-            item.style.border = 'none';
-        }
-
-      var paras = document.getElementsByTagName("p");
-        for (var b=0; b < paras.length; b++) {
-          var name = paras[b];
-          name.style.color = '#fff';
-        }
-
-      var bottomLinks = document.getElementsByClassName('bottom-nav-link');
-        for (var a = 0; a < bottomLinks.length; ++a) {
-            var ax = bottomLinks[a];
-            ax.style.color = '#fff';
-        }
-    } else {
-      this.setState({ darkmode: false });
-      document.getElementsByClassName('main-container')[0].style.background = '#fff';
-      document.getElementsByClassName('single-post-header')[0].style.background = '#fff';
-      document.getElementsByClassName('single-post-header')[0].style.color = '#000';
-      document.getElementById('search').style.color = '#000';
-      document.getElementsByClassName('note-editor')[0].style.background = '#fff';
-      document.getElementsByClassName('note-editor')[0].style.background = '#fff';
-      document.getElementsByClassName('note-toolbar')[0].style.background = '#fff';
-      document.getElementsByClassName('note-editable')[0].style.background = '#fff';
-      document.getElementsByClassName('note-editable')[0].style.color = '#000';
-      document.getElementsByClassName('bottom-post-nav')[0].style.color = '#000';
-      document.getElementsByClassName('bottom-post-nav')[0].style.background = '#fff';
-      document.getElementsByClassName('subheader')[0].style.color = '#000';
-      document.getElementsByClassName('subheader')[1].style.color = '#000';
-      document.getElementById('search').style.background = '#fff';
-      document.getElementById('slide-out').style.background = '#fff';
-      document.getElementsByTagName("BODY")[0].style.background = '#fff';
-      noteBtn = document.getElementsByClassName('note-btn');
-        for (i = 0; i < noteBtn.length; ++i) {
-            item = noteBtn[i];
-            item.style.background = '#fff';
-            item.style.color = '#000';
-            item.style.border = '1px solid #fff';
-        }
-
-        var paraEl = document.getElementsByTagName("p");
-          for (var c=0; c < paraEl.length; c++) {
-            var pName = paraEl[c];
-            pName.style.color = '#000';
-          }
-
-        bottomLinks = document.getElementsByClassName('bottom-nav-link');
-          for (a = 0; a < bottomLinks.length; ++a) {
-              ax = bottomLinks[a];
-              ax.style.color = '#000';
-          }
-    }
-  }
+  handleHideClick = () => this.setState({ visible: false })
+  handleShowClick = () => this.setState({ visible: true })
+  handleSidebarHide = () => this.setState({ visible: false })
 
 
   render() {
 
-      const { onboardingComplete, paymentDue, status, postLoading, loading, content, featuredImg, publishPost, editing, initialLoad } = this.props;
+      const { onboardingComplete, status, loading, content, featuredImg, publishPost, initialLoad, title } = this.global;
       const dropzoneStyle = {};
       let saveBtn;
       let saveBtnClass;
@@ -150,7 +57,7 @@ export default class SinglePost extends Component {
         saveBtnClass = "btn blue";
       }
       if(initialLoad) {
-        if(onboardingComplete && !paymentDue) {
+        if(onboardingComplete) {
           return (
             <div>
               <Loading />
@@ -162,113 +69,121 @@ export default class SinglePost extends Component {
           )
         }
       } else {
-        if(onboardingComplete && !paymentDue) {
+        if(onboardingComplete) {
           return (
             <div>
-            {
-              postLoading === true ?
-              <nav className="navbar-fixed single-post-header">
-                <div className="nav-wrapper">
-                  <Loading />
-                </div>
-              </nav> :
-              <nav className="navbar-fixed single-post-header">
-                <div className="nav-wrapper">
-                  <h3 className="post-nav-header">{editing === true ? <a href="#dirtyModal" className="modal-trigger brand-logo left"><i className="material-icons">arrow_back</i></a> : <a href="/posts" className="brand-logo left"><i className="material-icons">arrow_back</i></a>}</h3>
-                  <form className="left post-title">
-                    <div className="input-field">
-                      <input value={this.props.title} onChange={this.props.handleTitleChange} id="search" type="search" required />
-                      <label className="label-icon" htmlFor="search"><i className="dark-mode material-icons">edit</i></label>
-                    </div>
-                  </form>
-                  <ul className="right">
-                    {loading === true ? <span className="post-save-button"><button className="btn grey">Saving</button></span> : <span className="post-save-button"><button onClick={this.props.handleSavePost} className={saveBtnClass}>{saveBtn}</button></span>}
-                  </ul>
-                </div>
-              </nav>
-            }
+
+                <MainMenu className='item-menu' id="single-post-header" style={{ borderRadius: "0", background: "#fff", color: "#000" }}>
+                    <MainMenu.Item onClick={single.handleBack}>
+                      <Icon id="back-arrow" name='arrow left' />
+                    </MainMenu.Item>
+                    <MainMenu.Item>
+                    {
+                      title
+                      ?
+                      (title.length > 15 ? <Input value={title.substring(0,15)+"..."} /> : <Input value={title} />)
+                      :
+                      "Untitled..."
+                    }
+                  
+                    </MainMenu.Item>
+                    <MainMenu.Menu position='right'>
+                      <MainMenu.Item>
+                      {loading === true ? <span className="post-save-button"><Button className="btn grey">Saving</Button></span> : <span className="post-save-button"><Button onClick={single.handleSavePost} className={saveBtnClass}>{saveBtn}</Button></span>}
+                      </MainMenu.Item>
+                    </MainMenu.Menu>
+                </MainMenu>
 
               <div className="summernote"></div>
 
               {/*Side Nav*/}
-              <ul id="slide-out" className="sidenav">
-                <li><div>
-                  <div className="background">
-                    <a className="featured-margin subheader">Featured Image</a>
+
+              <Sidebar id='side-nav' style={{zIndex: "999"}} as={Menu} animation='overlay' icon='labeled' vertical visible={this.state.visible} width='wide' direction='right'>
+                <Icon id='side-nav-close' onClick={() => this.setState({ visible: false })} name='close' style={{float: "left", marginLeft: "15px", paddingTop: "15px", cursor: "pointer"}} />
+                <SemanticHeader style={{marginTop: "25px"}}>
+                  <h3 id='side-nav-heading'>Post Settings</h3>
+                </SemanticHeader>
+                <Divider />
+                <Menu.Item as='a'>
+                    <SemanticHeader id='side-nav-image-heading' as='h3'>Featured Image</SemanticHeader>
                     {featuredImg === "" ?
-                    <div className="center">
-                    <Dropzone
-                      style={dropzoneStyle}
-                      onDrop={ this.props.handleFeaturedDrop }
-                      accept="image/png,image/jpeg,image/jpg,image/tiff,image/gif"
-                      multiple={ false }
-                      onDropRejected={ this.handleDropRejected }>
-                      <button className="btn black">Upload/Change</button>
-                    </Dropzone>
-                    </div> :
-                    <div>
-                    <img className="post-featured" src={featuredImg} alt="featured"/>
-                    <div className="center">
-                    <Dropzone
-                      style={dropzoneStyle}
-                      onDrop={ this.props.handleFeaturedDrop }
-                      accept="image/png,image/jpeg,image/jpg,image/tiff,image/gif"
-                      multiple={ false }
-                      onDropRejected={ this.handleDropRejected }>
-                      <button className="btn black">Upload/Change</button>
-                    </Dropzone>
-                    </div>
-                    </div>
+                      <div className="center">
+                      <Dropzone
+                        style={dropzoneStyle}
+                        onDrop={ single.handleFeaturedDrop }
+                        accept="image/png,image/jpeg,image/jpg,image/tiff,image/gif"
+                        multiple={ false }
+                        onDropRejected={ this.handleDropRejected }>
+                        <Button secondary>Upload/Change</Button>
+                      </Dropzone>
+                      </div> :
+                      <div>
+                      <Image className="post-featured" src={featuredImg} alt="featured"/>
+                      <div className="center">
+                      <Dropzone
+                        style={dropzoneStyle}
+                        onDrop={ single.handleFeaturedDrop }
+                        accept="image/png,image/jpeg,image/jpg,image/tiff,image/gif"
+                        multiple={ false }
+                        onDropRejected={ this.handleDropRejected }>
+                        <Button secondary>Upload/Change</Button>
+                      </Dropzone>
+                      </div>
+                      </div>
                     }
-                  </div>
-                </div></li>
-                <li><div className="divider"></div></li>
-                <li><a className="subheader">Post URL</a></li>
-                <li><a>Coming soon...</a></li>
-                {/*postURL !== "" ? <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + postURL.replace(/\s+/, "-")} /></li> : <li className="container"><input onChange={this.props.handlePostURL} type="text" placeholder={'/' + this.props.title.replace(/\s+/, "-")} /></li>*/}
-                <li><div className="divider"></div></li>
-                <li><a className="subheader">Publish Post?</a></li>
-                <div className="pub-post switch">
-                  <label>
-                    False
-                    <input type="checkbox" onClick={this.props.onSwitchClick} checked={this.props.publishPost} />
-                    <span className="lever"></span>
-                    True
-                  </label>
-                </div>
-                </ul>
+                </Menu.Item>
+                <Divider />
+                <Menu.Item as='a'>
+                  <SemanticHeader id='side-nav-publish' as='h3'>Publish Post?</SemanticHeader>
+                    <Checkbox style={{padding: "10px"}} label="Publish" toggle onChange={single.onSwitchClick} checked={this.global.publishPost} />
+                </Menu.Item>
+                <Menu.Item id='side-nav-custom' as='a'>
+                  Custom Slug URLs, coming soon!
+                </Menu.Item>
+              </Sidebar>
+
               {/*End Side Nav*/}
 
-              {/* Dirty Detection */}
+              {/* Dirty Detection
               <div id="dirtyModal" className="modal">
                 <div className="modal-content">
                   <h4>Unsaved Changes</h4>
                   <p>You have unsaved changes. Do you want to save?</p>
                 </div>
                 <div className="modal-footer">
-                  <a onClick={this.props.handleSavePost} className="modal-close waves-effect waves-green btn-flat">Save</a>
+                  <a onClick={single.handleSavePost} className="modal-close waves-effect waves-green btn-flat">Save</a>
                   <a href="/posts" className="modal-close waves-effect waves-green btn-flat">Nope</a>
                 </div>
               </div>
-              {/*End Dirty Detection */}
+              End Dirty Detection */}
 
-              <nav className="bottom-post-nav">
-                <div className="nav-wrapper">
-                  <ul id="nav-mobile" className="right">
-                    <li><a data-target="slide-out" className="sidenav-trigger settings-btn bottom-nav-link"><i className="material-icons">settings</i></a></li>
-                    <li><a className='bottom-nav-link' onClick={this.expand}><i className="bottom-nav-link material-icons">fullscreen</i></a></li>
-                    <li><a className='bottom-nav-link' onClick={this.darkMode}><i className="bottom-nav-link material-icons">brightness_2</i></a></li>
-                    <li><a className='bottom-nav-link'>{wordcount(content)} words</a></li>
-                  </ul>
-                </div>
-              </nav>
+              <Menu style={{width: "100%"}} className='bottom-post-nav'>
+                <Menu.Menu position='right'>
+                <Menu.Item onClick={() => this.setState({ visible: true })} as='a' icon='settings'>
+                </Menu.Item>
 
-              {/*End focus mode */}
+                <Menu.Item as="a" onClick={ui.expand} icon="expand">
+                </Menu.Item>
+
+                <Menu.Item
+                  position='right'
+                  as="a"
+                  onClick={ui.darkMode}
+                  icon={this.global.darkmode ? "moon" : "moon outline"}
+                >
+                </Menu.Item>
+                <Menu.Item>
+                {wordcount(content)} words
+                </Menu.Item>
+                </Menu.Menu>
+              </Menu>
+
+              {/* focus mode */}
               {
-                this.state.fullscreen === true ?
-                <div className="end-fullscreen fixed-action-btn">
+                this.global.fullscreen === true ?
+                <div className="end-fullscreen">
 
-                    <a onClick={this.expand}><i className="material-icons">fullscreen_exit</i></a>
+                    <a onClick={ui.expand}><Icon name="compress" /></a>
 
                 </div>
                 :

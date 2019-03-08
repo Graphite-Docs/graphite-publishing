@@ -4,160 +4,142 @@ import {
   getFile
 } from 'blockstack';
 import {
+  getGlobal, setGlobal
+} from 'reactn';
+import {
   getDate
 } from './helpers';
 import axios from 'axios';
-const uuidv4 = require('uuid/v4');
+import  Post  from '../models/posts';
 const { getPublicKeyFromPrivate } = require('blockstack');
 const { encryptECIES } = require('blockstack/lib/encryption');
 const { decryptECIES } = require('blockstack/lib/encryption');
 
-export function newPost() {
-  const object = {};
-  const objectTwo = {};
-  object.id = uuidv4();
-  object.author = loadUserData().username;
-  object.title = "Untitled";
-  object.status = "Draft";
-  object.tags = [];
-  object.wordcount = 0;
-  object.forReview = false;
-  object.needsEdits = false;
-  object.createdDate = getDate();
-  object.lastUpdated = getDate();
-  object.link = window.location.origin + '/public/' + this.state.ownerBlockstackId + '/posts/' + object.id;
-  objectTwo.id = object.id;
-  objectTwo.author = loadUserData().username;
-  objectTwo.title = "Untitled";
-  objectTwo.content = "";
-  objectTwo.status = "Draft";
-  objectTwo.shortDescription = "";
-  objectTwo.tags = [];
-  objectTwo.featureImg = ""
-  objectTwo.wordcount = 0;
-  objectTwo.forReview = false;
-  objectTwo.needsEdits = false;
-  objectTwo.createdDate = getDate();
-  objectTwo.lastUpdated = getDate();
-  this.setState({ myPosts: [...this.state.myPosts, object], posts: [...this.state.posts, object] });
-  this.setState({ filteredPosts: [...this.state.filteredPosts, object] });
-  this.setState({ singlePost: objectTwo });
-  this.setState({ tempDocId: object.id, redirect: true});
-  setTimeout(this.savePostsCollection, 300);
+export async function newPost() {
+  const post = await new Post({
+    author: loadUserData().username,
+    title: "Untitled",
+    status: "Draft",
+    tags: [],
+    wordcount: 0,
+    lastUpdated: getDate()
+  })
+  await post.save();
+  window.location.replace(`${window.location.origin}/posts/${post._id}`)
   // setTimeout(this.savePostCollectionToTeam, 300);
 }
 
 export function savePostCollectionToTeam() {
-  const { team, count } = this.state;
+  const { team, count } = getGlobal();
     if(team.length > count) {
       let user = team[count].name;
       let pubKey = team[count].key;
-      if(this.state.logging === true) {
+      if(getGlobal().logging === true) {
         console.log('Saving to ' + user);
       }
       if(loadUserData().username !== user) {
         if(pubKey) {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("Here's the public key: ");
             console.log(team[count].key);
           }
-          const data = this.state.myPosts;
+          const data = getGlobal().myPosts;
           const encryptedData = JSON.stringify(encryptECIES(pubKey, JSON.stringify(data)));
           const file = pubKey + '?publishedPostscollection.json';
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log(file);
           }
           putFile(file, encryptedData, {encrypt: false})
             .then(() => {
-              if(this.state.logging === true) {
+              if(getGlobal().logging === true) {
                 console.log("Shared encrypted file ");
               }
-              this.setState({ count: count + 1 });
+              setGlobal({ count: count + 1 });
               setTimeout(this.savePostCollectionToTeam, 300)
             })
             .catch(error => {
               console.log(error)
             })
         } else {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("No key yet");
           }
-          this.setState({ count: count + 1 });
+          setGlobal({ count: count + 1 });
           setTimeout(this.savePostCollectionToTeam, 300)
         }
       } else {
-        if(this.state.logging === true) {
+        if(getGlobal().logging === true) {
           console.log("Teammate is logged in user");
         }
-        this.setState({ count: count + 1 });
+        setGlobal({ count: count + 1 });
         setTimeout(this.savePostCollectionToTeam, 300)
       }
     } else {
-      if(this.state.logging === true) {
+      if(getGlobal().logging === true) {
         console.log("Everyone synced.");
       }
-      this.setState({ count: 0, newTeammateId: "", newTeammateKey: "", newTeammateName: "", newTeammateRole: "", newTeammateEmail: "", newTeammateBlockstackId: "" });
+      setGlobal({ count: 0, newTeammateId: "", newTeammateKey: "", newTeammateName: "", newTeammateRole: "", newTeammateEmail: "", newTeammateBlockstackId: "" });
       setTimeout(this.saveSinglePostToTeam, 500);
     }
 }
 
 export function saveSinglePostToTeam() {
-  const { team, count } = this.state;
+  const { team, count } = getGlobal();
     if(team.length > count) {
       let user = team[count].name;
       let pubKey = team[count].key;
-      if(this.state.logging === true) {
+      if(getGlobal().logging === true) {
         console.log('Saving to ' + user);
       }
       if(loadUserData().username !== user) {
         if(pubKey) {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("Here's the public key: ");
             console.log(team[count].key);
           }
-          const data = this.state.singlePost;
+          const data = getGlobal().singlePost;
           const encryptedData = JSON.stringify(encryptECIES(pubKey, JSON.stringify(data)));
-          const file = this.state.team[this.state.count].blockstackId + '?' + pubKey + '?' + this.state.tempDocId + '.json';
-          if(this.state.logging === true) {
+          const file = getGlobal().team[getGlobal().count].blockstackId + '?' + pubKey + '?' + getGlobal().tempDocId + '.json';
+          if(getGlobal().logging === true) {
             console.log(file);
           }
           putFile(file, encryptedData, {encrypt: false})
             .then(() => {
-              if(this.state.logging === true) {
+              if(getGlobal().logging === true) {
                 console.log("Shared encrypted file ");
               }
-              this.setState({ count: count + 1 });
+              setGlobal({ count: count + 1 });
               setTimeout(this.saveSinglePostToTeam, 300)
             })
             .catch(error => {
               console.log(error)
             })
         } else {
-          if(this.state.logging === true) {
+          if(getGlobal().logging === true) {
             console.log("No key yet");
           }
-          this.setState({ count: count + 1 });
+          setGlobal({ count: count + 1 });
           setTimeout(this.saveSinglePostToTeam, 300)
         }
       } else {
-        if(this.state.logging === true) {
+        if(getGlobal().logging === true) {
           console.log("Teammate is logged in user");
         }
-        this.setState({ count: count + 1 });
+        setGlobal({ count: count + 1 });
         setTimeout(this.saveSinglePostToTeam, 300)
       }
     } else {
-      if(this.state.logging === true) {
+      if(getGlobal().logging === true) {
         console.log("Everyone synced.");
       }
-      this.setState({ count: 0, newTeammateId: "", newTeammateKey: "", newTeammateName: "", newTeammateRole: "", newTeammateEmail: "", newTeammateBlockstackId: "" });
+      setGlobal({ count: 0, newTeammateId: "", newTeammateKey: "", newTeammateName: "", newTeammateRole: "", newTeammateEmail: "", newTeammateBlockstackId: "" });
       setTimeout(this.savePostsCollection, 300);
     }
 }
 
 export function savePostsCollection() {
-  this.setState({ editing: false });
-  putFile("posts.json", JSON.stringify(this.state.myPosts), {encrypt:true})
+  setGlobal({ editing: false });
+  putFile("posts.json", JSON.stringify(getGlobal().myPosts), {encrypt:true})
     .then(() => {
       this.saveNewSinglePost();
     })
@@ -169,23 +151,23 @@ export function savePostsCollection() {
 
 export function saveNewSinglePost() {
   let file;
-  if(this.state.tempDocId !== "") {
-    file = this.state.tempDocId;
+  if(getGlobal().tempDocId !== "") {
+    file = getGlobal().tempDocId;
   } else {
     file = window.location.pathname.split('/post/')[1];
   }
   const fullFile = '/posts/' + file + '.json'
-  putFile(fullFile, JSON.stringify(this.state.singlePost), {encrypt:true})
+  putFile(fullFile, JSON.stringify(getGlobal().singlePost), {encrypt:true})
     .then(() => {
       console.log("Saved!");
-      this.setState({ loading: false });
-      if(this.state.redirect) {
-        window.location.replace('/post/' + this.state.tempDocId)
+      setGlobal({ loading: false });
+      if(getGlobal().redirect) {
+        window.location.replace('/post/' + getGlobal().tempDocId)
       } else {
         this.savePublicPostsCollection()
       }
 
-      // if(this.state.status === "Published") {
+      // if(getGlobal().status === "Published") {
       //  this.savePublicPostsCollection()
       // }
 
@@ -197,7 +179,7 @@ export function saveNewSinglePost() {
 }
 
 export function savePublicPostsCollection() {
-  const { myPosts } = this.state;
+  const { myPosts } = getGlobal();
   var publishedPosts = myPosts.filter(post => post.status === "Published");
   putFile("publicposts.json", JSON.stringify(publishedPosts), {encrypt:false})
     .then(() => {
@@ -211,17 +193,17 @@ export function savePublicPostsCollection() {
 
 export function saveNewSinglePublicPost() {
   let file;
-  if(this.state.tempDocId !== "") {
-    file = this.state.tempDocId;
+  if(getGlobal().tempDocId !== "") {
+    file = getGlobal().tempDocId;
   } else {
     file = window.location.pathname.split('/post/')[1];
   }
   const fullFile = 'public/' + file + '.json'
-  if(this.state.status === "Published") {
-    putFile(fullFile, JSON.stringify(this.state.singlePost), {encrypt:false})
+  if(getGlobal().status === "Published") {
+    putFile(fullFile, JSON.stringify(getGlobal().singlePost), {encrypt:false})
       .then(() => {
         console.log("Saved!");
-        this.setState({ loading: false });
+        setGlobal({ loading: false });
       })
       .catch(e => {
         console.log("e");
@@ -232,7 +214,7 @@ export function saveNewSinglePublicPost() {
     putFile(fullFile, JSON.stringify(object), {encrypt:false})
       .then(() => {
         console.log("Saved!");
-        this.setState({ loading: false });
+        setGlobal({ loading: false });
       })
       .catch(e => {
         console.log("e");
@@ -245,26 +227,26 @@ export function saveNewSinglePublicPost() {
 export function loadPublicPostsCollection() {
   let userToLoadFrom;
   if(window.location.pathname === '/design') {
-    userToLoadFrom = this.state.ownerBlockstackId;
+    userToLoadFrom = getGlobal().ownerBlockstackId;
     const options = { username: userToLoadFrom, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false, verify: false}
     getFile('publicposts.json', options)
       .then((fileContents) => {
         console.log(JSON.parse(fileContents || '{}'))
-        this.setState({ publicPosts: JSON.parse(fileContents || '{}').slice(0).reverse() });
+        setGlobal({ publicPosts: JSON.parse(fileContents || '{}').slice(0).reverse() });
       })
       .then(() => {
           var data,
            template;
-          let posts = this.state.publicPosts;
+          let posts = getGlobal().publicPosts;
           data = {
             "posts" : posts
           }
            // source = document.getElementById("handlebars-template").innerHTML;
-           template = window.Handlebars.compile(this.state.pageHTML);
+           template = window.Handlebars.compile(getGlobal().pageHTML);
            window.$('#designed-page').html(template(data));
       })
       .then(() => {
-        let publicPosts = this.state.publicPosts;
+        let publicPosts = getGlobal().publicPosts;
         if(publicPosts.length > 0) {
           var data, template;
           let postCount = publicPosts.length;
@@ -279,11 +261,11 @@ export function loadPublicPostsCollection() {
                 "author" : JSON.parse(fileContents).author || "",
                 "published" : JSON.parse(fileContents).lastUpdated || "",
                 "featuredImg" : JSON.parse(fileContents).featureImg || "",
-                "link" : window.location.origin + '/public/' + this.state.ownerBlockstackId + '/posts/' + JSON.parse(fileContents).id
+                "link" : window.location.origin + '/public/' + getGlobal().ownerBlockstackId + '/posts/' + JSON.parse(fileContents).id
               }
             })
             .then(() => {
-              template = window.Handlebars.compile(this.state.postHTML);
+              template = window.Handlebars.compile(getGlobal().postHTML);
               window.$('#designed-post').html(template(data));
               window.$('#designed-post-content').html(data.content);
             })
@@ -301,17 +283,17 @@ export function loadPublicPostsCollection() {
       console.log("bingo");
       axios.get(url + userToLoadFrom + '/localhost%3A3000/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data.slice(0).reverse() });
+        setGlobal({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
          template;
-        let posts = this.state.publicPosts;
+        let posts = getGlobal().publicPosts;
         data = {
           "posts" : posts
         }
          // source = document.getElementById("handlebars-template").innerHTML;
-         template = window.Handlebars.compile(this.state.pageHTML);
+         template = window.Handlebars.compile(getGlobal().pageHTML);
          window.$('#designed-page').html(template(data));
       })
       .catch(error => {
@@ -320,17 +302,17 @@ export function loadPublicPostsCollection() {
     } else if (window.location.origin === 'https://staging-publishing.graphitedocs.com') {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data.slice(0).reverse() });
+        setGlobal({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
          template;
-        let posts = this.state.publicPosts;
+        let posts = getGlobal().publicPosts;
         data = {
           "posts" : posts
         }
          // source = document.getElementById("handlebars-template").innerHTML;
-         template = window.Handlebars.compile(this.state.pageHTML);
+         template = window.Handlebars.compile(getGlobal().pageHTML);
          window.$('#designed-page').html(template(data));
       })
       .catch(error => {
@@ -339,17 +321,17 @@ export function loadPublicPostsCollection() {
     } else if (window.location.origin === 'https://publishing.graphitedocs.com') {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data.slice(0).reverse() });
+        setGlobal({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
          template;
-        let posts = this.state.publicPosts;
+        let posts = getGlobal().publicPosts;
         data = {
           "posts" : posts
         }
          // source = document.getElementById("handlebars-template").innerHTML;
-         template = window.Handlebars.compile(this.state.pageHTML);
+         template = window.Handlebars.compile(getGlobal().pageHTML);
          window.$('#designed-page').html(template(data));
       })
       .catch(error => {
@@ -358,17 +340,17 @@ export function loadPublicPostsCollection() {
     } else {
       axios.get('https://gaia-gateway.com/' + userToLoadFrom + '/staging-publishing.graphitedocs.com/publicposts.json')
       .then((response) => {
-        this.setState({ publicPosts: response.data.slice(0).reverse() });
+        setGlobal({ publicPosts: response.data.slice(0).reverse() });
       })
       .then(() => {
         var data,
          template;
-        let posts = this.state.publicPosts;
+        let posts = getGlobal().publicPosts;
         data = {
           "posts" : posts
         }
          // source = document.getElementById("handlebars-template").innerHTML;
-         template = window.Handlebars.compile(this.state.pageHTML);
+         template = window.Handlebars.compile(getGlobal().pageHTML);
          window.$('#designed-page').html(template(data));
       })
       .catch(error => {
@@ -379,39 +361,30 @@ export function loadPublicPostsCollection() {
 
 }
 
-export function loadMyPublishedPosts() {
-  getFile('posts.json', {decrypt: true})
-    .then((fileContents) => {
-      if(fileContents) {
-        this.setState({ myPosts: JSON.parse(fileContents || '{}'), filteredPosts: JSON.parse(fileContents || '{}'), posts: JSON.parse(fileContents || '{}'), postLoadingDone: true });
-      } else {
-        this.setState({ myPosts: [], posts: [], postLoadingDone: true });
-      }
-    })
-    // .then(() => {
-    //   this.loadPublishedPosts();
-    // })
-    .catch(error => {
-      console.log(error);
-    })
+export async function loadMyPublishedPosts() {
+  const posts = await Post.fetchList({ publication: getGlobal().accountName });
+  console.log(posts);
+  if(posts.length > 0) {
+    setGlobal({ myPosts: posts, filteredPosts: posts, loading: false, posts: posts, postLoadingDone: true })
+  } 
 }
 
 export function loadPublishedPosts() {
-  console.log(this.state.count < this.state.team.length)
-    if(this.state.count < this.state.team.length) {
-      console.log(this.state.team[this.state.count].blockstackId);
+  console.log(getGlobal().count < getGlobal().team.length)
+    if(getGlobal().count < getGlobal().team.length) {
+      console.log(getGlobal().team[getGlobal().count].blockstackId);
       const file = getPublicKeyFromPrivate(loadUserData().appPrivateKey) + '?publishedPostscollection.json';
       const privateKey = loadUserData().appPrivateKey;
-      const options = { username: this.state.team[this.state.count].blockstackId, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false}
+      const options = { username: getGlobal().team[getGlobal().count].blockstackId, zoneFileLookupURL: "https://core.blockstack.org/v1/names", decrypt: false}
         getFile(file, options)
          .then((fileContents) => {
            if(fileContents) {
              console.log("found a file: ");
              console.log(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents))))
-             this.setState({ posts: this.state.posts.concat(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents)))) })
-             this.setState({count: this.state.count + 1});
+             setGlobal({ posts: getGlobal().posts.concat(JSON.parse(decryptECIES(privateKey, JSON.parse(fileContents)))) })
+             setGlobal({count: getGlobal().count + 1});
            } else {
-             this.setState({count: this.state.count + 1});
+             setGlobal({count: getGlobal().count + 1});
            }
          })
           .then(() => {
@@ -419,42 +392,43 @@ export function loadPublishedPosts() {
           })
           .catch(error => {
             console.log(error);
-            this.setState({count: this.state.count + 1});
+            setGlobal({count: getGlobal().count + 1});
             this.loadPublishedPosts();
           });
     } else {
       console.log("All published files loaded");
-      this.setState({ count: 0, postLoadingDone: true });
+      setGlobal({ count: 0, postLoadingDone: true });
     }
   }
 
   export function deleteAllPosts() {
     console.log("see ya")
-    this.setState({ myPosts: [] });
+    setGlobal({ myPosts: [] });
     setTimeout(this.savePostCollectionToTeam, 300);
   }
 
   export function loadPostToDelete(props) {
-    let posts = this.state.myPosts;
+    let posts = getGlobal().myPosts;
     const thisPost = posts.find((post) => { return post.id === props.id });
     let index = thisPost && thisPost.id;
     function findObjectIndex(post) {
         return post.id === index;
     }
-    this.setState({index: posts.findIndex(findObjectIndex), tempDocId: props.id });
+    setGlobal({index: posts.findIndex(findObjectIndex), tempDocId: props.id });
     setTimeout(this.deletePost);
   }
 
   export function deletePost() {
-    const fullFile = '/posts/' + this.state.tempDocId + '.json';
+    setGlobal({loading: true })
+    const fullFile = '/posts/' + getGlobal().tempDocId + '.json';
     const object = {};
 
     putFile(fullFile, JSON.stringify(object), {encrypt: true})
       .then(() => {
-        let updatedArray = window.$.grep(this.state.myPosts, function(e){
-             return e.id !== this.state.tempDocId;
-        }.bind(this));
-        this.setState({singlePost: {}, myPosts: updatedArray, posts: updatedArray, filteredPosts: updatedArray });
+        let updatedArray = window.$.grep(getGlobal().myPosts, function(e){
+             return e.id !== getGlobal().tempDocId;
+        });
+        setGlobal({singlePost: {}, myPosts: updatedArray, posts: updatedArray, filteredPosts: updatedArray });
         // window.$('#deleteModal').modal('close')
         document.getElementsByClassName("modal")[0].style.display = "none";
         setTimeout(this.saveUpdatePostCollection, 300);
@@ -466,7 +440,7 @@ export function loadPublishedPosts() {
   }
 
   export function saveUpdatePostCollection() {
-    putFile("posts.json", JSON.stringify(this.state.myPosts), {encrypt:true})
+    putFile("posts.json", JSON.stringify(getGlobal().myPosts), {encrypt:true})
       .then(() => {
         this.saveUpdatedPublicPostsCollection();
       })
@@ -477,7 +451,7 @@ export function loadPublishedPosts() {
   }
 
   export function saveUpdatedPublicPostsCollection() {
-    const { myPosts } = this.state;
+    const { myPosts } = getGlobal();
     var publishedPosts = myPosts.filter(post => post.status === "Published");
     putFile("publicposts.json", JSON.stringify(publishedPosts), {encrypt:false})
       .then(() => {
@@ -490,10 +464,10 @@ export function loadPublishedPosts() {
   }
 
   export function filterList(event){
-    var updatedList = this.state.myPosts;
+    var updatedList = getGlobal().myPosts;
     updatedList = updatedList.filter(function(item){
       return item.title.toLowerCase().search(
         event.target.value.toLowerCase()) !== -1;
     });
-    this.setState({filteredPosts: updatedList});
+    setGlobal({filteredPosts: updatedList});
   }
