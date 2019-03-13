@@ -4,7 +4,6 @@ import '../styles/style.css';
 import {
   isSignInPending,
   isUserSignedIn,
-  loadUserData,
   redirectToSignIn,
   handlePendingSignIn,
   signUserOut,
@@ -14,10 +13,8 @@ import {
 } from './helpers/helpers';
 import Posts from './documents/Posts';
 import Settings from './documents/Settings';
-import PaymentSuccess from './documents/PaymentSuccess';
 import Growl from './Growl';
 import Invites from './documents/Invites';
-import Acceptances from './documents/Acceptances';
 import Design from './documents/Design';
 import Publication from './Publication';
 import SinglePost from './documents/SinglePost';
@@ -39,7 +36,7 @@ export default class App extends Component {
       });
     }
 
-    isUserSignedIn() ?  loadAccount() : loadUserData();
+    isUserSignedIn() ?  loadAccount() : console.log("not signed in");
 
     console.log('Build Date: ', Config.BUILD_DATE_STAMP)
     console.log('Build Time: ', Config.BUILD_TIME_STAMP)
@@ -66,33 +63,10 @@ export default class App extends Component {
               <Route exact path='/posts' component={Posts} />
               <Route exact path="/posts/:id" component={SinglePost} />
               <Route exact path='/invites/:id' component={Invites} />
-              <Route exact path="/settings"
-                render={(props) =>
-                  <Settings {...props}
-                  
-                  />}
-              />
-              <Route exact path="/design" render={(props) =>
-                <Design {...props}
-                  
-                />}
-              />
-              <Route exact path="/acceptances" render={(props) =>
-                <Acceptances {...props}
-                  
-                />}
-              />
-              <Route exact path="/sites/:id" render={(props) =>
-                <Publication
-                  
-                />}
-              />
-              <Route exact path="/sites/:id/public/:id" render={(props) =>
-                <SinglePublic
-                  
-                />}
-              />
-              <Route exact path="/success" component={PaymentSuccess} />
+              <Route exact path='/settings' component={Settings} />
+              <Route exact path='/design' component={Design} />
+              <Route exact path='/sites/:id' component={Publication} />
+              <Route exact path='/sites/:id/public/:id' component={SinglePublic} />
             </div>
           </BrowserRouter>
         </div>

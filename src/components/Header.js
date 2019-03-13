@@ -57,10 +57,10 @@ export default class Header extends Component {
       return (
         <div>
 
-          <Menu className='header-menu' style={{ borderRadius: "0", background: "#000", border: "none" }}>
+          <Menu className='header-menu' style={{ borderRadius: "0", background: "#000", border: "none", height: "70px" }}>
             <Menu.Item style={{border: "none"}}>
             {onboardingComplete ? <span className='accountLogo'>{editing === true ? <a style={{color: "#fff"}} href="/" className="modal-trigger brand-logo">{logo !== "" && logo !== undefined ? <Image src={logo} style={{ maxHeight: "50px", marginLeft: "10px" }} /> : accountName}</a> : <a style={{color: "#fff"}} href="/" className="brand-logo">{logo !== "" && logo !== undefined ? <Image src={logo} style={{ maxHeight: "50px", marginLeft: "10px" }} /> : accountName}</a>}</span> : <div className="hide" />}
-              <a href='/'><Image src={logo} style={{ maxHeight: "50px", marginLeft: "10px" }} /></a>
+             
             </Menu.Item>
             <Menu.Item position="right">
             <Dropdown trigger={trigger} icon={null} className="menuDrop">

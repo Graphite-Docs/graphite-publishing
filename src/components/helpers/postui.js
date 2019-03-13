@@ -6,6 +6,9 @@ export async function darkMode() {
       setGlobal({ darkmode: true });
       document.getElementsByClassName('main-container')[0].style.background = '#282828';
       document.getElementById('back-arrow').style.color = "#fff";
+      document.getElementById('title-input').style.color = "#fff";
+      document.getElementById('title-input').style.background = "#282828";
+      document.getElementById('title-input').style.border = "0.5px solid #fff";
       document.getElementById('single-post-header').style.background = '#282828';
       document.getElementById('single-post-header').style.color = '#fff';
       document.getElementsByClassName('note-editor')[0].style.background = '#282828';
@@ -17,7 +20,10 @@ export async function darkMode() {
       document.getElementById('side-nav-image-heading').style.color = "#fff";
       document.getElementById('side-nav-publish').style.color = "#fff";
       document.getElementById('side-nav-custom').style.color = "#fff";
-      
+      document.getElementById('footer-settings').style.color = "#fff";
+      document.getElementById('footer-expand').style.color = "#fff";
+      document.getElementById('footer-dark').style.color = "#fff";
+      document.getElementById('footer-words').style.color = "#fff";
       editor.style.background = '#282828';
       editor.style.color = '#fff';
       document.getElementsByClassName('bottom-post-nav')[0].style.color = '#fff';
@@ -46,9 +52,17 @@ export async function darkMode() {
       setGlobal({ darkmode: false });
       document.getElementsByClassName('main-container')[0].style.background = '#fff';
       document.getElementById('back-arrow').style.color = "#000";
+      document.getElementById('title-input').style.color = "#000";
+      document.getElementById('title-input').style.background = "#fff";
+      document.getElementById('title-input').style.border = "0.5px solid #eee";
       document.getElementById('single-post-header').style.background = '#fff';
       document.getElementById('single-post-header').style.color = '#000';
       document.getElementById('side-nav').style.background = "#fff";
+      document.getElementById('side-nav-close').style.color = "#000";
+      document.getElementById('side-nav-heading').style.color = "#000";
+      document.getElementById('side-nav-image-heading').style.color = "#000";
+      document.getElementById('side-nav-publish').style.color = "#000";
+      document.getElementById('side-nav-custom').style.color = "#000";
       document.getElementsByClassName('note-editor')[0].style.background = '#fff';
       document.getElementsByClassName('note-editor')[0].style.background = '#fff';
       document.getElementsByClassName('note-toolbar')[0].style.background = '#fff';
@@ -56,6 +70,10 @@ export async function darkMode() {
       document.getElementsByClassName('note-editable')[0].style.color = '#000';
       document.getElementsByClassName('bottom-post-nav')[0].style.color = '#000';
       document.getElementsByClassName('bottom-post-nav')[0].style.background = '#fff';
+      document.getElementById('footer-settings').style.color = "#000";
+      document.getElementById('footer-expand').style.color = "#000";
+      document.getElementById('footer-dark').style.color = "#000";
+      document.getElementById('footer-words').style.color = "#000";
       document.getElementsByTagName("BODY")[0].style.background = '#fff';
       noteBtn = document.getElementsByClassName('note-btn');
         for (i = 0; i < noteBtn.length; ++i) {

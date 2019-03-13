@@ -1,12 +1,21 @@
-import React, { Component } from "react";
+import React, { Component } from "reactn";
+import Loading from '../Loading';
+const design = require('../helpers/design');
+const posts = require('../helpers/singlepost');
+
+const script = document.createElement("script");
+script.src = "https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js";
+script.async = true;
+script.id = "handlebars-template";
+script.type = "text/handlebars-template";
+document.body.appendChild(script);
 
 export default class SinglePublic extends Component {
 
   componentDidMount() {
     this.loadScript();
-    this.props.loadPostHtmlPublic();
-    setInterval(this.props.loadPostHtmlPublic, 2000);
-    setTimeout(this.props.loadSinglePublic, 500);
+    design.publicLoadMainHtml();
+    posts.loadSinglePublic();
   }
 
   loadScript() {
@@ -19,12 +28,17 @@ export default class SinglePublic extends Component {
     console.log("done");
   }
 
-  render() {
 
-      return (
-        <div>
-          <div id="designed-post"></div>
-        </div>
-      );
+  render() {
+      const { loading } = this.global;
+      if(loading) {
+        return <Loading />
+      } else {
+        return (
+          <div>
+            <div id="designed-post"></div>
+          </div>
+        );
+      }
   }
 }

@@ -1,25 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component } from 'reactn';
+import Loading from './Loading';
+const design = require('./helpers/design');
+
 
 export default class Publication extends Component {
 
-  componentDidMount() {
+  async componentDidMount() {
     const script = document.createElement("script");
     script.src = "https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js";
     script.async = true;
     script.id = "handlebars-template";
     script.type = "text/handlebars-template";
     document.body.appendChild(script);
-    document.title = this.props.accountName;
-    this.props.loadMainHtmlPublic();
-    setInterval(this.props.loadMainHtmlPublic, 5000);
-    setTimeout(this.props.loadPublicPostsCollection, 500);
-    // setTimeout(this.props.loadMainHtmlPublic, 300);
-    // setTimeout(this.props.loadPublicPostsCollection, 500);
+    // document.title = this.props.accountName;
+    await design.publicLoadMainHtml();
   }
 
   render() {
-    const { publicPosts, pageHTML } = this.props;
-
+    const { publicPosts, pageHTML, loading } = this.global;
       if(pageHTML === undefined || pageHTML === "") {
         return (
           <div>
@@ -40,11 +38,15 @@ export default class Publication extends Component {
           </div>
         );
       } else {
-        return (
-        <div>
-          <div id="designed-page"></div>
-        </div>
-      );
+        if(loading) {
+          return ( <Loading />)
+        } else {
+          return (
+            <div>
+              <div id="designed-page"></div>
+            </div>
+          );
+        }
       }
 
   }

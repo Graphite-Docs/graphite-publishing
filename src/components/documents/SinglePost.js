@@ -1,4 +1,5 @@
 import React, { Component } from "reactn";
+import { Link } from 'react-router-dom';
 import Loading from '../Loading';
 import Dropzone from 'react-dropzone';
 import Onboarding from './Onboarding';
@@ -8,7 +9,7 @@ import {Menu as MainMenu} from 'semantic-ui-react';
 import { Header as SemanticHeader } from 'semantic-ui-react';
 const ui = require('../helpers/postui');
 const single = require('../helpers/singlepost.js');
-const wordcount = require('wordcount');
+const wordCount = require('html-word-count');
 
 export default class SinglePost extends Component {
   constructor(props) {
@@ -23,6 +24,7 @@ export default class SinglePost extends Component {
     await single.loadSingle();
 
     window.$('.summernote').summernote({
+      placeholder: "Write something great...",
       callbacks: {
         onChange: function(contents, $editable) {
 
@@ -75,13 +77,13 @@ export default class SinglePost extends Component {
 
                 <MainMenu className='item-menu' id="single-post-header" style={{ borderRadius: "0", background: "#fff", color: "#000" }}>
                     <MainMenu.Item onClick={single.handleBack}>
-                      <Icon id="back-arrow" name='arrow left' />
+                      <Link to={'/'}><Icon style={{color: "#000"}} id="back-arrow" name='arrow left' /></Link>
                     </MainMenu.Item>
                     <MainMenu.Item>
                     {
                       title
                       ?
-                      (title.length > 15 ? <Input value={title.substring(0,15)+"..."} /> : <Input value={title} />)
+                      (title.length > 15 ? <Input id='title-input' value={title.substring(0,25)+"..."} onChange={single.handleTitleChange} /> : <Input id='title-input' value={title} onChange={single.handleTitleChange} />)
                       :
                       "Untitled..."
                     }
@@ -159,21 +161,22 @@ export default class SinglePost extends Component {
 
               <Menu style={{width: "100%"}} className='bottom-post-nav'>
                 <Menu.Menu position='right'>
-                <Menu.Item onClick={() => this.setState({ visible: true })} as='a' icon='settings'>
+                <Menu.Item id='footer-settings' onClick={() => this.setState({ visible: true })} as='a' icon='settings'>
                 </Menu.Item>
 
-                <Menu.Item as="a" onClick={ui.expand} icon="expand">
+                <Menu.Item id='footer-expand' as="a" onClick={ui.expand} icon="expand">
                 </Menu.Item>
 
                 <Menu.Item
                   position='right'
+                  id='footer-dark'
                   as="a"
                   onClick={ui.darkMode}
                   icon={this.global.darkmode ? "moon" : "moon outline"}
                 >
                 </Menu.Item>
-                <Menu.Item>
-                {wordcount(content)} words
+                <Menu.Item id='footer-words'>
+                {wordCount(content)} words
                 </Menu.Item>
                 </Menu.Menu>
               </Menu>

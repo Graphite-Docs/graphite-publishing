@@ -1,5 +1,4 @@
 import React, { Component } from 'reactn';
-import {Link} from 'react-router-dom';
 import Header from '../Header';
 import Onboarding from './Onboarding';
 import {
@@ -13,6 +12,9 @@ import example from '../../images/div_example.png';
 import advancedExample from '../../images/advanced_example.png';
 import main from '../../images/main.png';
 import conditional from '../../images/conditional.png';
+import { loadPublicPostsCollection, loadPostPreview } from '../helpers/posts';
+import { Container, Button, Icon, Modal } from 'semantic-ui-react';
+const design = require('../helpers/design');
 
 export default class Design extends Component {
   constructor(props) {
@@ -22,115 +24,44 @@ export default class Design extends Component {
     }
   }
   componentDidMount() {
-    this.props.loadPublicPostsCollection();
-    isUserSignedIn() ? this.props.loadMainHtml() : loadUserData();
-    isUserSignedIn() ? this.props.loadPostHtml() : loadUserData();
-    window.$('.modal').modal();
-    window.$('.tabs').tabs();
+    // loadPublicPostsCollection();
+    isUserSignedIn() ? design.loadMainHtml() : loadUserData();
+  }
+
+  previewMain = () => {
+    document.getElementById('dimmer').style.display = 'block';
+    document.getElementById('designed-page-modal').style.display = 'block';
+    var data,
+      template;
+    let posts = this.global.posts;
+    console.log(posts)
+    data = {
+      "posts" : posts
+    }
+      // source = document.getElementById("handlebars-template").innerHTML;
+      template = window.Handlebars.compile(this.global.pageHTML);
+      window.$('#designed-page').html(template(data));
+  }
+  
+
+  closePreview = () => {
+    document.getElementById('dimmer').style.display = 'none';
+    document.getElementById('designed-page-modal') ? document.getElementById('designed-page-modal').style.display = 'none' : console.log("Not a page modal");
+    document.getElementById('designed-post-modal') ? document.getElementById('designed-post-modal').style.display = 'none' : console.log("Not a post modal");
   }
 
   renderView() {
-    if(this.state.post === true) {
-      return(
-        <div>
-        <h3 className="center-align">Post Design <span><a className="modal-trigger" href="#postHelpModal"><i className="material-icons  blue-text">help_outline</i></a></span></h3>
-        <p>Start with the template included, pick from one of the templates below, or write your own.</p>
-        <button onClick={() => this.props.setPostTheme('card')} className='btn blue'>Card Style</button><button onClick={() => this.props.setPostTheme('night')} className='btn black'>Night</button><button onClick={() => this.props.setPostTheme('clean')} className='btn grey'>Clean</button>
-        <AceEditor
-        editorProps={{
-           $blockScrolling: Infinity
-         }}
-          mode="html"
-          theme="twilight"
-          name="html-editor"
-          onChange={this.props.handlePostCodeChanges}
-          value={this.props.postHTML}
-        />
-        {this.props.loading === false ? <button onClick={this.props.savePostHtml} className="btn blue">Save</button> : <button className="btn grey">Saving</button>}
-        <a className="modal-trigger" href="#previewPost"><button className="btn green">Preview</button></a>
-
-
-        </div>
-      )
-    } else {
-      return (
-        <div>
-
-        <h3 className="center-align">Main Page Design <span><a className="modal-trigger" href="#pageHelpModal"><i className="material-icons  blue-text">help_outline</i></a></span></h3>
-        <p>Start with the template included, pick from one of the templates below, or write your own.</p>
-        <button onClick={() => this.props.setTheme('card')} className='btn blue'>Card Style</button><button onClick={() => this.props.setTheme('night')} className='btn black'>Night</button><button onClick={() => this.props.setTheme('clean')} className='btn grey'>Clean</button>
-        <AceEditor
-        editorProps={{
-           $blockScrolling: Infinity
-         }}
-          mode="html"
-          theme="twilight"
-          name="html-editor"
-          onChange={this.props.handleCodeChanges}
-          value={this.props.pageHTML}
-        />
-        {this.props.loading === false ? <button onClick={this.props.saveMainHtml} className="btn blue">Save</button> : <button className="btn grey">Saving</button>}
-        <a className="modal-trigger" href="#previewMain"><button className="btn green">Preview</button></a>
-
-
-        </div>
-      )
-    }
-  }
-
-  render() {
-    const { team, onboardingComplete, paymentDue, accountName, logo, editing } = this.global;
-    let loggedInUser = team.filter(obj => {return obj.blockstackId === loadUserData().username});
+    const { loading } = this.global;
     let openBracket = "{{";
     let closedBracket = "}}";
-    if(onboardingComplete && !paymentDue) {
-      return (
-        <div className="container design-page">
-        <Header
-          handleSignOut={this.props.handleSignOut}
-          onboardingComplete={onboardingComplete}
-          logo={logo}
-          accountName={accountName}
-          editing={editing}
-         />
-        {loggedInUser[0].isOwner ?
-          <div className="main-design">
-          <ul className="tabs">
-            <li className="tab col s3"><a href="#first" onClick={() => this.setState({ post: false })}>Main Page</a></li>
-            <li className="tab col s3"><a href="#second" onClick={() => this.setState({ post: true })}>Post Page</a></li>
-          </ul>
-
-            {this.renderView()}
-
-            <div className="previewMainParent">
-              <div id="previewPost" className="modal">
-                <div className="modal-content">
-                  <div className="previewModalClose">
-                    <a href="#!" className="right modal-close waves-effect waves-green btn-flat">Done</a>
-                  </div>
-                  <div id="designed-post"></div>
-
-                </div>
-              </div>
-            </div>
-
-            <div className="previewMainParent">
-              <div id="previewMain" className="modal">
-                <div className="modal-content">
-                  <div className="previewModalClose">
-                    <a href="#!" className="right modal-close waves-effect waves-green btn-flat">Done</a>
-                  </div>
-                  <div id="designed-page"></div>
-                </div>
-              </div>
-            </div>
-
-
-            {/*Post Help Modal */}
-              <div id="postHelpModal" className="modal">
-                <div className="modal-content">
-                  <h4>How to Design Your Post</h4>
-                  <p>Graphite Publishing uses <a href="https://handlebarsjs.com/" target="_blank" rel="noopener noreferrer">Handlerbars</a> as the simple templating engine to make designing your posts easy.</p>
+    if(this.state.post === true) {
+      return(
+        <Container style={{marginTop: "25px"}}>
+        <h1 className="center-align">Post Design
+        <Modal trigger={<Icon style={{fontSize: "20px"}} name="question circle outline" />} closeIcon>
+          <Modal.Header>How to Design Your Post</Modal.Header>
+          <Modal.Content>
+          <p>Graphite Publishing uses <a href="https://handlebarsjs.com/" target="_blank" rel="noopener noreferrer">Handlerbars</a> as the simple templating engine to make designing your posts easy.</p>
                   <p>The only requirement for a post to be rendered is a div with the id of "designed-post-content".</p>
                   <img src={example} className="responsive-img" alt="div example"/>
                   <p>Additionaly, you can render any part of the post you want with the following Handlebars variables: </p>
@@ -143,18 +74,52 @@ export default class Design extends Component {
                   <p>Graphite Publishing supports full Handlebars syntax, including conditionals. Here is an example that uses all variables and a conditional if block: </p>
                   <img src={advancedExample} className="responsive-img" alt="example with more syntax"/>
                   <p>And, of course, there is full html and styling support. Use a style tag to apply your styles.</p>
-                </div>
-                <div className="modal-footer">
-                  <a href="#!" className="modal-close waves-effect waves-green btn-flat">Got it</a>
-                </div>
-              </div>
-            {/* End Post Help Modal */}
+          </Modal.Content>
+        </Modal>
+        </h1>
+        <p>Start with the template included, pick from one of the templates 
+        <Modal trigger={<a> in the marketplace</a>}>
+          <Modal.Header>Select a template</Modal.Header>
+          <Modal.Content >
+            
+            <Modal.Description>
+              <h3>Here</h3>
+            </Modal.Description>
+          </Modal.Content>
+        </Modal>
+        , or write your own.</p>
+        
+        <AceEditor
+        editorProps={{
+           $blockScrolling: Infinity
+         }}
+          mode="html"
+          theme="twilight"
+          name="html-editor"
+          onChange={design.handlePostCodeChanges}
+          value={this.global.postHTML}
+        />
+        <div style={{marginTop: "25px", marginBottom: "45px"}}>
+        {loading === false ? <Button secondary onClick={design.saveMainHtml}>Save</Button> : <Button>Saving</Button>}
+        <Button color='green' onClick={loadPostPreview}>Preview</Button>
+        </div>
 
-            {/*Main Page Help Modal */}
-              <div id="pageHelpModal" className="modal">
-                <div className="modal-content">
-                  <h4>How to Design Your Main Page</h4>
-                  <p>Graphite Publishing uses <a href="https://handlebarsjs.com/" target="_blank" rel="noopener noreferrer">Handlerbars</a> as the simple templating engine to make designing your site easy. Here is an example: </p>
+        <div id='designed-post-modal' style={{display: "none"}}>
+          <Icon onClick={this.closePreview} name="close" style={{paddingRight: "10px", paddingTop: "10px", cursor: "pointer"}} />
+          <div id="designed-post"></div>
+        </div>
+        <div id="dimmer"></div>
+        </Container>
+      )
+    } else {
+      return (
+        <Container style={{marginTop: "25px"}}>
+
+        <h1 className="center-align">Main Page Design 
+        <Modal trigger={<Icon style={{fontSize: "20px"}} name="question circle outline" />} closeIcon>
+          <Modal.Header>How to Design Your Main Page</Modal.Header>
+          <Modal.Content>
+          <p>Graphite Publishing uses <a href="https://handlebarsjs.com/" target="_blank" rel="noopener noreferrer">Handlerbars</a> as the simple templating engine to make designing your site easy. Here is an example: </p>
                   <div>
                     <img src={main} className="responsive-img" alt="Full example of page design" />
                   </div>
@@ -170,47 +135,87 @@ export default class Design extends Component {
                   <p>Graphite Publishing supports full Handlebars syntax, including conditionals. Here is an example that conditionally renders a featured image for each post if one is available: </p>
                   <img src={conditional} className="responsive-img" alt="example with conditional"/>
                   <p>And, of course, there is full html and styling support. Use a style tag to apply your styles.</p>
-                </div>
-                <div className="modal-footer">
-                  <a href="#!" className="modal-close waves-effect waves-green btn-flat">Got it</a>
-                </div>
-              </div>
-            {/* End Main Page Help Modal */}
+          </Modal.Content>
+        </Modal>
+        </h1>
+        <p>Start with the template included, pick from one of the templates 
+        <Modal trigger={<a> in the marketplace</a>}>
+          <Modal.Header>Select a template</Modal.Header>
+          <Modal.Content >
+            
+            <Modal.Description>
+              <h3>Here</h3>
+            </Modal.Description>
+          </Modal.Content>
+        </Modal>, or write your own.</p>
+       
+        <AceEditor
+        editorProps={{
+           $blockScrolling: Infinity
+         }}
+          mode="html"
+          theme="twilight"
+          name="html-editor"
+          onChange={design.handleCodeChanges}
+          value={this.global.pageHTML}
+        />
+        <div style={{marginTop: "25px", marginBottom: "45px"}}>
+        {loading === false ? <Button secondary onClick={design.saveMainHtml}>Save</Button> : <Button>Saving</Button>}
+        
+        <Button onClick={loadPublicPostsCollection} color='green'>Preview</Button>
+        </div>
+        
+        <div id='designed-page-modal' style={{display: "none"}}>
+          <Icon onClick={this.closePreview} name="close" style={{paddingRight: "10px", paddingTop: "10px", cursor: "pointer"}} />
+          <div id="designed-page"></div>
+        </div>
+        <div id="dimmer"></div>
 
-            {/* Dirty Detection */}
-            {this.state.post === false ?
-              <div id="dirtyModal" className="modal">
-                <div className="modal-content">
-                  <h4>Unsaved Changes</h4>
-                  <p>You have unsaved changes. Do you want to save?</p>
-                </div>
-                <div className="modal-footer">
-                  <a onClick={this.props.saveMainHtml} className="modal-close waves-effect waves-green btn-flat">Save</a>
-                  <a href="/posts" className="modal-close waves-effect waves-green btn-flat">Nope</a>
-                </div>
-              </div>
-              :
-              <div id="dirtyModal" className="modal">
-                <div className="modal-content">
-                  <h4>Unsaved Changes</h4>
-                  <p>You have unsaved changes. Do you want to save?</p>
-                </div>
-                <div className="modal-footer">
-                  <a onClick={this.props.savePostHtml} className="modal-close waves-effect waves-green btn-flat">Save</a>
-                  <a href="/posts" className="modal-close waves-effect waves-green btn-flat">Nope</a>
-                </div>
-              </div>
-            }
-            {/*End Dirty Detection */}
 
-          </div>
-          :
+        </Container>
+      )
+    }
+  }
+
+  render() {
+    const { onboardingComplete } = this.global;
+
+    let mainStyle;
+    let postStyle;
+    if(this.state.post) {
+      mainStyle = {
+        background: "#e0e1e2",
+        color: "#000"
+      }
+      postStyle = {
+        background: "#000",
+        color: "#fff"
+      }
+    } else {
+      mainStyle = {
+        background: "#000",
+        color: "#fff"
+      }
+      postStyle = {
+        background: "#e0e1e2",
+        color: "#000"
+      }
+    }
+
+    if(onboardingComplete) {
+      return (
+        <div>
+        <Header />
+
+          <Container className="main-design">
           <div>
-            <h3>Only the account owner can edit the site design.</h3>
-            <p><Link to={'/'}>Go home</Link></p>
+            <Button style={mainStyle} onClick={() => this.setState({ post: false })}>Main Page</Button>
+            <Button style={postStyle} onClick={() => this.setState({ post: true })}>Post Page</Button>
           </div>
-        }
 
+            {this.renderView()}
+
+          </Container>
 
         </div>
       );

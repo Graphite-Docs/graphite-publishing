@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 const { setup } = require('radiks-server');
+require('dotenv').config()
 
 // setup({
 //     mongoDBUrl: 'mongodb://localhost:27017/radiks-server'

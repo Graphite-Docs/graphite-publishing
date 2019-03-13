@@ -13,6 +13,7 @@ export default class Posts extends Component {
     super(props);
     this.state = {
       post: {},
+      title: "",
       modalOpen: false
     }
   }
@@ -33,7 +34,7 @@ export default class Posts extends Component {
   }
 
   deleteModal = (props) =>{
-    this.setState({ post: props, modalOpen: true })
+    this.setState({ post: props, modalOpen: true, title: props.attrs.title })
   }
 
   closeModal() {
@@ -103,22 +104,22 @@ export default class Posts extends Component {
                         {
                           filteredPosts.map(post => {
                             let statusButton;
-                            if(post.status === "Published") {
+                            if(post.attrs.status === "Published") {
                               statusButton = "btn-floating center-align btn-small waves-effect waves-light green darken-2";
                             } else {
                               statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
                             }
                           return(
-                            <Table.Row key={post.id}>
-                              <Table.Cell><Link to={'/post/' + post.id}>{post.title.length > 30 ? post.title.substring(0,30)+"..." :  post.title}</Link></Table.Cell>
-                              <Table.Cell>{post.author}</Table.Cell>
-                              <Table.Cell>{post.createdDate}</Table.Cell>
-                              <Table.Cell><p className={statusButton}>{post.status.charAt(0)}</p></Table.Cell>
+                            <Table.Row key={post._id}>
+                              <Table.Cell><Link to={'/posts/' + post._id}>{post.attrs.title.length > 30 ? post.attrs.title.substring(0,30)+"..." :  post.attrs.title}</Link></Table.Cell>
+                              <Table.Cell>{post.attrs.author}</Table.Cell>
+                              <Table.Cell>{post.attrs.createdAt}</Table.Cell>
+                              <Table.Cell><p className={statusButton}>{post.attrs.status.charAt(0)}</p></Table.Cell>
                               <Table.Cell>
                               <Modal open={this.state.modalOpen} trigger={
                                     <a onClick={() => this.deleteModal(post)}><Icon name='trash alternate outline' /></a>
                                   } basic size='small'>
-                                    <SemanticHeader icon='trash alternate outline' content={this.state.post.title ? 'Delete ' + this.state.post.title + '?' : 'Delete document?'} />
+                                    <SemanticHeader icon='trash alternate outline' content={this.state.title ? 'Delete ' + this.state.title + '?' : 'Delete document?'} />
                                     <Modal.Content>
                                       <p>
                                         The post cannot be restored.

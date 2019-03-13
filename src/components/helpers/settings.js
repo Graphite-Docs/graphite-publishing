@@ -1,9 +1,11 @@
 import {
   getFile,
-  putFile
+  putFile,
+  loadUserData
 } from "blockstack";
+import  Publication  from '../models/publications';
 import { setGlobal, getGlobal } from 'reactn';
-import { getMonthDayYear } from './timestamp';
+import {loadAccount} from './helpers';
 
 export function loadDomain() {
   getFile("newDomain.json", {decrypt: true})
@@ -25,32 +27,42 @@ export function handleNewDomain(e) {
   setGlobal({ editing: true, newDomain: e.target.value });
 }
 
-export function accountDetails() {
-  if(getGlobal().checking === false) {
-    const object = {};
-    if(getGlobal().newAccountName !== "") {
-      object.accountName = getGlobal().newAccountName;
-    } else {
-      object.accountName = getGlobal().accountName;
-    }
-    object.ownerEmail = getGlobal().ownerEmail;
-    object.ownerBlockstackId = getGlobal().ownerBlockstackId;
-    object.accountId = getGlobal().accountId;
-    object.signUpDate = getGlobal().signUpDate;
-    object.paymentDue = getGlobal().paymentDue;
-    object.onboardingComplete = getGlobal().onboardingComplete;
-    object.accountType = getGlobal().accountType;
-    object.trialPeriod = getGlobal().trialPeriod;
-    object.logo = getGlobal().logo;
-    object.newDomain = getGlobal().newDomain;
-    object.team = getGlobal().team;
-    object.integrations = getGlobal().integrations;
-    object.lastUpdated = getMonthDayYear();
-    setGlobal({accountDetails: object});
-    setTimeout(this.saveAccount, 300)
-  } else {
-    setTimeout(this.accountDetails, 1000);
+export async function accountDetails() {
+  await setGlobal({accountName: getGlobal().newAccountName})
+  const publications = await Publication.fetchList({ creator: loadUserData().username });
+  let publication = publications[0];
+  const newAttributes = {
+    name: getGlobal().newAccountName,
+    logo: getGlobal().logo
   }
+  await publication.update(newAttributes)
+  await publication.save();
+  await loadAccount();
+  // if(getGlobal().checking === false) {
+  //   const object = {};
+  //   if(getGlobal().newAccountName !== "") {
+  //     object.accountName = getGlobal().newAccountName;
+  //   } else {
+  //     object.accountName = getGlobal().accountName;
+  //   }
+  //   object.ownerEmail = getGlobal().ownerEmail;
+  //   object.ownerBlockstackId = getGlobal().ownerBlockstackId;
+  //   object.accountId = getGlobal().accountId;
+  //   object.signUpDate = getGlobal().signUpDate;
+  //   object.paymentDue = getGlobal().paymentDue;
+  //   object.onboardingComplete = getGlobal().onboardingComplete;
+  //   object.accountType = getGlobal().accountType;
+  //   object.trialPeriod = getGlobal().trialPeriod;
+  //   object.logo = getGlobal().logo;
+  //   object.newDomain = getGlobal().newDomain;
+  //   object.team = getGlobal().team;
+  //   object.integrations = getGlobal().integrations;
+  //   object.lastUpdated = getMonthDayYear();
+  //   setGlobal({accountDetails: object});
+  //   setTimeout(this.saveAccount, 300)
+  // } else {
+  //   setTimeout(this.accountDetails, 1000);
+  // }
 }
 
 export function saveAccount() {
@@ -84,7 +96,7 @@ export function handleDrop(files) {
      }else {
        setGlobal({logo: object.link});
        setGlobal({ loading: "", show: "hide"})
-       setTimeout(this.accountDetails, 300)
+       setTimeout(accountDetails, 300)
      }
    };
    reader.readAsDataURL(file);
@@ -122,7 +134,7 @@ export function removeDomain() {
 }
 
 export function newAccountName(e) {
-  setGlobal({ editing: true, newAccountName: e.target.value});
+  setGlobal({ editing: true, newAccountName: e.target.value, accountName: e.target.value});
 }
 
 export function clearAccountName() {

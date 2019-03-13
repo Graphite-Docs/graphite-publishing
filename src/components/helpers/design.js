@@ -1,9 +1,14 @@
 import {
   putFile,
-  getFile
+  getFile,
+  loadUserData
 } from 'blockstack';
 import { setGlobal, getGlobal } from 'reactn';
 import axios from 'axios';
+import  Design  from '../models/design';
+import { loadAccount } from './helpers';
+import { growl } from './growl';
+import { loadPublicSitePosts } from './posts';
 let link;
 let html;
 
@@ -48,41 +53,90 @@ export function handlePostCodeChanges(value) {
   setGlobal({ postHTML: value, postPage: object, editing: true });
 }
 
-export function saveMainHtml() {
-  const object = {};
-  object.accountId = getGlobal().accountId;
-  object.accountName = getGlobal().accountName;
-  object.pageHTML = getGlobal().pageHTML;
-  setGlobal({ mainPage: object }, () => {
-    setGlobal({ loading: true });
-    putFile('mainpagedesign.json', JSON.stringify(getGlobal().mainPage), {encrypt: false})
-      .then(() => {
-        this.loadPublicPostsCollection();
-        setGlobal({ loading: false, editing: false });
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  });
+export async function saveMainHtml() {
+  //first check if there is an existing record
+  const design = await Design.fetchList({ publicationCreator: loadUserData().username });
+  console.log(design)
+  if(design.length > 0) {
+    console.log("updating existing design")
+    let thisDesign = design[0];
+    //Update record
+    const newPublicAttrs = {
+      publicationCreator: loadUserData().username,
+      mainPage: getGlobal().pageHTML,
+      postPage: getGlobal().postHTML
+    }
+    await thisDesign.update(newPublicAttrs)
+    await thisDesign.save();
+    growl({message: "Design updated"})
+  } else {
+    console.log("no existing design")
+    //Create new record
+    const thisDesign = await new Design({
+      publicationCreator: loadUserData().username,
+      mainPage: getGlobal().pageHTML,
+      postPage: getGlobal().postHTML
+    })
+    await thisDesign.save();
+    growl({message: "Design updated"})
+  }
+
+  // const object = {};
+  // object.accountId = getGlobal().accountId;
+  // object.accountName = getGlobal().accountName;
+  // object.pageHTML = getGlobal().pageHTML;
+  // setGlobal({ mainPage: object }, () => {
+  //   setGlobal({ loading: true });
+  //   putFile('mainpagedesign.json', JSON.stringify(getGlobal().mainPage), {encrypt: false})
+  //     .then(() => {
+  //       this.loadPublicPostsCollection();
+  //       setGlobal({ loading: false, editing: false });
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     })
+  // });
 }
 
-export function loadMainHtml() {
-  getFile('mainpagedesign.json', {decrypt: false})
-    .then((fileContents) => {
-      setGlobal({
-        pageHTML: JSON.parse(fileContents || '{}').pageHTML
-      })
+export async function publicLoadMainHtml() {
+  setGlobal({ loading: true })
+  const design = await Design.fetchList({ publicationCreator: window.location.href.split('sites/')[1].split('/')[0] }, {decrypt: false});
+  if(design.length > 0) {
+    await setGlobal({
+      pageHTML: design[0].attrs.mainPage, 
+      postHTML: design[0].attrs.postPage, 
+      loading: false
     })
-    .then(() => {
-      if(getGlobal().pageHTML === undefined || getGlobal().pageHTML === "") {
-        setGlobal({
-          pageHTML: "<div style='max-width:75%;margin:auto;text-align:center;'>\n<h1>Your Publication Name</h1>\n{{#posts}}\n<div style='padding:15px;margin:20px;' class='card'>\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style='color: #000' href={{link}}><button style='color:#fff' class='btn black'>Read it</button></a>\n</div>\n{{/posts}}\n</div>"
-        })
-      }
+    loadPublicSitePosts();
+  } else {
+    await setGlobal({
+      pageHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style="max-width:75%;margin:auto;text-align:center;">\n<h1 style="margin-bottom:25px;padding: 15px;">Your Blog Title (Don't forget to update this on the Design page</h1>\n{{#posts}}\n<div style="padding:15px;margin:20px;" class="card">\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style="color: #000" href={{link}}><button style="color:#000" class="btn black">Read it</button></a>\n</div>\n{{/posts}}\n</div>`,
+      postHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style='max-width:80%;margin: auto;margin-top: 45px;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div style="font-size: 18px;" id="designed-post-content"></div>\n</div>\n</div>`, 
+      loading: false
     })
-    .catch(error => {
-      console.log(error);
+    loadPublicSitePosts();
+  }
+}
+
+export async function loadMainHtml() {
+  await loadAccount()
+  setGlobal({ loading: true })
+  const design = await Design.fetchList({ publicationCreator: loadUserData().username });
+  console.log(design)
+  if(design.length > 0) {
+    setGlobal({
+      pageHTML: design[0].attrs.mainPage, 
+      postHTML: design[0].attrs.postPage, 
+      loading: false
     })
+  } else {
+    console.log(getGlobal().accountName)
+    setGlobal({
+      pageHTML: `<div style="max-width:75%;margin:auto;text-align:center;">\n<h1>${getGlobal().accountName}</h1>\n{{#posts}}\n<div style="padding:15px;margin:20px;" class="card">\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style="color: #000" href={{link}}><button style="color:#000" class="btn black">Read it</button></a>\n</div>\n{{/posts}}\n</div>`,
+      postHTML: `<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>`, 
+      loading: false
+    })
+  }
 }
 
 export function loadMainHtmlPublic() {

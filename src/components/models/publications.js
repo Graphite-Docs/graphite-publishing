@@ -9,6 +9,7 @@ export default class Publication extends Model {
         decrypted: true, 
         type: String
     }, 
-    creatorEmail: String
+    creatorEmail: String, 
+    logo: Object
   }
 }

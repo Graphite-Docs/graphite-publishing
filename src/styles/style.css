@@ -546,6 +546,10 @@ td, th {
   border-top: 1px solid rgba(34,36,38,.15);
 }
 
+.note-editing-area {
+  font-size: 20px!important;
+}
+
 .end-fullscreen {
   position: fixed;
   right: 15px!important;
@@ -622,14 +626,52 @@ nav .input-field {
   width: 100%!important;
 }
 
+#designed-page-modal {
+  z-index: 999 ;
+  background: #fff;
+  border: 1px #282828 solid;
+  border-radius: 5px;
+  top: 2.5%;
+  position: fixed;
+  height: 95vh;
+  width: 95vw;
+  right: 2.5%;
+  overflow-y:auto;
+}
+
+#designed-post-modal {
+  z-index: 999 ;
+  background: #fff;
+  border: 1px #282828 solid;
+  border-radius: 5px;
+  top: 2.5%;
+  position: fixed;
+  height: 95vh;
+  width: 95vw;
+  right: 2.5%;
+  overflow-y:auto;
+}
+
+#dimmer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 980;
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  background: #282828;
+  opacity: 0.8;
+}
+
 .previewMainParent .modal {
-  max-height: 99vh!important;
+  /* max-height: 99vh!important; */
 }
 
 #previewMain, #previewPost {
-  height: 99vh!important;
+  /* height: 99vh!important;
   width: 100%!important;
-  top: 1%!important;
+  top: 1%!important; */
 }
 
 #previewFooter {
