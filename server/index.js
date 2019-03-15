@@ -5,6 +5,7 @@ const app = express();
 const { setup } = require('radiks-server');
 require('dotenv').config()
 
+
 // setup({
 //     mongoDBUrl: 'mongodb://localhost:27017/radiks-server'
 //   }).then((RadiksController) => {
@@ -20,6 +21,7 @@ setup({
 app.get('/', (req, res) => {
   console.log("this is the home route")
 });
+
 
 const port = 5000;
 

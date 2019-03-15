@@ -13,7 +13,7 @@ body {
   display: none;
   position: fixed;
   z-index: 999;
-  top: 10px;
+  top: 60px;
   right: 10px;
   width: 40%;
   max-height: 40%;
@@ -494,11 +494,12 @@ td, th {
   margin-top: 0!important;
 }
 
-.single-post-header {
-  /* position: fixed!important;
-  margin-top: -10px;
+#single-post-header {
+  position: fixed!important;
+  box-shadow: none;
+  width: 100%;
   z-index: 999!important;
-  height: 90px; */
+  
 }
 
 .post-title {
@@ -536,7 +537,7 @@ td, th {
 
 .bottom-post-nav {
   position: fixed;
-  bottom: -10px;
+  bottom: -15px;
   z-index: 980;
   display: -ms-flexbox;
   border: none!important;

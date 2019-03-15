@@ -21,7 +21,10 @@
 	 * Pre load
 	/* ---------------------------------------------- */
 	GEN.PreLoad = function() {
-		document.getElementById("loading").style.display = "none"; 
+		if(document.getElementById("loading")) {
+			document.getElementById("loading").style.display = "none"; 
+		}
+		
 	}
 
     /*--------------------

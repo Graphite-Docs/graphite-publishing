@@ -8,6 +8,7 @@ import {
 import  Post  from '../models/posts';
 import  PublicPost  from '../models/publicPosts';
 import { loadMyPublishedPosts } from './posts';
+var timer = null;
 
 export function loadPost() {
     setGlobal({postLoading: true})
@@ -52,25 +53,15 @@ export async function loadSingle() {
 }
 
 export async function handleTitleChange(e) {
+      window.$('#title-input').keydown(function(){
+        clearTimeout(timer); 
+        timer = setTimeout(handleSavePost, 1000)
+      });
+      
   await setGlobal({
     title: e.target.value,
     editing: true,
   });
-  clearTimeout(timeout);
-  
-}
-
-export function timeout() {
-  setTimeout(async () => {
-    const single = await Post.fetchList({ _id: window.location.href.split('posts/')[1] });
-    let post = single[0];
-    const newAttributes = {
-      title: getGlobal().title
-    }
-    await post.update(newAttributes)
-    await post.save();
-    console.log("Updated")
-    }, 3000)
 }
 
 export function handlePostURL(e) {
@@ -99,6 +90,10 @@ export function handleFeaturedDrop(files) {
      }
    };
    reader.readAsDataURL(file);
+}
+
+export function bigTest() {
+  console.log("Saving")
 }
 
 export async function handleSavePost() {
@@ -151,19 +146,16 @@ export async function handleSavePost() {
       console.log(publicPost)
     }
   } else {
-    console.log("nah")
+    console.log("not public")
   }
   loadMyPublishedPosts()
 }
 
 export async function handleContentChange(props) {
   setGlobal({ content: props, editing: true }, () => {
-    clearTimeout(timeout2);
+    clearTimeout(timer); 
+    timer = setTimeout(handleSavePost, 1000)
   });
-}
-
-export function timeout2() {
-  setTimeout(handleSavePost, 3000)
 }
 
 export async function loadSinglePublic() {

@@ -82,7 +82,8 @@ setGlobal({
     publications: [],
     multiBlog: false, 
     darkmode: false, 
-    fullscreen: false
+    fullscreen: false,
+    migrated: false
 })
 
 configure({

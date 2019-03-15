@@ -4,9 +4,9 @@ import {
 } from 'blockstack';
 import darkLogo from '../images/graphite-mark-dark.svg';
 import logo from '../images/graphite-mark-light.svg';
-import dark from '../images/darktheme.png'
-import light from '../images/light.png'
-import theme from '../images/theme.png'
+import dark from '../images/darkmode.png'
+import light from '../images/lightmode.png'
+import theme from '../images/design.png'
 import publishing from '../images/publishing.png'
 import post from '../images/blogimage.jpeg'
 import gitcoin from '../images/gitcoin.png'
@@ -29,6 +29,7 @@ export default class Signin extends Component {
   }
 
   render() {
+
     return (
       <div>
       <div id="loading">
@@ -194,7 +195,7 @@ export default class Signin extends Component {
                   </div>
                 </div> 
                 <div className="col-lg-7 text-center md-p-30px-t">
-                  <img className="max-width-auto" src={theme} title="" alt="" />
+                  <img id="designer" className="max-width-auto" src={theme} title="" alt="" />
                 </div> 
               </div>
             </div>

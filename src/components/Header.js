@@ -26,7 +26,7 @@ export default class Header extends Component {
 }
 
   componentDidMount() {
-    window.$('.sidenav').sidenav();
+
   }
 
   handleSignOut = (e) => {
@@ -65,6 +65,7 @@ export default class Header extends Component {
             <Menu.Item position="right">
             <Dropdown trigger={trigger} icon={null} className="menuDrop">
                 <Dropdown.Menu>
+                <Dropdown.Item><a href='/posts'>Posts</a></Dropdown.Item>
                   <Dropdown.Item><a href='/design'>Design</a></Dropdown.Item>
                   <Dropdown.Item><a href='/settings'>Settings</a></Dropdown.Item>
                   <Dropdown.Divider />

@@ -43,7 +43,6 @@ export default class SinglePost extends Component {
 
 
   render() {
-
       const { onboardingComplete, status, loading, content, featuredImg, publishPost, initialLoad, title } = this.global;
       const dropzoneStyle = {};
       let saveBtn;
@@ -83,9 +82,9 @@ export default class SinglePost extends Component {
                     {
                       title
                       ?
-                      (title.length > 15 ? <Input id='title-input' value={title.substring(0,25)+"..."} onChange={single.handleTitleChange} /> : <Input id='title-input' value={title} onChange={single.handleTitleChange} />)
+                      <Input id='title-input' value={title} onChange={single.handleTitleChange} />
                       :
-                      "Untitled..."
+                      <Input id='title-input' value="Untitled" onChange={single.handleTitleChange} />
                     }
                   
                     </MainMenu.Item>

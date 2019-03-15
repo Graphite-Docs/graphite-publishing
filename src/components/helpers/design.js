@@ -68,7 +68,7 @@ export async function saveMainHtml() {
     }
     await thisDesign.update(newPublicAttrs)
     await thisDesign.save();
-    growl({message: "Design updated"})
+    growl({message: "Design updated", timeout: 3000})
   } else {
     console.log("no existing design")
     //Create new record
@@ -78,7 +78,7 @@ export async function saveMainHtml() {
       postPage: getGlobal().postHTML
     })
     await thisDesign.save();
-    growl({message: "Design updated"})
+    growl({message: "Design updated", timeout: 3000})
   }
 
   // const object = {};

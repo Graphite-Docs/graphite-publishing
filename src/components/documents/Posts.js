@@ -4,6 +4,7 @@ import Onboarding from './Onboarding';
 import Header from '../Header';
 import Loading from '../Loading';
 import MultiBlog from '../MultiBlog';
+import MigrationModal from './MigrationModal';
 import {Header as SemanticHeader } from 'semantic-ui-react';
 import { Container, Input, Grid, Popup, Button, Table, Icon, Modal } from 'semantic-ui-react';
 const posts = require('../helpers/posts')
@@ -29,12 +30,13 @@ export default class Posts extends Component {
     }
   }
 
-  close() {
-    window.$('.tap-target').tapTarget('close')
-  }
-
   deleteModal = (props) =>{
     this.setState({ post: props, modalOpen: true, title: props.attrs.title })
+  }
+
+  deletePost = async (props) => {
+    await posts.loadPostToDelete(props);
+    this.setState({ modalOpen: false });
   }
 
   closeModal() {
@@ -42,14 +44,15 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { multiBlog, loading, onboardingComplete, paymentDue, filteredPosts, initialLoad  } = this.global;
+    const { migrated, multiBlog, loading, onboardingComplete, filteredPosts, initialLoad  } = this.global;
+    console.log(migrated)
     if(loading) {
       return (
         <Loading />
       )
     } else {
       if(initialLoad) {
-        if(onboardingComplete && !paymentDue) {
+        if(onboardingComplete) {
           return (
             <div>
                 <Loading />
@@ -66,6 +69,8 @@ export default class Posts extends Component {
             return(
               <MultiBlog />
             )    
+          } else if(!migrated) {
+            return <MigrationModal />
           } else {
             return (
               <div>
@@ -105,16 +110,16 @@ export default class Posts extends Component {
                           filteredPosts.map(post => {
                             let statusButton;
                             if(post.attrs.status === "Published") {
-                              statusButton = "btn-floating center-align btn-small waves-effect waves-light green darken-2";
+                              statusButton = <Button style={{fontSize: "10px"}} circular color='green'>P</Button>
                             } else {
-                              statusButton = "btn-floating center-align btn-small waves-effect waves-light yellow accent-4";
+                              statusButton = <Button style={{fontSize: "10px"}} circular color='yellow'>D</Button>;
                             }
                           return(
                             <Table.Row key={post._id}>
                               <Table.Cell><Link to={'/posts/' + post._id}>{post.attrs.title.length > 30 ? post.attrs.title.substring(0,30)+"..." :  post.attrs.title}</Link></Table.Cell>
                               <Table.Cell>{post.attrs.author}</Table.Cell>
                               <Table.Cell>{post.attrs.createdAt}</Table.Cell>
-                              <Table.Cell><p className={statusButton}>{post.attrs.status.charAt(0)}</p></Table.Cell>
+                              <Table.Cell>{statusButton}</Table.Cell>
                               <Table.Cell>
                               <Modal open={this.state.modalOpen} trigger={
                                     <a onClick={() => this.deleteModal(post)}><Icon name='trash alternate outline' /></a>
@@ -131,7 +136,7 @@ export default class Posts extends Component {
                                             <Button onClick={() => this.setState({ modalOpen: false })} basic color='red' inverted>
                                               <Icon name='remove' /> No
                                             </Button>
-                                            <Button onClick={() => posts.loadPostToDelete(this.state.post)} color='red' inverted>
+                                            <Button onClick={() => this.deletePost(this.state.post)} color='red' inverted>
                                               <Icon name='checkmark' /> Delete
                                             </Button>
                                           </div>

@@ -16,6 +16,7 @@ const { encryptECIES } = require('blockstack/lib/encryption');
 const { decryptECIES } = require('blockstack/lib/encryption');
 
 export async function newPost() {
+  setGlobal({loading: true})
   const post = await new Post({
     author: loadUserData().username,
     title: "Untitled",
@@ -262,8 +263,8 @@ export async function loadPublicSitePosts() {
     template;
   const posts = await PublicPost.fetchList({ author: window.location.href.split('sites/')[1].split('#')[0] }, {decrypt: false});
   console.log(posts)
-  await setGlobal({ publicPosts: posts });
-  let filteredPosts = posts.map(x => x.attrs);
+  await setGlobal({ publicPosts: posts.filter(a => a.attrs.deleted !== true) });
+  let filteredPosts = getGlobal().publicPosts.map(x => x.attrs);
   data = {
     "posts" : filteredPosts.sort((a,b) => (new Date(a.publishedDate).getTime() > new Date(b.publishedDate).getTime()) ? 1 : ((new Date(b.publishedDate).getTime() > new Date(a.publishedDate).getTime()) ? -1 : 0))
   }
@@ -281,8 +282,9 @@ export async function loadPublicPostsCollection() {
     template;
   
   let filteredPosts = posts.map(x => x.attrs);
+  console.log(filteredPosts)
   data = {
-    "posts" : filteredPosts
+    "posts" : filteredPosts.filter(a => a.deleted !==true)
   }
     // source = document.getElementById("handlebars-template").innerHTML;
     template = window.Handlebars.compile(getGlobal().pageHTML);
@@ -426,7 +428,7 @@ export async function loadMyPublishedPosts() {
   const posts = await Post.fetchList({ author: loadUserData().username });
   console.log(posts);
   if(posts.length > 0) {
-    await setGlobal({ myPosts: posts, filteredPosts: posts, loading: false, posts: posts, postLoadingDone: true })
+    await setGlobal({ myPosts: posts.filter(a => a.attrs.deleted !==true), filteredPosts: posts.filter(a => a.attrs.deleted !==true), loading: false, posts: posts, postLoadingDone: true, migrate: false })
     // var data,
     // template;
     // let posts = getGlobal().publicPosts;
@@ -477,15 +479,51 @@ export function loadPublishedPosts() {
     setTimeout(this.savePostCollectionToTeam, 300);
   }
 
-  export function loadPostToDelete(props) {
-    let posts = getGlobal().myPosts;
-    const thisPost = posts.find((post) => { return post.id === props.id });
-    let index = thisPost && thisPost.id;
-    function findObjectIndex(post) {
-        return post.id === index;
+  export async function loadPostToDelete(props) {
+    setGlobal({loading: true})
+    const posts = await Post.fetchList({ _id: props._id }, {decrypt: false});
+    console.log(posts)
+    let post = posts[0];
+    const newAttributes = {
+      title: "", 
+      content: "",
+      tags: [],
+      lastUpdated: "",
+      featureImg: "",
+      status:  "",
+      deleted: true
     }
-    setGlobal({index: posts.findIndex(findObjectIndex), tempDocId: props.id });
-    setTimeout(this.deletePost);
+    await post.update(newAttributes)
+    await post.save();
+    console.log(post);
+    if(props.attrs.status === 'Published') {
+      const publicPosts = await PublicPost.fetchList({ _id: `Public${props._id}` }, {decrypt: false});
+      console.log(publicPosts)
+      if(publicPosts.length > 0) {
+        let publicPost = publicPosts[0];
+        const newAttributes = {
+          title: "", 
+          content: "",
+          tags: [],
+          lastUpdated: "",
+          featureImg: "",
+          status:  "",
+          deleted: true
+        }
+        await publicPost.update(newAttributes)
+        await publicPost.save();
+        console.log(publicPost)
+      }
+    }
+    loadMyPublishedPosts();
+    // let posts = getGlobal().myPosts;
+    // const thisPost = posts.find((post) => { return post.id === props.id });
+    // let index = thisPost && thisPost.id;
+    // function findObjectIndex(post) {
+    //     return post.id === index;
+    // }
+    // setGlobal({index: posts.findIndex(findObjectIndex), tempDocId: props.id });
+    // setTimeout(this.deletePost);
   }
 
   export function deletePost() {
@@ -536,7 +574,7 @@ export function loadPublishedPosts() {
   export function filterList(event){
     var updatedList = getGlobal().myPosts;
     updatedList = updatedList.filter(function(item){
-      return item.title.toLowerCase().search(
+      return item.attrs.title.toLowerCase().search(
         event.target.value.toLowerCase()) !== -1;
     });
     setGlobal({filteredPosts: updatedList});

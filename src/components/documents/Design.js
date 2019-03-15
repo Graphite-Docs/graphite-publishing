@@ -13,14 +13,17 @@ import advancedExample from '../../images/advanced_example.png';
 import main from '../../images/main.png';
 import conditional from '../../images/conditional.png';
 import { loadPublicPostsCollection, loadPostPreview } from '../helpers/posts';
-import { Container, Button, Icon, Modal } from 'semantic-ui-react';
+import { Container, Button, Icon, Modal, Grid, Image } from 'semantic-ui-react';
+import { setTheme } from '../helpers/themes';
+import marketplace from './marketplace.json';
 const design = require('../helpers/design');
 
 export default class Design extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      post: false
+      post: false, 
+      modalOpen: false
     }
   }
   componentDidMount() {
@@ -28,7 +31,15 @@ export default class Design extends Component {
     isUserSignedIn() ? design.loadMainHtml() : loadUserData();
   }
 
+  handleOpen = () => this.setState({ modalOpen: true })
+
+  selectTheme = (theme) => {
+    setTheme(theme);
+    this.setState({ modalOpen: false })
+  }
+
   previewMain = () => {
+    console.log(this.global.posts)
     document.getElementById('dimmer').style.display = 'block';
     document.getElementById('designed-page-modal').style.display = 'block';
     var data,
@@ -36,7 +47,7 @@ export default class Design extends Component {
     let posts = this.global.posts;
     console.log(posts)
     data = {
-      "posts" : posts
+      "posts" : posts.filter(a => a.deleted !== true)
     }
       // source = document.getElementById("handlebars-template").innerHTML;
       template = window.Handlebars.compile(this.global.pageHTML);
@@ -51,6 +62,15 @@ export default class Design extends Component {
   }
 
   renderView() {
+    if(document.getElementById('dimmer')) {
+      window.$('#dimmer').click((e) => {
+        document.getElementById('dimmer').style.display = 'none';
+        document.getElementById('designed-page-modal') ? document.getElementById('designed-page-modal').style.display = 'none' : console.log("Not a page modal");
+        document.getElementById('designed-post-modal') ? document.getElementById('designed-post-modal').style.display = 'none' : console.log("Not a post modal");
+
+      })
+    }
+    
     const { loading } = this.global;
     let openBracket = "{{";
     let closedBracket = "}}";
@@ -178,6 +198,29 @@ export default class Design extends Component {
   }
 
   render() {
+    const modalContent = (
+      <Modal.Content >
+        <Modal.Description>
+          <Container>
+          <Grid stackable>
+            <Grid.Row columns={2}>
+            {
+              marketplace.templates.map(template => {
+                return (
+                  <Grid.Column key={template.name}>
+                    <h3>{template.name}</h3>
+                    <Image src={template.imageUrl} />
+                    <Button onClick={() => this.selectTheme(template)} secondary>Add It</Button>
+                  </Grid.Column>
+                )
+              })
+            }
+            </Grid.Row>
+          </Grid>
+          </Container>
+        </Modal.Description>
+      </Modal.Content>
+    )
     const { onboardingComplete } = this.global;
 
     let mainStyle;
@@ -211,6 +254,16 @@ export default class Design extends Component {
           <div>
             <Button style={mainStyle} onClick={() => this.setState({ post: false })}>Main Page</Button>
             <Button style={postStyle} onClick={() => this.setState({ post: true })}>Post Page</Button>
+            <Modal 
+            trigger={
+            <Button onClick={this.handleOpen} color='blue' style={{float: "right"}}>Template Marketplace</Button>}
+              open={this.state.modalOpen}
+              onClose={this.handleClose}
+            >
+              <Modal.Header>Select a template</Modal.Header>
+              {modalContent}
+            </Modal>
+            
           </div>
 
             {this.renderView()}
