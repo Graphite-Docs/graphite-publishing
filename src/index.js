@@ -87,7 +87,7 @@ setGlobal({
 })
 
 configure({
-    apiServer: 'http://localhost:5000'
+    apiServer: 'https://warm-meadow-58953.herokuapp.com'
   });
 
 ReactDOM.render(<App />, document.getElementById('root'));
