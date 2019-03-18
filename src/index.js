@@ -83,7 +83,8 @@ setGlobal({
     multiBlog: false, 
     darkmode: false, 
     fullscreen: false,
-    migrated: false
+    migrated: false, 
+    save: "Save"
 })
 
 configure({

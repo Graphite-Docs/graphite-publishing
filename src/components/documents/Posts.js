@@ -110,15 +110,15 @@ export default class Posts extends Component {
                           filteredPosts.map(post => {
                             let statusButton;
                             if(post.attrs.status === "Published") {
-                              statusButton = <Button style={{fontSize: "10px"}} circular color='green'>P</Button>
+                              statusButton = <Button style={{fontSize: "10px", cursor: "default"}} circular color='green'>P</Button>
                             } else {
-                              statusButton = <Button style={{fontSize: "10px"}} circular color='yellow'>D</Button>;
+                              statusButton = <Button style={{fontSize: "10px", cursor: "default"}} circular color='yellow'>D</Button>;
                             }
                           return(
                             <Table.Row key={post._id}>
                               <Table.Cell><Link to={'/posts/' + post._id}>{post.attrs.title.length > 30 ? post.attrs.title.substring(0,30)+"..." :  post.attrs.title}</Link></Table.Cell>
                               <Table.Cell>{post.attrs.author}</Table.Cell>
-                              <Table.Cell>{post.attrs.createdAt}</Table.Cell>
+                              <Table.Cell>{post.attrs.createdDate}</Table.Cell>
                               <Table.Cell>{statusButton}</Table.Cell>
                               <Table.Cell>
                               <Modal open={this.state.modalOpen} trigger={

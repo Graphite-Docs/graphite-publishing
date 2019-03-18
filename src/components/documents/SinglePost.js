@@ -7,6 +7,7 @@ import { loadAccount } from "../helpers/helpers";
 import { Icon, Input, Button, Divider, Sidebar, Menu, Image, Checkbox } from 'semantic-ui-react';
 import {Menu as MainMenu} from 'semantic-ui-react';
 import { Header as SemanticHeader } from 'semantic-ui-react';
+import { loadUserData } from "blockstack/lib/auth";
 const ui = require('../helpers/postui');
 const single = require('../helpers/singlepost.js');
 const wordCount = require('html-word-count');
@@ -43,7 +44,8 @@ export default class SinglePost extends Component {
 
 
   render() {
-      const { onboardingComplete, status, loading, content, featuredImg, publishPost, initialLoad, title } = this.global;
+      let postUrl = `${window.location.origin}/sites/${loadUserData().username}/public/${window.location.href.split('posts/')[1]}`;
+      const { save, onboardingComplete, status, loading, content, featuredImg, publishPost, initialLoad, title } = this.global;
       const dropzoneStyle = {};
       let saveBtn;
       let saveBtnClass;
@@ -54,7 +56,7 @@ export default class SinglePost extends Component {
         saveBtn = "Publish";
         saveBtnClass = "btn green";
       } else {
-        saveBtn = "Save"
+        saveBtn = save === "Save" ? "Save" : "Saving";
         saveBtnClass = "btn blue";
       }
       if(initialLoad) {
@@ -137,6 +139,12 @@ export default class SinglePost extends Component {
                 <Menu.Item as='a'>
                   <SemanticHeader id='side-nav-publish' as='h3'>Publish Post?</SemanticHeader>
                     <Checkbox style={{padding: "10px"}} label="Publish" toggle onChange={single.onSwitchClick} checked={this.global.publishPost} />
+                </Menu.Item>
+                <Menu.Item id='side-nav-custom' as='a'>
+                  {
+                    status === "Published" ? <a href={postUrl} target="_blank" rel="noopener">{postUrl}</a> : 
+                    ""
+                  }
                 </Menu.Item>
                 <Menu.Item id='side-nav-custom' as='a'>
                   Custom Slug URLs, coming soon!

@@ -1,7 +1,7 @@
 {
-  "main.css": "static/css/main.5c1b7592.css",
-  "main.css.map": "static/css/main.5c1b7592.css.map",
-  "main.js": "static/js/main.d23f322c.js",
+  "main.css": "static/css/main.ce1affcf.css",
+  "main.css.map": "static/css/main.ce1affcf.css.map",
+  "main.js": "static/js/main.2661c768.js",
   "static/media/advanced_example.png": "static/media/advanced_example.7439cd4d.png",
   "static/media/blogimage.jpeg": "static/media/blogimage.de05efd2.jpeg",
   "static/media/brand-icons.eot": "static/media/brand-icons.13db00b7.eot",
@@ -10,7 +10,8 @@
   "static/media/brand-icons.woff": "static/media/brand-icons.a046592b.woff",
   "static/media/brand-icons.woff2": "static/media/brand-icons.e8c322de.woff2",
   "static/media/conditional.png": "static/media/conditional.0b247e13.png",
-  "static/media/darktheme.png": "static/media/darktheme.8b7a192f.png",
+  "static/media/darkmode.png": "static/media/darkmode.db48dca5.png",
+  "static/media/design.png": "static/media/design.c198d263.png",
   "static/media/div_example.png": "static/media/div_example.c69cb275.png",
   "static/media/flags.png": "static/media/flags.9c74e172.png",
   "static/media/gitcoin.png": "static/media/gitcoin.41b14cb8.png",
@@ -21,13 +22,12 @@
   "static/media/icons.ttf": "static/media/icons.b87b9ba5.ttf",
   "static/media/icons.woff": "static/media/icons.faff9214.woff",
   "static/media/icons.woff2": "static/media/icons.0ab54153.woff2",
-  "static/media/light.png": "static/media/light.db006ce8.png",
+  "static/media/lightmode.png": "static/media/lightmode.21c3385f.png",
   "static/media/main.png": "static/media/main.03414a11.png",
   "static/media/outline-icons.eot": "static/media/outline-icons.701ae6ab.eot",
   "static/media/outline-icons.svg": "static/media/outline-icons.82f60bd0.svg",
   "static/media/outline-icons.ttf": "static/media/outline-icons.ad97afd3.ttf",
   "static/media/outline-icons.woff": "static/media/outline-icons.ef60a4f6.woff",
   "static/media/outline-icons.woff2": "static/media/outline-icons.cd6c777f.woff2",
-  "static/media/publishing.png": "static/media/publishing.9fce9260.png",
-  "static/media/theme.png": "static/media/theme.fdbb8dc6.png"
+  "static/media/publishing.png": "static/media/publishing.96f659e8.png"
 }

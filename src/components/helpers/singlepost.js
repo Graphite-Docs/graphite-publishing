@@ -97,6 +97,7 @@ export function bigTest() {
 }
 
 export async function handleSavePost() {
+  setGlobal({ save: "Saving..." })
   const single = await Post.fetchList({ _id: window.location.href.split('posts/')[1] });
   let post = single[0];
   const newAttributes = {
@@ -110,7 +111,8 @@ export async function handleSavePost() {
   await post.update(newAttributes)
   await post.save();
   await setGlobal({
-    status: getGlobal().publishPost ? "Published" : "Draft"
+    status: getGlobal().publishPost ? "Published" : "Draft", 
+    save: "Save"
   })
   
   if(getGlobal().status === "Published") {
