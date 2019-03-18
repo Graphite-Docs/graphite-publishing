@@ -36,6 +36,7 @@ export function loadLogo() {
 export async function loadOldAccount() {
   getFile("account.json", {decrypt: true})
     .then(async (fileContents) => {
+      console.log(JSON.parse(fileContents))
       if(fileContents){
         await setGlobal({
           accountName: JSON.parse(fileContents || '{}').accountName,
@@ -65,11 +66,12 @@ export async function loadOldAccount() {
 
 export async function migrateAccount() {
   console.log("migrating account");
-  const publication = await new Publication({
+  const publication = new Publication({
     name: getGlobal().accountName,
     creator: loadUserData().username,
     creatorEmail: getGlobal().ownerEmail
   })
+  console.log(publication)
   await publication.save();
   await migrateDesign();
   await migratePosts();
@@ -128,15 +130,19 @@ export async function migratePosts() {
     .then(async (fileContents) => {
       if(fileContents) {
         let posts = JSON.parse(fileContents);
-        let postsMigrated = 0;
-        await posts.forEach(async function(element) {
-          //Fetch each individual post, return the data, then add it to Radiks
-          await loadSingle(element.id)
-          postsMigrated++;
-          if(postsMigrated === posts.length) {
-            callback();
-          }
-        });
+        if(posts.length > 0) {
+          let postsMigrated = 0;
+          await posts.forEach(async function(element) {
+            //Fetch each individual post, return the data, then add it to Radiks
+            await loadSingle(element.id)
+            postsMigrated++;
+            if(postsMigrated === posts.length) {
+              callback();
+            }
+          });
+        } else {
+          setGlobal({ myPosts: [], posts: [], postLoadingDone: true, migrated: true });
+        }
       } else {
         setGlobal({ myPosts: [], posts: [], postLoadingDone: true, migrated: true });
       }

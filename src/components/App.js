@@ -25,13 +25,16 @@ const Config = require('Config');
 export default class App extends Component {
 
   async componentDidMount() {
+    if(localStorage.getItem('GROUP_MEMBERSHIPS_STORAGE_KEY')) {
+      console.log("Radiks user")
+    } else {
+      await User.createWithCurrentUser();
+    }
     if(window.location.pathname.includes('/sites/')) {
       this.setState({onboardingComplete: true, paymentDue: false });
     }
     if (isSignInPending()) {
-      await handlePendingSignIn().then(async (userData) => {
-        await User.createWithCurrentUser();
-        console.log("created")
+      handlePendingSignIn().then(async (userData) => {
         window.location = window.location.origin;
       });
     }
