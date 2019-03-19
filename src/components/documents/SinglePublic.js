@@ -3,17 +3,15 @@ import Loading from '../Loading';
 const design = require('../helpers/design');
 const posts = require('../helpers/singlepost');
 
-const script = document.createElement("script");
-script.src = "https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js";
-script.async = true;
-script.id = "handlebars-template";
-script.type = "text/handlebars-template";
-document.body.appendChild(script);
-
 export default class SinglePublic extends Component {
 
-  componentDidMount() {
-    this.loadScript();
+  async componentDidMount() {
+    const script = await document.createElement("script");
+    script.src = await "https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js";
+    script.async = await true;
+    script.id = await "handlebars-template";
+    script.type = await "text/handlebars-template";
+    await document.body.appendChild(script);
     design.publicLoadMainHtml();
     posts.loadSinglePublic();
   }

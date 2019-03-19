@@ -28,7 +28,9 @@ export default class App extends Component {
     if(localStorage.getItem('GROUP_MEMBERSHIPS_STORAGE_KEY')) {
       console.log("Radiks user")
     } else {
-      await User.createWithCurrentUser();
+      if(isUserSignedIn()) {
+        await User.createWithCurrentUser();
+      }
     }
     if(window.location.pathname.includes('/sites/')) {
       this.setState({onboardingComplete: true, paymentDue: false });

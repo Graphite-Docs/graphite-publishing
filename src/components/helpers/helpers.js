@@ -65,6 +65,7 @@ export async function loadOldAccount() {
 }
 
 export async function migrateAccount() {
+  
   console.log("migrating account");
   const publication = new Publication({
     name: getGlobal().accountName,
