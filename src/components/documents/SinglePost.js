@@ -4,7 +4,7 @@ import Loading from '../Loading';
 import Dropzone from 'react-dropzone';
 import Onboarding from './Onboarding';
 import { loadAccount } from "../helpers/helpers";
-import { Icon, Input, Button, Divider, Sidebar, Menu, Image, Checkbox } from 'semantic-ui-react';
+import { Icon, Input, Button, Divider, Sidebar, Menu, Image, Checkbox, Modal } from 'semantic-ui-react';
 import {Menu as MainMenu} from 'semantic-ui-react';
 import { Header as SemanticHeader } from 'semantic-ui-react';
 import { loadUserData } from "blockstack/lib/auth";
@@ -140,6 +140,21 @@ export default class SinglePost extends Component {
                   <SemanticHeader id='side-nav-publish' as='h3'>Publish Post?</SemanticHeader>
                     <Checkbox style={{padding: "10px"}} label="Publish" toggle onChange={single.onSwitchClick} checked={this.global.publishPost} />
                 </Menu.Item>
+                <Menu.Item as='a'>
+                  <SemanticHeader id='side-nav-public' as='h3'>Share on Convergence? 
+                  <Modal closeIcon trigger={<Icon style={{fontSize: "14px", marginTop: "-25px", marginRight: "3px"}} name="info" />}>
+                    <Modal.Header>What is Convergence?</Modal.Header>
+                      <Modal.Content>
+                        <p>Your Graphite Publishing blog is entirely yours, but if you want to shares your posts in a central location, you can add them to 
+                          Convergence. Convergence simply aggregates the posts of many Graphite Publishing blogs and surfaces them in one central location.
+                        </p>
+                        <p>If you add a post to Converegence, you still own the content entirely and removing the post is as simple as flipping the toggle back to "Off".</p>
+                        <p>Want to see what Converegence is all about? <a href="https://convergence.app" target="_blank" rel="noopener">Give it a look.</a></p>
+                      </Modal.Content>
+                  </Modal>
+                  </SemanticHeader>
+                    <Checkbox style={{padding: "10px"}} label="Share on Convergence" toggle onChange={single.onConvergenceClick} checked={this.global.convergence} />
+                </Menu.Item>
                 <Menu.Item id='side-nav-custom' as='a'>
                   {
                     status === "Published" ? <a href={postUrl} target="_blank" rel="noopener">{postUrl}</a> : 
@@ -152,19 +167,6 @@ export default class SinglePost extends Component {
               </Sidebar>
 
               {/*End Side Nav*/}
-
-              {/* Dirty Detection
-              <div id="dirtyModal" className="modal">
-                <div className="modal-content">
-                  <h4>Unsaved Changes</h4>
-                  <p>You have unsaved changes. Do you want to save?</p>
-                </div>
-                <div className="modal-footer">
-                  <a onClick={single.handleSavePost} className="modal-close waves-effect waves-green btn-flat">Save</a>
-                  <a href="/posts" className="modal-close waves-effect waves-green btn-flat">Nope</a>
-                </div>
-              </div>
-              End Dirty Detection */}
 
               <Menu style={{width: "100%"}} className='bottom-post-nav'>
                 <Menu.Menu position='right'>

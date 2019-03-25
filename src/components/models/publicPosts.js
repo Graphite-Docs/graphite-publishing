@@ -24,6 +24,10 @@ export default class PublicPost extends Model {
         decrypted: true,
         type: String
     },
+    convergence: {
+      decrypted: true, 
+      type: Boolean
+    },
     deleted: {
       decrypted: true, 
       type: Boolean

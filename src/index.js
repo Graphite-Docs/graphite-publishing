@@ -84,7 +84,8 @@ setGlobal({
     darkmode: false, 
     fullscreen: false,
     migrated: false, 
-    save: "Save"
+    save: "Save",
+    convergence: false
 })
 
 configure({

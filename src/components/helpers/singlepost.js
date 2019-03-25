@@ -36,7 +36,8 @@ export async function loadSingle() {
       postURL: thisPost.url || "",
       featuredImg: thisPost.featureImg || "",
       publishPost: thisPost.publishPost || false,
-      status: thisPost.status || "Draft"
+      status: thisPost.status || "Draft", 
+      convergence: thisPost.convergence
     }, () => {
       if(getGlobal().status === 'Published') {
         setGlobal({
@@ -70,6 +71,10 @@ export function handlePostURL(e) {
 
 export function onSwitchClick(e) {
   setGlobal({publishPost: !getGlobal().publishPost})
+}
+
+export function onConvergenceClick(e) {
+  setGlobal({convergence: !getGlobal().convergence})
 }
 
 export function handleFeaturedDrop(files) {
@@ -106,7 +111,7 @@ export async function handleSavePost() {
     tags: getGlobal().tags,
     lastUpdated: getDate(),
     featureImg: getGlobal().featuredImg,
-    status:  getGlobal().publishPost ? "Published" : "Draft",
+    status:  getGlobal().publishPost ? "Published" : "Draft"
   }
   await post.update(newAttributes)
   await post.save();
@@ -128,7 +133,8 @@ export async function handleSavePost() {
         link: `${window.location.origin}/sites/${loadUserData().username}/public/${window.location.href.split('posts/')[1]}`,
         lastUpdated: getDate(),
         publishedDate: getDate(),
-        featureImg: getGlobal().featuredImg
+        featureImg: getGlobal().featuredImg,
+        convergence: getGlobal().convergence
       }
       await thisPublic.update(newPublicAttrs)
       await thisPublic.save();
@@ -142,7 +148,8 @@ export async function handleSavePost() {
         link: `${window.location.origin}/sites/${loadUserData().username}/public/${window.location.href.split('posts/')[1]}`,
         lastUpdated: getDate(),
         publishedDate: getDate(),
-        featureImg: getGlobal().featuredImg
+        featureImg: getGlobal().featuredImg,
+        convergence: getGlobal().convergence
       })
       await publicPost.save();
       console.log(publicPost)
