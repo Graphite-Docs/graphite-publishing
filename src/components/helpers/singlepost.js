@@ -111,7 +111,8 @@ export async function handleSavePost() {
     tags: getGlobal().tags,
     lastUpdated: getDate(),
     featureImg: getGlobal().featuredImg,
-    status:  getGlobal().publishPost ? "Published" : "Draft"
+    status:  getGlobal().publishPost ? "Published" : "Draft", 
+    convergence: getGlobal().convergence
   }
   await post.update(newAttributes)
   await post.save();
