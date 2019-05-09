@@ -74,6 +74,8 @@ export default class Design extends Component {
     const { loading } = this.global;
     let openBracket = "{{";
     let closedBracket = "}}";
+    let tripleOpenBracket = "{{{";
+    let tripleClosedBracket = "}}}";
     if(this.state.post === true) {
       return(
         <Container style={{marginTop: "25px"}}>
@@ -88,7 +90,7 @@ export default class Design extends Component {
                   <ul>
                     <li>{openBracket}title{closedBracket}</li>
                     <li>{openBracket}author{closedBracket}</li>
-                    <li>{openBracket}featureImg{closedBracket}</li>
+                    <li>{tripleOpenBracket}featureImg{tripleClosedBracket} - Note the triple brackets</li>
                     <li>{openBracket}published{closedBracket}</li>
                   </ul>
                   <p>Graphite Publishing supports full Handlebars syntax, including conditionals. Here is an example that uses all variables and a conditional if block: </p>
@@ -148,7 +150,7 @@ export default class Design extends Component {
                   <ul>
                     <li>{openBracket}title{closedBracket}</li>
                     <li>{openBracket}author{closedBracket}</li>
-                    <li>{openBracket}featureImg{closedBracket}</li>
+                    <li>{tripleOpenBracket}featureImg{tripleClosedBracket} - Note the triple brackets</li>
                     <li>{openBracket}lastUpdated{closedBracket}</li>
                     <li>{openBracket}link{closedBracket}</li>
                   </ul>
