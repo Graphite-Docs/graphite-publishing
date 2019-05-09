@@ -45,7 +45,7 @@ export default class SinglePost extends Component {
 
   render() {
       let postUrl = `${window.location.origin}/sites/${loadUserData().username}/public/${window.location.href.split('posts/')[1]}`;
-      const { save, onboardingComplete, status, loading, content, featuredImg, publishPost, initialLoad, title } = this.global;
+      const { save, onboardingComplete, status, loading, content, featureImg, publishPost, initialLoad, title } = this.global;
       const dropzoneStyle = {};
       let saveBtn;
       let saveBtnClass;
@@ -109,7 +109,7 @@ export default class SinglePost extends Component {
                 <Divider />
                 <Menu.Item as='a'>
                     <SemanticHeader id='side-nav-image-heading' as='h3'>Featured Image</SemanticHeader>
-                    {featuredImg === "" ?
+                    {featureImg === "" ?
                       <div className="center">
                       <Dropzone
                         style={dropzoneStyle}
@@ -121,7 +121,7 @@ export default class SinglePost extends Component {
                       </Dropzone>
                       </div> :
                       <div>
-                      <Image className="post-featured" src={featuredImg} alt="featured"/>
+                      <Image className="post-featured" src={featureImg} alt="featured"/>
                       <div className="center">
                       <Dropzone
                         style={dropzoneStyle}

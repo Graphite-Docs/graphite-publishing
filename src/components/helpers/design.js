@@ -111,7 +111,7 @@ export async function publicLoadMainHtml() {
   } else {
     await setGlobal({
       pageHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style="max-width:75%;margin:auto;text-align:center;">\n<h1 style="margin-bottom:25px;padding: 15px;">Your Blog Title (Don't forget to update this on the Design page</h1>\n{{#posts}}\n<div style="padding:15px;margin:20px;" class="card">\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style="color: #000" href={{link}}><button style="color:#000" class="btn black">Read it</button></a>\n</div>\n{{/posts}}\n</div>`,
-      postHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style='max-width:80%;margin: auto;margin-top: 45px;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div style="font-size: 18px;" id="designed-post-content"></div>\n</div>\n</div>`, 
+      postHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style='max-width:80%;margin: auto;margin-top: 45px;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featureImg}}\n<img class='responsive-img' src={{featureImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div style="font-size: 18px;" id="designed-post-content"></div>\n</div>\n</div>`, 
       loading: false
     })
     loadPublicSitePosts();
@@ -133,7 +133,7 @@ export async function loadMainHtml() {
     console.log(getGlobal().accountName)
     setGlobal({
       pageHTML: `<div style="max-width:75%;margin:auto;text-align:center;">\n<h1>${getGlobal().accountName}</h1>\n{{#posts}}\n<div style="padding:15px;margin:20px;" class="card">\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style="color: #000" href={{link}}><button style="color:#000" class="btn black">Read it</button></a>\n</div>\n{{/posts}}\n</div>`,
-      postHTML: `<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>`, 
+      postHTML: `<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featureImg}}\n<img class='responsive-img' src={{featureImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>`, 
       loading: false
     })
   }
@@ -230,7 +230,7 @@ export function loadPostHtml() {
       console.log(getGlobal().postHTML)
       if(getGlobal().postHTML === undefined || getGlobal().postHTML === "") {
         setGlobal({
-          postHTML: "<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>"
+          postHTML: "<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featureImg}}\n<img class='responsive-img' src={{featureImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>"
         })
       }
     })

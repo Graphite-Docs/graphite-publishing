@@ -148,7 +148,7 @@ export default class Design extends Component {
                   <ul>
                     <li>{openBracket}title{closedBracket}</li>
                     <li>{openBracket}author{closedBracket}</li>
-                    <li>{openBracket}featuredImg{closedBracket}</li>
+                    <li>{openBracket}featureImg{closedBracket}</li>
                     <li>{openBracket}lastUpdated{closedBracket}</li>
                     <li>{openBracket}link{closedBracket}</li>
                   </ul>

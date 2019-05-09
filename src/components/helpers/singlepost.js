@@ -34,7 +34,7 @@ export async function loadSingle() {
       content: thisPost.content || "",
       createdDate: thisPost.createdAt || "",
       postURL: thisPost.url || "",
-      featuredImg: thisPost.featureImg || "",
+      featureImg: thisPost.featureImg || "",
       publishPost: thisPost.publishPost || false,
       status: thisPost.status || "Draft", 
       convergence: thisPost.convergence
@@ -91,7 +91,7 @@ export function handleFeaturedDrop(files) {
        this.handleDropRejected();
        console.log("file too large")
      }else {
-       setGlobal({featuredImg: object.link, editing: true});
+       setGlobal({featureImg: object.link, editing: true});
      }
    };
    reader.readAsDataURL(file);
@@ -110,7 +110,7 @@ export async function handleSavePost() {
     content: getGlobal().content,
     tags: getGlobal().tags,
     lastUpdated: getDate(),
-    featureImg: getGlobal().featuredImg,
+    featureImg: getGlobal().featureImg,
     status:  getGlobal().publishPost ? "Published" : "Draft", 
     convergence: getGlobal().convergence
   }
@@ -134,7 +134,7 @@ export async function handleSavePost() {
         link: `${window.location.origin}/sites/${loadUserData().username}/public/${window.location.href.split('posts/')[1]}`,
         lastUpdated: getDate(),
         publishedDate: getDate(),
-        featureImg: getGlobal().featuredImg,
+        featureImg: getGlobal().featureImg,
         convergence: getGlobal().convergence
       }
       await thisPublic.update(newPublicAttrs)
@@ -149,7 +149,7 @@ export async function handleSavePost() {
         link: `${window.location.origin}/sites/${loadUserData().username}/public/${window.location.href.split('posts/')[1]}`,
         lastUpdated: getDate(),
         publishedDate: getDate(),
-        featureImg: getGlobal().featuredImg,
+        featureImg: getGlobal().featureImg,
         convergence: getGlobal().convergence
       })
       await publicPost.save();
@@ -179,7 +179,7 @@ export async function loadSinglePublic() {
     content: post.attrs.content,
     author: post.attrs.author,
     createdDate: post.attrs.createdDate,
-    featuredImg: post.attrs.featureImg || "",
+    featureImg: post.attrs.featureImg || "",
     lastUpdated: post.attrs.lastUpdated
   })
   var data, template;
@@ -189,7 +189,7 @@ export async function loadSinglePublic() {
       "content" : getGlobal().content,
       "author" : getGlobal().author,
       "published" : getGlobal().lastUpdated,
-      "featuredImg" : getGlobal().featuredImg
+      "featureImg" : getGlobal().featureImg
   }
   console.log(data)
   template = await window.Handlebars.compile(getGlobal().postHTML);

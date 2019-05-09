@@ -72,7 +72,7 @@ setGlobal({
     redirect: false,
     index: 0,
     postLoadingDone: false,
-    featuredImg: "",
+    featureImg: "",
     postURL: "",
     postLoading: false,
     publishPost: false,
