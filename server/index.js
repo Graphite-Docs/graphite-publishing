@@ -5,13 +5,6 @@ const app = express();
 const { setup } = require('radiks-server');
 require('dotenv').config()
 
-
-// setup({
-//     mongoDBUrl: 'mongodb://localhost:27017/radiks-server'
-//   }).then((RadiksController) => {
-//     app.use('/radiks', RadiksController);
-//   });
-
 setup({
     mongoDBUrl: process.env.MONGO_URI
   }).then((RadiksController) => {

@@ -107,7 +107,7 @@ export default class Posts extends Component {
                           </Table.Header>
                           <Table.Body>
                         {
-                          filteredPosts.map(post => {
+                          filteredPosts.reverse().map(post => {
                             let statusButton;
                             if(post.attrs.status === "Published") {
                               statusButton = <Button style={{fontSize: "10px", cursor: "default"}} circular color='green'>P</Button>
