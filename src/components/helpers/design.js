@@ -14,11 +14,11 @@ let html;
 
 export function setTheme(name) {
   if(name === 'card') {
-    setGlobal({ pageHTML: "<div>\n<nav>\n<div class='nav-wrapper'>\n<h3><a href='#' className='brand-logo'>Your Name or Image</a></h3>\n</div>\n</nav>\n<div class='row'>\n{{#posts}}\n<div class='col s6 m4'>\n<div class='card small'>\n<div class='card-image'>\n{{#if featureImg}}\n<img src={{featureImg}} />\n{{/if}}\n<span style='color:#000;' class='card-title'>\n{{title}}\n</span>\n</div>\n<div class='card-content'>\n<p>Published: {{lastUpdated}}</p>\n<p>By: {{author}}</p>\n</div>\n<div class='card-action'>\n<a style='color: #000' href={{link}}>Read It</a>\n</div>\n</div>\n</div>\n{{/posts}}\n</div>\n</div>" })
+    setGlobal({ pageHTML: "<div>\n<nav>\n<div class='nav-wrapper'>\n<h3><a href='#' className='brand-logo'>Your Name or Image</a></h3>\n</div>\n</nav>\n<div class='row'>\n{{#posts}}\n<div class='col s6 m4'>\n<div class='card small'>\n<div class='card-image'>\n{{#if featureImg}}\n<img src={{{featureImg}}} />\n{{/if}}\n<span style='color:#000;' class='card-title'>\n{{title}}\n</span>\n</div>\n<div class='card-content'>\n<p>Published: {{lastUpdated}}</p>\n<p>By: {{author}}</p>\n</div>\n<div class='card-action'>\n<a style='color: #000' href={{link}}>Read It</a>\n</div>\n</div>\n</div>\n{{/posts}}\n</div>\n</div>" })
   } else if(name === 'clean') {
-    setGlobal({ pageHTML: "<div><nav style='text-align: center;'>\n<div class='nav-wrapper'>\n<h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>\n<p style='text-align: center'>The best words on the internet</p>\n</div>\n</nav>\n<div style='max-width: 75%;margin: auto;margin-bottom: 25px;margin-top:50px;padding-top:25px;'>\n{{#posts}}\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img style='max-width:50%;margin:auto;' src={{featureImg}} alt={{title}} />\n{{/if}}\n<h5>{{author}}</h5>\n<h5>{{lastUpdated}}</h5>\n<a style='color:#fff' href={{link}}><button class='btn black'>Read More</button></a>\n<hr />\n{{/posts}}\n</div>\n</div>" })
+    setGlobal({ pageHTML: "<div><nav style='text-align: center;'>\n<div class='nav-wrapper'>\n<h1><a href='#' style='text-align: center;'>YOUR SITE NAME</a></h1>\n<p style='text-align: center'>The best words on the internet</p>\n</div>\n</nav>\n<div style='max-width: 75%;margin: auto;margin-bottom: 25px;margin-top:50px;padding-top:25px;'>\n{{#posts}}\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img style='max-width:50%;margin:auto;' src={{{featureImg}}} alt={{title}} />\n{{/if}}\n<h5>{{author}}</h5>\n<h5>{{lastUpdated}}</h5>\n<a style='color:#fff' href={{link}}><button class='btn black'>Read More</button></a>\n<hr />\n{{/posts}}\n</div>\n</div>" })
   } else if(name === 'night') {
-    setGlobal({ pageHTML: "<div style='background: #282828;color:#eee;padding-bottom:45px;'>\n<div style='background: #000;width:100%;padding:10px;'>\n<h1>Your Site Name</h1>\n</div>\n<div style='margin:auto;margin-top: 65px; max-width: 85%;margin-bottom:45px;'>\n{{#posts}}\n<div style='margin-top:25px;'>\n</div>\n<p>{{lastUpdated}}</p>\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img src={{featureImg}} style='max-width:50%;margin:auto;' alt={{title}} />\n{{/if}}\n<p>Written by {{author}}</p>\n<a href={{link}} style='color:#000'><button style='color:#000;background: #eee;' class='btn'>Read</button></a>\n{{/posts}}\n</div>\n</div>\n</div>" })
+    setGlobal({ pageHTML: "<div style='background: #282828;color:#eee;padding-bottom:45px;'>\n<div style='background: #000;width:100%;padding:10px;'>\n<h1>Your Site Name</h1>\n</div>\n<div style='margin:auto;margin-top: 65px; max-width: 85%;margin-bottom:45px;'>\n{{#posts}}\n<div style='margin-top:25px;'>\n</div>\n<p>{{lastUpdated}}</p>\n<h3>{{title}}</h3>\n{{#if featureImg}}\n<img src={{{featureImg}}} style='max-width:50%;margin:auto;' alt={{title}} />\n{{/if}}\n<p>Written by {{author}}</p>\n<a href={{link}} style='color:#000'><button style='color:#000;background: #eee;' class='btn'>Read</button></a>\n{{/posts}}\n</div>\n</div>\n</div>" })
   }
 }
 
@@ -111,7 +111,7 @@ export async function publicLoadMainHtml() {
   } else {
     await setGlobal({
       pageHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style="max-width:75%;margin:auto;text-align:center;">\n<h1 style="margin-bottom:25px;padding: 15px;">Your Blog Title (Don't forget to update this on the Design page</h1>\n{{#posts}}\n<div style="padding:15px;margin:20px;" class="card">\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style="color: #000" href={{link}}><button style="color:#000" class="btn black">Read it</button></a>\n</div>\n{{/posts}}\n</div>`,
-      postHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style='max-width:80%;margin: auto;margin-top: 45px;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div style="font-size: 18px;" id="designed-post-content"></div>\n</div>\n</div>`, 
+      postHTML: `<style>@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");</style><div style='max-width:80%;margin: auto;margin-top: 45px;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featureImg}}\n<img class='responsive-img' src={{{featureImg}}} alt='post feature'/>\n{{/if}}\n<div>\n<div style="font-size: 18px;" id="designed-post-content"></div>\n</div>\n</div>`, 
       loading: false
     })
     loadPublicSitePosts();
@@ -133,7 +133,7 @@ export async function loadMainHtml() {
     console.log(getGlobal().accountName)
     setGlobal({
       pageHTML: `<div style="max-width:75%;margin:auto;text-align:center;">\n<h1>${getGlobal().accountName}</h1>\n{{#posts}}\n<div style="padding:15px;margin:20px;" class="card">\n<h3>{{title}}</h3>\n<p>A post by {{author}}</p>\n<p>Published {{lastUpdated}}</p>\n<a style="color: #000" href={{link}}><button style="color:#000" class="btn black">Read it</button></a>\n</div>\n{{/posts}}\n</div>`,
-      postHTML: `<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>`, 
+      postHTML: `<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featureImg}}\n<img class='responsive-img' src={{{featureImg}}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>`, 
       loading: false
     })
   }
@@ -230,7 +230,7 @@ export function loadPostHtml() {
       console.log(getGlobal().postHTML)
       if(getGlobal().postHTML === undefined || getGlobal().postHTML === "") {
         setGlobal({
-          postHTML: "<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featuredImg}}\n<img class='responsive-img' src={{featuredImg}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>"
+          postHTML: "<div style='max-width:80%;margin: auto;'>\n<h3 style='text-align:center;'>{{title}}</h3>\n<h5>Published: {{published}}</h5>\n{{#if featureImg}}\n<img class='responsive-img' src={{{featureImg}}} alt='post feature'/>\n{{/if}}\n<div>\n<div id='designed-post-content'></div>\n</div>\n</div>"
         })
       }
     })

@@ -245,7 +245,7 @@ export async function loadPostPreview() {
           author: thisPost.author,
           published: thisPost.lastUpdated ,
           postURL: thisPost.url,
-          featuredImg: thisPost.featureImg
+          featureImg: thisPost.featureImg
         }
       }
 
@@ -323,7 +323,7 @@ export async function loadPublicPostsCollection() {
   //               "content" : JSON.parse(fileContents).content || "",
   //               "author" : JSON.parse(fileContents).author || "",
   //               "published" : JSON.parse(fileContents).lastUpdated || "",
-  //               "featuredImg" : JSON.parse(fileContents).featureImg || "",
+  //               "featureImg" : JSON.parse(fileContents).featureImg || "",
   //               "link" : window.location.origin + '/public/' + getGlobal().ownerBlockstackId + '/posts/' + JSON.parse(fileContents).id
   //             }
   //           })
