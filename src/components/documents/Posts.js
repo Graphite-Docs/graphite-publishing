@@ -118,7 +118,7 @@ export default class Posts extends Component {
                             <Table.Row key={post._id}>
                               <Table.Cell><Link to={'/posts/' + post._id}>{post.attrs.title.length > 30 ? post.attrs.title.substring(0,30)+"..." :  post.attrs.title}</Link></Table.Cell>
                               <Table.Cell>{post.attrs.author}</Table.Cell>
-                              <Table.Cell>{post.attrs.createdDate}</Table.Cell>
+                              <Table.Cell>{post.attrs.lastUpdated}</Table.Cell>
                               <Table.Cell>{statusButton}</Table.Cell>
                               <Table.Cell>
                               <Modal open={this.state.modalOpen} trigger={
