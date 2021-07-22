@@ -111,7 +111,7 @@
     "webpack-manifest-plugin": "1.3.2",
     "whatwg-fetch": "2.0.3",
     "wordcount": "^1.1.1",
-    "xlsx": "^0.12.2",
+    "xlsx": "^0.17.0",
     "y-array": "^10.1.4",
     "y-map": "^10.1.3",
     "y-memory": "^8.0.9",
